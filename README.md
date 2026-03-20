@@ -1,5 +1,8 @@
 # Data Structures and Algorithms 2
 ## CA Exercise 2 – National Gallery Route Finder
+
+## Project Contributors: Rostyslav Norman, Christopher Bolger
+
 **“Create a route finder for the main floor of the National Gallery, London.”**
 
 The objective of this team CA exercise is to create a JavaFX application that can search for and retrieve routes between points/rooms/exhibits on the main floor (https://www.nationalgallery.org.uk/visiting/floorplans/level-2) in the National Gallery in London given a starting point/room/exhibit and a destination.
