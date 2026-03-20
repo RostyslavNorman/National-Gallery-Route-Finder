@@ -6,11 +6,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ie.wit</groupId>
-    <artifactId>autumn-leaves</artifactId>
+    <artifactId>National-Gallery-Route-Finder</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Autumn Leaves Identification System</name>
+    <name>National-Gallery-Route-Finder</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
