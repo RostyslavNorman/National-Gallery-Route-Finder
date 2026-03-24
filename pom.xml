@@ -66,6 +66,12 @@
             <version>1.36</version>
             <scope>provided</scope>
         </dependency>
+        <!-- XStream XML Loader-->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.20</version>
+        </dependency>
     </dependencies>
 
     <build>
