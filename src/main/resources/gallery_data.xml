@@ -1,0 +1,1227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    gallery_data.xml - National Gallery London, Level 2
+    ====================================================
+    Loaded at startup by GalleryLoader using XStream. Never written to at runtime.
+
+    XML tag names map to Java fields via XStream aliases:
+      Room       -> id, <n>=name, x, y, connections, paintings
+      Painting   -> title, artist, imageFilename, description
+      Artist     -> <n>=name, nationality, period
+      Connection -> roomId, distance
+
+    WING LAYOUT:
+      51-66  Sainsbury Wing  (Medieval and Early Renaissance, 1260-1550)
+      1-14   West Wing       (Renaissance, 1500-1600)
+      15-32  North Wing      (Baroque, 1600-1700)
+      33-46  East Wing       (Rococo to Modernism, 1700+)
+
+    CONNECTIONS:
+      Each connection is defined ONE direction only in this XML.
+      GalleryLoader.buildGraph() registers both directions automatically (undirected graph).
+      The areConnected() guard in GalleryLoader prevents duplicate edges even if the same
+      pair accidentally appears twice.
+      Distance is approximate walking distance in pixels at the map image scale used.
+
+    HOW TO ADD A ROOM:
+      1. Add a <room> block with id, <n>, x, y, <connections> and <paintings>.
+      2. Add ONE <connection> to/from a neighbouring room — GalleryLoader adds the reverse.
+      3. Keep any new <artist> value in a <painting> in sync with an entry in <artists>.
+-->
+
+<gallery>
+
+    <!-- ============================================================
+         ARTISTS
+         <n> maps to Artist.name via XStream alias.
+         Value must match <artist> inside every <painting> exactly —
+         this is the join key used by the "most interesting route"
+         Dijkstra weighting.
+         ============================================================ -->
+    <artists>
+
+        <!-- Sainsbury Wing artists -->
+        <artist><n>Duccio di Buoninsegna</n><nationality>Italian</nationality><period>Proto-Renaissance</period></artist>
+        <artist><n>Jan van Eyck</n><nationality>Flemish</nationality><period>Early Netherlandish</period></artist>
+        <artist><n>Hans Memling</n><nationality>Flemish</nationality><period>Early Netherlandish</period></artist>
+        <artist><n>Sandro Botticelli</n><nationality>Italian</nationality><period>Early Renaissance</period></artist>
+        <artist><n>Piero della Francesca</n><nationality>Italian</nationality><period>Early Renaissance</period></artist>
+        <artist><n>Andrea Mantegna</n><nationality>Italian</nationality><period>Early Renaissance</period></artist>
+        <artist><n>Albrecht Durer</n><nationality>German</nationality><period>Northern Renaissance</period></artist>
+        <artist><n>Joachim Patinir</n><nationality>Flemish</nationality><period>Northern Renaissance</period></artist>
+        <artist><n>Pieter Bruegel the Elder</n><nationality>Flemish</nationality><period>Northern Renaissance</period></artist>
+        <artist><n>Leonardo da Vinci</n><nationality>Italian</nationality><period>High Renaissance</period></artist>
+
+        <!-- West Wing artists -->
+        <artist><n>Michelangelo</n><nationality>Italian</nationality><period>High Renaissance</period></artist>
+        <artist><n>Bronzino</n><nationality>Italian</nationality><period>Mannerism</period></artist>
+        <artist><n>Raphael</n><nationality>Italian</nationality><period>High Renaissance</period></artist>
+        <artist><n>Titian</n><nationality>Italian</nationality><period>Venetian Renaissance</period></artist>
+        <artist><n>Hans Holbein the Younger</n><nationality>German</nationality><period>Northern Renaissance</period></artist>
+
+        <!-- North Wing artists -->
+        <artist><n>Rembrandt van Rijn</n><nationality>Dutch</nationality><period>Dutch Golden Age</period></artist>
+        <artist><n>Johannes Vermeer</n><nationality>Dutch</nationality><period>Dutch Golden Age</period></artist>
+        <artist><n>Peter Paul Rubens</n><nationality>Flemish</nationality><period>Baroque</period></artist>
+        <artist><n>Anthony van Dyck</n><nationality>Flemish</nationality><period>Baroque</period></artist>
+        <artist><n>Diego Velazquez</n><nationality>Spanish</nationality><period>Baroque</period></artist>
+        <artist><n>Caravaggio</n><nationality>Italian</nationality><period>Baroque</period></artist>
+        <artist><n>Nicolas Poussin</n><nationality>French</nationality><period>Baroque</period></artist>
+        <artist><n>Claude</n><nationality>French</nationality><period>Baroque</period></artist>
+
+        <!-- East Wing artists -->
+        <artist><n>Thomas Gainsborough</n><nationality>British</nationality><period>Rococo</period></artist>
+        <artist><n>J.M.W. Turner</n><nationality>British</nationality><period>Romanticism</period></artist>
+        <artist><n>John Constable</n><nationality>British</nationality><period>Romanticism</period></artist>
+        <artist><n>Francisco Goya</n><nationality>Spanish</nationality><period>Romanticism</period></artist>
+        <artist><n>Claude Monet</n><nationality>French</nationality><period>Impressionism</period></artist>
+        <artist><n>Vincent van Gogh</n><nationality>Dutch</nationality><period>Post-Impressionism</period></artist>
+        <artist><n>Georges Seurat</n><nationality>French</nationality><period>Post-Impressionism</period></artist>
+
+    </artists>
+
+
+    <!-- ============================================================
+         ROOMS
+         ============================================================ -->
+    <rooms>
+
+        <!-- ==================== SAINSBURY WING ====================
+             Medieval and Early Renaissance (1260-1550)  [orange on map]
+
+             Physical layout on the map (col left-to-right, row top-to-bottom):
+               ColA  ColB  ColC  ColD
+               61    60    51    51a  ← row 1  (51a is the link lobby to Room 9)
+               62    59    52         ← row 2
+               63    58    53         ← row 3
+               64    57    54         ← row 4
+               65          55         ← row 5
+               66    56               ← row 6
+
+             Connections defined one direction only; GalleryLoader adds the reverse.
+        ============================================================ -->
+
+        <!-- ── Row 1 ── -->
+
+        <room>
+            <id>61</id>
+            <n>Room 61 - Leonardo da Vinci</n>
+            <x>30</x><y>255</y>
+            <connections>
+                <connection><roomId>60</roomId><distance>55</distance></connection>
+                <connection><roomId>62</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Virgin of the Rocks</title>
+                    <artist>Leonardo da Vinci</artist>
+                    <imageFilename>leonardo_virgin_rocks.jpg</imageFilename>
+                    <description>The Virgin, Infant Jesus, Infant John the Baptist and an angel, c.1491-1508.</description>
+                </painting>
+                <painting>
+                    <title>The Burlington House Cartoon</title>
+                    <artist>Leonardo da Vinci</artist>
+                    <imageFilename>leonardo_burlington_cartoon.jpg</imageFilename>
+                    <description>The Virgin and Child with Saint Anne and the Infant Saint John, c.1499-1500.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>60</id>
+            <n>Room 60 - Bruegel and Early Netherlandish</n>
+            <x>75</x><y>255</y>
+            <connections>
+                <connection><roomId>51</roomId><distance>55</distance></connection>
+                <connection><roomId>59</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Adoration of the Kings</title>
+                    <artist>Pieter Bruegel the Elder</artist>
+                    <imageFilename>bruegel_adoration.jpg</imageFilename>
+                    <description>A crowded, chaotic nativity scene, 1564.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>51</id>
+            <n>Room 51 - Early Italian</n>
+            <x>120</x><y>255</y>
+            <connections>
+                <connection><roomId>52</roomId><distance>55</distance></connection>
+                <connection><roomId>51a</roomId><distance>45</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Virgin and Child</title>
+                    <artist>Duccio di Buoninsegna</artist>
+                    <imageFilename>duccio_virgin_child.jpg</imageFilename>
+                    <description>One of the earliest works in the collection, c.1300.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <!--
+            51a: the narrow passage / lift lobby east of Room 51 that physically
+            connects the Sainsbury Wing to the main building at Room 9.
+            No paintings are displayed here.
+        -->
+        <room>
+            <id>51a</id>
+            <n>Room 51a - Sainsbury Wing Link Lobby</n>
+            <x>175</x><y>255</y>
+            <connections>
+                <connection><roomId>9</roomId><distance>80</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <!-- ── Row 2 ── -->
+
+        <room>
+            <id>62</id>
+            <n>Room 62 - Sainsbury Wing Hall</n>
+            <x>30</x><y>300</y>
+            <connections>
+                <connection><roomId>59</roomId><distance>55</distance></connection>
+                <connection><roomId>63</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>59</id>
+            <n>Room 59 - Italian Renaissance</n>
+            <x>75</x><y>300</y>
+            <connections>
+                <connection><roomId>52</roomId><distance>60</distance></connection>
+                <connection><roomId>58</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Saint Jerome in a Rocky Landscape</title>
+                    <artist>Joachim Patinir</artist>
+                    <imageFilename>patinir_jerome.jpg</imageFilename>
+                    <description>A dramatic world landscape with the penitent saint, c.1515-1524.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>52</id>
+            <n>Room 52 - Netherlandish and German</n>
+            <x>120</x><y>300</y>
+            <connections>
+                <connection><roomId>53</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Arnolfini Portrait</title>
+                    <artist>Jan van Eyck</artist>
+                    <imageFilename>van_eyck_arnolfini.jpg</imageFilename>
+                    <description>A remarkably detailed double portrait, 1434.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <!-- ── Row 3 ── -->
+
+        <room>
+            <id>63</id>
+            <n>Room 63 - Sainsbury Wing South Passage</n>
+            <x>30</x><y>345</y>
+            <connections>
+                <connection><roomId>58</roomId><distance>55</distance></connection>
+                <connection><roomId>64</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>58</id>
+            <n>Room 58 - Late Netherlandish</n>
+            <x>75</x><y>345</y>
+            <connections>
+                <connection><roomId>53</roomId><distance>55</distance></connection>
+                <connection><roomId>57</roomId><distance>55</distance></connection>
+                <connection><roomId>64</roomId><distance>60</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Scenes from a Passion of Christ</title>
+                    <artist>Hans Memling</artist>
+                    <imageFilename>memling_passion.jpg</imageFilename>
+                    <description>A continuous narrative of the Passion of Christ, c.1470-1471.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>53</id>
+            <n>Room 53 - Botticelli and Italian</n>
+            <x>120</x><y>345</y>
+            <connections>
+                <connection><roomId>54</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Venus and Mars</title>
+                    <artist>Sandro Botticelli</artist>
+                    <imageFilename>botticelli_venus_mars.jpg</imageFilename>
+                    <description>An allegorical painting showing Venus watching over a sleeping Mars, c.1483.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <!-- ── Row 4 ── -->
+
+        <room>
+            <id>64</id>
+            <n>Room 64 - Sainsbury Wing Lower A</n>
+            <x>30</x><y>390</y>
+            <connections>
+                <connection><roomId>57</roomId><distance>55</distance></connection>
+                <connection><roomId>65</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>57</id>
+            <n>Room 57 - German and Netherlandish</n>
+            <x>75</x><y>390</y>
+            <connections>
+                <connection><roomId>54</roomId><distance>60</distance></connection>
+                <connection><roomId>65</roomId><distance>55</distance></connection>
+                <connection><roomId>66</roomId><distance>60</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Portrait of a Young Man</title>
+                    <artist>Albrecht Durer</artist>
+                    <imageFilename>durer_young_man.jpg</imageFilename>
+                    <description>A penetrating portrait study in the Northern Renaissance tradition, 1521.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>54</id>
+            <n>Room 54 - Florentine Painting</n>
+            <x>120</x><y>390</y>
+            <connections>
+                <connection><roomId>55</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Baptism of Christ</title>
+                    <artist>Piero della Francesca</artist>
+                    <imageFilename>piero_baptism.jpg</imageFilename>
+                    <description>Christ stands in the River Jordan, c.1437-1445.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <!-- ── Row 5 ── -->
+
+        <room>
+            <id>65</id>
+            <n>Room 65 - Sainsbury Wing Lower B</n>
+            <x>30</x><y>435</y>
+            <connections>
+                <connection><roomId>66</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>55</id>
+            <n>Room 55 - Venetian and North Italian</n>
+            <x>120</x><y>435</y>
+            <connections>
+                <connection><roomId>56</roomId><distance>55</distance></connection>
+                <connection><roomId>65</roomId><distance>60</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Agony in the Garden</title>
+                    <artist>Andrea Mantegna</artist>
+                    <imageFilename>mantegna_agony.jpg</imageFilename>
+                    <description>Christ prays in the Garden of Gethsemane, c.1458-1460.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <!-- ── Row 6 ── -->
+
+        <room>
+            <id>66</id>
+            <n>Room 66 - Sainsbury Wing Lower C</n>
+            <x>30</x><y>480</y>
+            <connections>
+                <connection><roomId>56</roomId><distance>60</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>56</id>
+            <n>Room 56 - Netherlandish</n>
+            <x>120</x><y>480</y>
+            <connections>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Portrait of a Young Man</title>
+                    <artist>Hans Memling</artist>
+                    <imageFilename>memling_young_man.jpg</imageFilename>
+                    <description>A thoughtful portrait from the Flemish master, c.1472-1475.</description>
+                </painting>
+            </paintings>
+        </room>
+
+
+        <!-- ==================== WEST WING ====================
+             Renaissance (1500-1600)  [pink/magenta on map]
+             Rooms: 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+
+             Approximate grid layout (x increases east, y increases south):
+               13  (dead-end north, above 12)
+               12  (between 13 and 8/14)
+               8   14   (upper band — 8 west, 14 east)
+               6   9   10   11   (middle band — west to east)
+               4   [5 is a south passage off 11]
+               2   7   (lower band — 2 east of 4, 7 south-west of 4)
+               1       (south entrance lobby, below 2/4)
+
+             Room 9  = West Vestibule (entry from Sainsbury Wing via 51a)
+             Room 10 = Central Hall (hub connecting all wings)
+             Room 11 = East Vestibule (links to North Wing 15, East Wing 33, Wohl 46)
+             Room 5  = small south passage off Room 11 leading down to Room 6
+        ============================================================ -->
+
+        <room>
+            <id>1</id>
+            <n>Room 1 - South Entrance Hall</n>
+            <x>395</x><y>380</y>
+            <connections>
+                <connection><roomId>2</roomId><distance>55</distance></connection>
+                <connection><roomId>4</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>2</id>
+            <n>Room 2 - Michelangelo and Bronzino</n>
+            <x>450</x><y>350</y>
+            <connections>
+                <connection><roomId>4</roomId><distance>55</distance></connection>
+                <connection><roomId>8</roomId><distance>65</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>An Allegory with Venus and Cupid</title>
+                    <artist>Bronzino</artist>
+                    <imageFilename>bronzino_venus_cupid.jpg</imageFilename>
+                    <description>A complex moral allegory presented as an erotic image, c.1545.</description>
+                </painting>
+                <painting>
+                    <title>The Entombment of Christ</title>
+                    <artist>Michelangelo</artist>
+                    <imageFilename>michelangelo_entombment.jpg</imageFilename>
+                    <description>One of only three surviving panel paintings by Michelangelo, c.1500-1501.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>4</id>
+            <n>Room 4 - Raphael and Titian</n>
+            <x>395</x><y>295</y>
+            <connections>
+                <connection><roomId>6</roomId><distance>55</distance></connection>
+                <connection><roomId>7</roomId><distance>60</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Pope Julius II</title>
+                    <artist>Raphael</artist>
+                    <imageFilename>raphael_julius_ii.jpg</imageFilename>
+                    <description>A powerful portrait of the aging pope, 1511-1512.</description>
+                </painting>
+                <painting>
+                    <title>Portrait of a Man</title>
+                    <artist>Titian</artist>
+                    <imageFilename>titian_portrait_man.jpg</imageFilename>
+                    <description>One of Titian's earliest portraits, c.1512.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <!--
+            Room 5: small passage south of Room 11, connecting Room 11 down to Room 6.
+            No exhibits displayed here.
+        -->
+        <room>
+            <id>5</id>
+            <n>Room 5 - West Wing South Passage</n>
+            <x>450</x><y>295</y>
+            <connections>
+                <connection><roomId>6</roomId><distance>55</distance></connection>
+                <connection><roomId>11</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>6</id>
+            <n>Room 6 - West Wing Corridor</n>
+            <x>395</x><y>240</y>
+            <connections>
+                <connection><roomId>8</roomId><distance>55</distance></connection>
+                <connection><roomId>9</roomId><distance>55</distance></connection>
+                <connection><roomId>7</roomId><distance>60</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>7</id>
+            <n>Room 7 - Titian and Venetian</n>
+            <x>340</x><y>350</y>
+            <connections>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Bacchus and Ariadne</title>
+                    <artist>Titian</artist>
+                    <imageFilename>titian_bacchus_ariadne.jpg</imageFilename>
+                    <description>The god of wine leaps from his chariot on seeing Ariadne, 1520-1523.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>8</id>
+            <n>Room 8 - Holbein and 16th Century</n>
+            <x>340</x><y>240</y>
+            <connections>
+                <connection><roomId>9</roomId><distance>55</distance></connection>
+                <connection><roomId>12</roomId><distance>60</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Ambassadors</title>
+                    <artist>Hans Holbein the Younger</artist>
+                    <imageFilename>holbein_ambassadors.jpg</imageFilename>
+                    <description>A double portrait packed with symbolic objects and an anamorphic skull, 1533.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>9</id>
+            <n>Room 9 - West Vestibule</n>
+            <x>280</x><y>240</y>
+            <connections>
+                <connection><roomId>10</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>10</id>
+            <n>Room 10 - Central Hall</n>
+            <x>340</x><y>185</y>
+            <connections>
+                <connection><roomId>11</roomId><distance>55</distance></connection>
+                <connection><roomId>14</roomId><distance>60</distance></connection>
+                <connection><roomId>15</roomId><distance>60</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>11</id>
+            <n>Room 11 - East Vestibule</n>
+            <x>450</x><y>185</y>
+            <connections>
+                <connection><roomId>12</roomId><distance>55</distance></connection>
+                <connection><roomId>33</roomId><distance>65</distance></connection>
+                <connection><roomId>46</roomId><distance>70</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>12</id>
+            <n>Room 12 - 16th Century Flemish</n>
+            <x>500</x><y>140</y>
+            <connections>
+                <connection><roomId>13</roomId><distance>55</distance></connection>
+                <connection><roomId>14</roomId><distance>60</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <!--
+            Room 13: a dead-end gallery north of Room 12.
+            Only connection is back to Room 12.
+        -->
+        <room>
+            <id>13</id>
+            <n>Room 13 - Wohl Room</n>
+            <x>500</x><y>90</y>
+            <connections>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>14</id>
+            <n>Room 14 - North European 16th Century</n>
+            <x>395</x><y>140</y>
+            <connections>
+                <connection><roomId>29</roomId><distance>65</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+
+        <!-- ==================== NORTH WING ====================
+             Baroque (1600-1700)  [purple on map]
+             Rooms: 15, 15a, 16, 17, 17a, 18, 19, 20, 21, 22, 23,
+                    24, 25, 26, 27, 28, 29, 30, 31, 32
+
+             Layout (y increases downward; rooms run east–west across the top,
+             then south along the right side via 29-32):
+
+               20   21   22
+               19   18   23   (17a is a pinch-point passage between 17 and 15/18)
+               [17a]    24   25
+               17   15a  26   27   28
+               16   15
+                    10 (West Wing — connects down into 15 and 10)
+
+             29, 30, 31, 32 form a south-running finger on the east side.
+             15a is a lobby passage east of 15, leading to 17a and 26.
+             17a is a pinch-point between 17 and 18/15a.
+        ============================================================ -->
+
+        <room>
+            <id>15</id>
+            <n>Room 15 - Rembrandt</n>
+            <x>220</x><y>185</y>
+            <connections>
+                <connection><roomId>16</roomId><distance>55</distance></connection>
+                <connection><roomId>15a</roomId><distance>40</distance></connection>
+                <connection><roomId>23</roomId><distance>70</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Self Portrait at the Age of 34</title>
+                    <artist>Rembrandt van Rijn</artist>
+                    <imageFilename>rembrandt_self_portrait_34.jpg</imageFilename>
+                    <description>One of dozens of self portraits by Rembrandt, 1640.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <!--
+            15a: passage lobby east of Room 15.
+            Links 15 east to 17a and south-east to 26.
+        -->
+        <room>
+            <id>15a</id>
+            <n>Room 15a - North Wing Passage</n>
+            <x>265</x><y>185</y>
+            <connections>
+                <connection><roomId>17a</roomId><distance>40</distance></connection>
+                <connection><roomId>26</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>16</id>
+            <n>Room 16 - Vermeer and Dutch</n>
+            <x>175</x><y>185</y>
+            <connections>
+                <connection><roomId>17</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>A Young Woman standing at a Virginal</title>
+                    <artist>Johannes Vermeer</artist>
+                    <imageFilename>vermeer_young_woman_virginal.jpg</imageFilename>
+                    <description>An elegantly dressed woman plays the virginal, c.1670-1672.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>17</id>
+            <n>Room 17 - Dutch Genre</n>
+            <x>175</x><y>140</y>
+            <connections>
+                <connection><roomId>17a</roomId><distance>40</distance></connection>
+                <connection><roomId>18</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>A Woman bathing in a Stream</title>
+                    <artist>Rembrandt van Rijn</artist>
+                    <imageFilename>rembrandt_woman_bathing.jpg</imageFilename>
+                    <description>A tender study of a woman paddling in a stream, 1654.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <!--
+            17a: a narrow pinch-point passage connecting 17 west to 15a/18 east.
+            No paintings displayed here.
+        -->
+        <room>
+            <id>17a</id>
+            <n>Room 17a - North Wing Side Passage</n>
+            <x>220</x><y>140</y>
+            <connections>
+                <connection><roomId>18</roomId><distance>40</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>18</id>
+            <n>Room 18 - Rubens</n>
+            <x>265</x><y>115</y>
+            <connections>
+                <connection><roomId>19</roomId><distance>55</distance></connection>
+                <connection><roomId>23</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Judgement of Paris</title>
+                    <artist>Peter Paul Rubens</artist>
+                    <imageFilename>rubens_judgement_paris.jpg</imageFilename>
+                    <description>Paris awards the golden apple to Venus, c.1632-1635.</description>
+                </painting>
+                <painting>
+                    <title>Samson and Delilah</title>
+                    <artist>Peter Paul Rubens</artist>
+                    <imageFilename>rubens_samson_delilah.jpg</imageFilename>
+                    <description>Delilah holds the shorn hair of the sleeping Samson, c.1609-1610.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>19</id>
+            <n>Room 19 - Van Dyck</n>
+            <x>220</x><y>115</y>
+            <connections>
+                <connection><roomId>20</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Equestrian Portrait of Charles I</title>
+                    <artist>Anthony van Dyck</artist>
+                    <imageFilename>van_dyck_charles_i.jpg</imageFilename>
+                    <description>A monumental portrait of King Charles I on horseback, c.1637-1638.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>20</id>
+            <n>Room 20 - Velazquez and Spanish</n>
+            <x>220</x><y>75</y>
+            <connections>
+                <connection><roomId>21</roomId><distance>55</distance></connection>
+                <connection><roomId>29</roomId><distance>65</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Rokeby Venus</title>
+                    <artist>Diego Velazquez</artist>
+                    <imageFilename>velazquez_rokeby_venus.jpg</imageFilename>
+                    <description>Venus reclines on a bed, viewed from behind, c.1647-1651.</description>
+                </painting>
+                <painting>
+                    <title>Philip IV of Spain in Brown and Silver</title>
+                    <artist>Diego Velazquez</artist>
+                    <imageFilename>velazquez_philip_iv.jpg</imageFilename>
+                    <description>A commanding portrait of the Spanish king, c.1631-1632.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>21</id>
+            <n>Room 21 - Caravaggio</n>
+            <x>265</x><y>75</y>
+            <connections>
+                <connection><roomId>22</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Supper at Emmaus</title>
+                    <artist>Caravaggio</artist>
+                    <imageFilename>caravaggio_supper_emmaus.jpg</imageFilename>
+                    <description>Christ reveals himself to two disciples after his resurrection, 1601.</description>
+                </painting>
+                <painting>
+                    <title>Salome receives the Head of John the Baptist</title>
+                    <artist>Caravaggio</artist>
+                    <imageFilename>caravaggio_salome.jpg</imageFilename>
+                    <description>A dramatic scene rendered with characteristic use of shadow, c.1607-1610.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>22</id>
+            <n>Room 22 - Poussin</n>
+            <x>310</x><y>75</y>
+            <connections>
+                <connection><roomId>23</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Adoration of the Golden Calf</title>
+                    <artist>Nicolas Poussin</artist>
+                    <imageFilename>poussin_golden_calf.jpg</imageFilename>
+                    <description>The Israelites worship the golden calf while Moses descends from Sinai, c.1633-1634.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>23</id>
+            <n>Room 23 - Claude</n>
+            <x>310</x><y>115</y>
+            <connections>
+                <connection><roomId>24</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Seaport with the Embarkation of the Queen of Sheba</title>
+                    <artist>Claude</artist>
+                    <imageFilename>claude_seaport_sheba.jpg</imageFilename>
+                    <description>The Queen of Sheba embarks on her journey to King Solomon, 1648.</description>
+                </painting>
+                <painting>
+                    <title>Landscape with the Marriage of Isaac and Rebecca</title>
+                    <artist>Claude</artist>
+                    <imageFilename>claude_isaac_rebecca.jpg</imageFilename>
+                    <description>Celebrating figures dance in an idyllic landscape, 1648.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>24</id>
+            <n>Room 24 - Rembrandt Late Works</n>
+            <x>310</x><y>155</y>
+            <connections>
+                <connection><roomId>25</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Belshazzar's Feast</title>
+                    <artist>Rembrandt van Rijn</artist>
+                    <imageFilename>rembrandt_belshazzar.jpg</imageFilename>
+                    <description>The moment of divine writing on the wall at the Babylonian king's feast, c.1636-1638.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>25</id>
+            <n>Room 25 - North Wing Passage East</n>
+            <x>355</x><y>155</y>
+            <connections>
+                <connection><roomId>26</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>26</id>
+            <n>Room 26 - Dutch Portraits</n>
+            <x>355</x><y>185</y>
+            <connections>
+                <connection><roomId>27</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Portrait of Margaretha de Geer</title>
+                    <artist>Rembrandt van Rijn</artist>
+                    <imageFilename>rembrandt_margaretha.jpg</imageFilename>
+                    <description>A late Rembrandt portrait of exceptional honesty and dignity, c.1661.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>27</id>
+            <n>Room 27 - Vermeer</n>
+            <x>400</x><y>185</y>
+            <connections>
+                <connection><roomId>28</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>A Lady seated at a Virginal</title>
+                    <artist>Johannes Vermeer</artist>
+                    <imageFilename>vermeer_lady_virginal.jpg</imageFilename>
+                    <description>A woman plays the virginal in a meticulously rendered Dutch interior, c.1670-1675.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>28</id>
+            <n>Room 28 - Still Life and Genre</n>
+            <x>450</x><y>185</y>
+            <connections>
+                <connection><roomId>29</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>29</id>
+            <n>Room 29 - Annenberg Court</n>
+            <x>500</x><y>230</y>
+            <connections>
+                <connection><roomId>30</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>30</id>
+            <n>Room 30 - 17th Century Paintings</n>
+            <x>545</x><y>185</y>
+            <connections>
+                <connection><roomId>31</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>31</id>
+            <n>Room 31 - Julia and Hans Rausing Room</n>
+            <x>545</x><y>140</y>
+            <connections>
+                <connection><roomId>32</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>32</id>
+            <n>Room 32 - North Wing End</n>
+            <x>590</x><y>185</y>
+            <connections>
+                <connection><roomId>33</roomId><distance>60</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+
+        <!-- ==================== EAST WING ====================
+             Rococo to Modernism (1700+)  [green on map]
+             Rooms: 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46
+
+             Main corridor runs west to east: 33-34-35-36-38-39-40-41
+             Room 37 is a finger north off 33/36 (Goya room).
+             38 also connects directly south to 40 (shortcut).
+             Wohl Galleries finger runs south: 46-45-44-43-42
+             46 connects north back to Room 11 (East Vestibule).
+             44 connects north to 40 (Van Gogh room).
+        ============================================================ -->
+
+        <room>
+            <id>33</id>
+            <n>Room 33 - 18th Century</n>
+            <x>590</x><y>235</y>
+            <connections>
+                <connection><roomId>34</roomId><distance>55</distance></connection>
+                <connection><roomId>37</roomId><distance>60</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Mr and Mrs Andrews</title>
+                    <artist>Thomas Gainsborough</artist>
+                    <imageFilename>gainsborough_mr_mrs_andrews.jpg</imageFilename>
+                    <description>A newly married couple posed in their Suffolk estate, c.1750.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>34</id>
+            <n>Room 34 - Blavatnik Family Foundation Room (Turner)</n>
+            <x>635</x><y>255</y>
+            <connections>
+                <connection><roomId>35</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Fighting Temeraire</title>
+                    <artist>J.M.W. Turner</artist>
+                    <imageFilename>turner_temeraire.jpg</imageFilename>
+                    <description>A veteran warship towed to be broken up at sunset, 1839.</description>
+                </painting>
+                <painting>
+                    <title>Rain, Steam and Speed</title>
+                    <artist>J.M.W. Turner</artist>
+                    <imageFilename>turner_rain_steam_speed.jpg</imageFilename>
+                    <description>A locomotive charges across the Maidenhead Railway Bridge in a storm, 1844.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>35</id>
+            <n>Room 35 - Constable</n>
+            <x>635</x><y>300</y>
+            <connections>
+                <connection><roomId>36</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Hay Wain</title>
+                    <artist>John Constable</artist>
+                    <imageFilename>constable_haywain.jpg</imageFilename>
+                    <description>A farm cart crosses the River Stour at Flatford in Suffolk, 1821.</description>
+                </painting>
+                <painting>
+                    <title>Weymouth Bay</title>
+                    <artist>John Constable</artist>
+                    <imageFilename>constable_weymouth_bay.jpg</imageFilename>
+                    <description>A stormy sky over the Dorset coastline, c.1816.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <!--
+            Room 36 connects west to 35, north to 37, east to 38.
+            On the map 36 and 37 are adjacent (37 is the finger north of 33/36).
+        -->
+        <room>
+            <id>36</id>
+            <n>Room 36 - Claude and Turner</n>
+            <x>590</x><y>300</y>
+            <connections>
+                <connection><roomId>37</roomId><distance>55</distance></connection>
+                <connection><roomId>38</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Dido building Carthage</title>
+                    <artist>J.M.W. Turner</artist>
+                    <imageFilename>turner_dido_carthage.jpg</imageFilename>
+                    <description>Turner's tribute to Claude, showing the legendary queen founding her city, 1815.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <!-- Room 37 is a dead-end finger north off 33/36. -->
+        <room>
+            <id>37</id>
+            <n>Room 37 - Goya</n>
+            <x>590</x><y>185</y>
+            <connections>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>The Duke of Wellington</title>
+                    <artist>Francisco Goya</artist>
+                    <imageFilename>goya_wellington.jpg</imageFilename>
+                    <description>The first portrait of Wellington after his victory at Salamanca, 1812.</description>
+                </painting>
+                <painting>
+                    <title>Dona Isabel de Porcel</title>
+                    <artist>Francisco Goya</artist>
+                    <imageFilename>goya_isabel_porcel.jpg</imageFilename>
+                    <description>A powerful portrait of an aristocratic Spanish woman, before 1805.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>38</id>
+            <n>Room 38 - French Paintings</n>
+            <x>545</x><y>300</y>
+            <connections>
+                <connection><roomId>39</roomId><distance>55</distance></connection>
+                <connection><roomId>40</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>39</id>
+            <n>Room 39 - Impressionism</n>
+            <x>500</x><y>300</y>
+            <connections>
+                <connection><roomId>40</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Bathers at La Grenouillere</title>
+                    <artist>Claude Monet</artist>
+                    <imageFilename>monet_grenouillere.jpg</imageFilename>
+                    <description>One of Monet's earliest Impressionist paintings, 1869.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>40</id>
+            <n>Room 40 - Van Gogh and Post-Impressionism</n>
+            <x>500</x><y>345</y>
+            <connections>
+                <connection><roomId>41</roomId><distance>55</distance></connection>
+                <connection><roomId>44</roomId><distance>65</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Sunflowers</title>
+                    <artist>Vincent van Gogh</artist>
+                    <imageFilename>vangogh_sunflowers.jpg</imageFilename>
+                    <description>A vase of sunflowers painted in Arles, 1888.</description>
+                </painting>
+                <painting>
+                    <title>Van Gogh's Chair</title>
+                    <artist>Vincent van Gogh</artist>
+                    <imageFilename>vangogh_chair.jpg</imageFilename>
+                    <description>A simple chair in Van Gogh's room in Arles, 1888.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <!-- Room 41 (Seurat) is a dead-end east finger off Room 40. -->
+        <room>
+            <id>41</id>
+            <n>Room 41 - Seurat</n>
+            <x>635</x><y>345</y>
+            <connections>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Bathers at Asnieres</title>
+                    <artist>Georges Seurat</artist>
+                    <imageFilename>seurat_bathers_asnieres.jpg</imageFilename>
+                    <description>Working-class Parisians bathe in the Seine on a hot afternoon, 1884.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <!-- ── Wohl Galleries (south finger: 46 → 45 → 44 → 43 → 42) ── -->
+
+        <!--
+            46: Wohl Gallery entrance, north end of the finger.
+            Connects north to Room 11 (East Vestibule) and south to 45.
+        -->
+        <room>
+            <id>46</id>
+            <n>Room 46 - Wohl Gallery Entrance</n>
+            <x>455</x><y>345</y>
+            <connections>
+                <connection><roomId>45</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>45</id>
+            <n>Room 45 - Wohl Gallery C</n>
+            <x>500</x><y>390</y>
+            <connections>
+                <connection><roomId>44</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <room>
+            <id>44</id>
+            <n>Room 44 - Late Monet (Wohl Gallery)</n>
+            <x>545</x><y>390</y>
+            <connections>
+                <connection><roomId>43</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+                <painting>
+                    <title>Water-Lilies</title>
+                    <artist>Claude Monet</artist>
+                    <imageFilename>monet_water_lilies.jpg</imageFilename>
+                    <description>A vast, immersive view of Monet's lily pond at Giverny, c.1916-1926.</description>
+                </painting>
+                <painting>
+                    <title>Irises</title>
+                    <artist>Claude Monet</artist>
+                    <imageFilename>monet_irises.jpg</imageFilename>
+                    <description>Irises surrounding the banks of the lily pond at Giverny, c.1914-1917.</description>
+                </painting>
+            </paintings>
+        </room>
+
+        <room>
+            <id>43</id>
+            <n>Room 43 - Wohl Gallery B</n>
+            <x>590</x><y>390</y>
+            <connections>
+                <connection><roomId>42</roomId><distance>55</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+        <!-- Room 42 is the south dead-end of the Wohl Gallery finger. -->
+        <room>
+            <id>42</id>
+            <n>Room 42 - Wohl Gallery A</n>
+            <x>635</x><y>390</y>
+            <connections>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
+
+    </rooms>
+
+</gallery>

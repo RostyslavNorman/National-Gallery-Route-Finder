@@ -34,13 +34,13 @@ public class Artist {
         this.name = name;
     }
 
-    //optional full constructor
-//    public Artist(String name, String period, String nationality){
-//        if (name == null) throw new IllegalArgumentException("Artist name cannot be null");
-//        this.name = name;
-//        this.period = period;
-//        this.nationality = nationality;
-//    }
+//    optional full constructor
+    public Artist(String name, String period, String nationality){
+        if (name == null) throw new IllegalArgumentException("Artist name cannot be null");
+        this.name = name;
+        this.period = period;
+        this.nationality = nationality;
+    }
 
 
     public String getName() {
@@ -51,21 +51,21 @@ public class Artist {
         this.name = name;
     }
 
-//    public String getPeriod() {
-//        return period;
-//    }
-//
-//    public void setPeriod(String period) {
-//        this.period = period;
-//    }
-//
-//    public String getNationality() {
-//        return nationality;
-//    }
-//
-//    public void setNationality(String nationality) {
-//        this.nationality = nationality;
-//    }
+    public String getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
 
 
     /**

@@ -1,5 +1,5 @@
 package model;
-
+import java.util.Objects;
 /**
  * Represents a painting displayed in the room
  */
@@ -77,5 +77,15 @@ public class Painting {
         int result = title  != null ? title.hashCode()  : 0;
         result = 31 * result + (artist != null ? artist.hashCode() : 0);
         return result;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Painting)) return false;
+        Painting other = (Painting) o;
+        return Objects.equals(this.title, other.title)
+                && Objects.equals(this.artist, other.artist);
     }
 }
