@@ -22,7 +22,6 @@ public class Artist {
     private String name;
 
     //might add some optional field such as nationality or period
-    //left commented for now (feels redundant)
 
     private String period;
     private String nationality;
