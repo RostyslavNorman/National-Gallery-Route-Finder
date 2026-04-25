@@ -119,7 +119,7 @@ public class GalleryLoader {
 
         // ── Field aliases — map short XML tag names to Java field names ───────
 
-        // GalleryData fields
+        // GalleryDataParser fields
         xstream.aliasField("artists", GalleryData.class, "artists");
         xstream.aliasField("rooms",   GalleryData.class, "rooms");
 
