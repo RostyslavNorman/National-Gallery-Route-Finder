@@ -9,17 +9,17 @@ public class Room {
     //unique id of a room (matches gallery floor pan numbering)
     private String  id;
 
-    //Human readable display
+    //Human-readable display
     private String name;
 
     // positioning route markers
     private int x;
     private int y;
 
-    // current painting in the room, initialize in constructor -> safe iteration
+    //current painting in the room, initialize in constructor -> safe iteration
     private List<Painting> paintings;
 
-    //No-arg constructor required by XStream for XML deserialisation.
+    //No-arg constructor required by XStream for XML deserialization.
     public Room(){
         this.paintings = new ArrayList<>();
     }
