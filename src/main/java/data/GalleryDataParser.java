@@ -22,7 +22,7 @@ public class GalleryDataParser {
     private final List<Room> rooms = new ArrayList<>();
     private final List<Painting> paintings = new ArrayList<>();
     private final Map<Artist, List<Painting>> artistPaintingsHashMap = new HashMap<>();
-    private final Map<Integer, Map<Integer, Integer>> connections = new HashMap<>();
+    private final Map<String, Map<String, Integer>> connections = new HashMap<>();
 
     public GalleryDataParser() {
         loadFile("");
@@ -76,14 +76,12 @@ public class GalleryDataParser {
         Element roomsElement = (Element) rawRooms.item(0);
         NodeList list = roomsElement.getElementsByTagName("room");
         // Room(int id, String name, int x, int y)
-        int id, x, y;
-        String name;
+        int x, y;
+        String id, name;
         Element e;
         for(int i = 0; i < list.getLength(); i++){
             e =  (Element) list.item(i);
-            String sId = e.getElementsByTagName("id").item(0).getTextContent();
-            sId = checkId(sId);
-            id = Integer.parseInt(sId);
+            id = e.getElementsByTagName("id").item(0).getTextContent();
             name = e.getElementsByTagName("n").item(0).getTextContent();
             x = Integer.parseInt(e.getElementsByTagName("x").item(0).getTextContent());
             y = Integer.parseInt(e.getElementsByTagName("y").item(0).getTextContent());
@@ -133,14 +131,14 @@ public class GalleryDataParser {
                 }
     }
 
-    private void readConnections(NodeList connectionsList, int key){
+    private void readConnections(NodeList connectionsList, String key){
         Element connectionsElement = (Element) connectionsList.item(0);
         NodeList list = connectionsElement.getElementsByTagName("connection");
-        int connectionKey, connectionValue;
+        String connectionKey;
+        int connectionValue;
         for(int i = 0; i < list.getLength(); i++){
             Element e = (Element) list.item(i);
-            String sId = checkId(e.getElementsByTagName("roomId").item(0).getTextContent());
-            connectionKey = Integer.parseInt(sId);
+            connectionKey = e.getElementsByTagName("roomId").item(0).getTextContent();
             connectionValue = Integer.parseInt(e.getElementsByTagName("distance").item(0).getTextContent());
             connections.get(key).put(connectionKey, connectionValue);
         }
@@ -162,7 +160,7 @@ public class GalleryDataParser {
         return artistPaintingsHashMap;
     }
 
-    public Map<Integer, Map<Integer, Integer>> getConnections(){
+    public Map<String, Map<String, Integer>> getConnections(){
         return connections;
     }
 }

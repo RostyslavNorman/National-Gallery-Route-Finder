@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class Room {
     //unique id of a room (matches gallery floor pan numbering)
-    private String  id;
+    private String id;
 
     //Human-readable display
     private String name;
