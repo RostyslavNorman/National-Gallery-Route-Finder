@@ -15,63 +15,23 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Test suite for the National Gallery Route Finder backend.
- *
- * Tests are split into two nested classes:
- *   - GalleryGraphTests  -> tests for the graph data structure
- *   - SearchAlgorithmsTests -> tests for all the routing algorithms
- *
- * I'm using a small hand-built graph with known weights instead of
- * the real XML data. This makes tests fast and predictable.
- *
- * Test graph layout:
- *
- *   1 --50-- 2 --50-- 3
- *   |                 |
- *   60               40
- *   |                 |
- *   4 --30-- 5 --30-- 6
- *
- * Shortest distances (Dijkstra):
- *   1 -> 6 : path 1-4-5-6 = 120  (vs 1-2-3-6 = 140)
- *   1 -> 3 : path 1-2-3   = 100  (vs 1-4-5-6-3 = 160)
- *   2 -> 5 : path 2-3-6-5 = 120  (vs 2-1-4-5 = 140)
- *
- * Room 3 has a Vermeer, Room 6 has a Monet — used by the "most interesting" tests.
- */
 @DisplayName("National Gallery Route Finder — Backend Tests")
 class GalleryRouteFinderTest {
 
-    // The graph we test on — rebuilt fresh before each test
     private GalleryGraph graph;
 
-    // Room ID constants so I'm not sprinkling magic numbers everywhere
-    private static final int ROOM_1 = 1;
-    private static final int ROOM_2 = 2;
-    private static final int ROOM_3 = 3;
-    private static final int ROOM_4 = 4;
-    private static final int ROOM_5 = 5;
-    private static final int ROOM_6 = 6;
+    // String constants — match XML ids exactly
+    private static final String ROOM_1 = "1";
+    private static final String ROOM_2 = "2";
+    private static final String ROOM_3 = "3";
+    private static final String ROOM_4 = "4";
+    private static final String ROOM_5 = "5";
+    private static final String ROOM_6 = "6";
 
-    /**
-     * Builds the 6-room test graph before every test.
-     * Each test gets a clean copy so they can't interfere with each other.
-     *
-     *   1 --50-- 2 --50-- 3
-     *   |                 |
-     *   60               40
-     *   |                 |
-     *   4 --30-- 5 --30-- 6
-     *
-     * Room 3 -> Vermeer painting
-     * Room 6 -> Monet painting
-     */
     @BeforeEach
     void buildTestGraph() {
         graph = new GalleryGraph();
 
-        // Six rooms at rough grid positions
         graph.addRoom(new Room(ROOM_1, "Room 1", 100, 100));
         graph.addRoom(new Room(ROOM_2, "Room 2", 200, 100));
         graph.addRoom(new Room(ROOM_3, "Room 3", 300, 100));
@@ -79,7 +39,6 @@ class GalleryRouteFinderTest {
         graph.addRoom(new Room(ROOM_5, "Room 5", 200, 200));
         graph.addRoom(new Room(ROOM_6, "Room 6", 300, 200));
 
-        // Paintings for the "most interesting route" tests
         graph.getRoom(ROOM_3).addPainting(
                 new Painting("A Lady seated at a Virginal", "Johannes Vermeer")
         );
@@ -87,7 +46,6 @@ class GalleryRouteFinderTest {
                 new Painting("Water-Lilies", "Claude Monet")
         );
 
-        // Wire up the edges as shown in the diagram above
         graph.connectRooms(ROOM_1, ROOM_2, 50);
         graph.connectRooms(ROOM_2, ROOM_3, 50);
         graph.connectRooms(ROOM_3, ROOM_6, 40);
@@ -96,15 +54,9 @@ class GalleryRouteFinderTest {
         graph.connectRooms(ROOM_5, ROOM_6, 30);
     }
 
-    // -------------------------------------------------------------------------
-    // GalleryGraph tests
-    // -------------------------------------------------------------------------
-
     @Nested
     @DisplayName("GalleryGraph — Custom Graph Data Structure")
     class GalleryGraphTests {
-
-        // --- Room (vertex) tests ---
 
         @Test
         @DisplayName("addRoom: graph reports correct room count after adding rooms")
@@ -121,7 +73,7 @@ class GalleryRouteFinderTest {
         @Test
         @DisplayName("addRoom: containsRoom returns false for a room not in the graph")
         void testContainsRoomFalse() {
-            assertFalse(graph.containsRoom(99));
+            assertFalse(graph.containsRoom("99"));
         }
 
         @Test
@@ -136,7 +88,7 @@ class GalleryRouteFinderTest {
         @Test
         @DisplayName("addRoom: getRoom returns null for an unknown room ID")
         void testGetRoomUnknown() {
-            assertNull(graph.getRoom(99));
+            assertNull(graph.getRoom("99"));
         }
 
         @Test
@@ -144,7 +96,6 @@ class GalleryRouteFinderTest {
         void testAddRoomOverwritesExisting() {
             graph.addRoom(new Room(ROOM_1, "Room 1 Updated", 0, 0));
             assertEquals("Room 1 Updated", graph.getRoom(ROOM_1).getName());
-            // Room count shouldn't change — it's an overwrite, not a new entry
             assertEquals(6, graph.getRoomCount());
         }
 
@@ -154,12 +105,9 @@ class GalleryRouteFinderTest {
             assertThrows(IllegalArgumentException.class, () -> graph.addRoom(null));
         }
 
-        // --- Edge (connection) tests ---
-
         @Test
         @DisplayName("connectRooms: graph reports correct edge count")
         void testEdgeCount() {
-            // @BeforeEach adds 6 connections
             assertEquals(6, graph.getEdgeCount());
         }
 
@@ -172,7 +120,6 @@ class GalleryRouteFinderTest {
         @Test
         @DisplayName("connectRooms: areConnected is symmetric (undirected graph)")
         void testAreConnectedSymmetric() {
-            // If 1->2 exists, 2->1 should too
             assertTrue(graph.areConnected(ROOM_2, ROOM_1));
         }
 
@@ -186,9 +133,8 @@ class GalleryRouteFinderTest {
         @DisplayName("connectRooms: getNeighbours returns correct neighbours for Room 1")
         void testGetNeighboursRoom1() {
             List<GalleryGraph.Edge> neighbours = graph.getNeighbours(ROOM_1);
-            // Room 1 connects to Room 2 (weight 50) and Room 4 (weight 60)
             assertEquals(2, neighbours.size());
-            Set<Integer> ids = new HashSet<>();
+            Set<String> ids = new HashSet<>();
             for (GalleryGraph.Edge e : neighbours) ids.add(e.getTargetRoomId());
             assertTrue(ids.contains(ROOM_2));
             assertTrue(ids.contains(ROOM_4));
@@ -200,7 +146,7 @@ class GalleryRouteFinderTest {
             List<GalleryGraph.Edge> neighbours = graph.getNeighbours(ROOM_1);
             double dist = -1;
             for (GalleryGraph.Edge e : neighbours) {
-                if (e.getTargetRoomId() == ROOM_2) dist = e.getDistance();
+                if (e.getTargetRoomId().equals(ROOM_2)) dist = e.getDistance();
             }
             assertEquals(50.0, dist, 0.001);
         }
@@ -209,15 +155,15 @@ class GalleryRouteFinderTest {
         @DisplayName("connectRooms: throws when connecting a room not in the graph")
         void testConnectUnknownRoomThrows() {
             assertThrows(IllegalArgumentException.class,
-                    () -> graph.connectRooms(ROOM_1, 99, 50));
+                    () -> graph.connectRooms(ROOM_1, "99", 50));
         }
 
         @Test
         @DisplayName("connectRooms: throws when distance is zero or negative")
         void testConnectNegativeDistanceThrows() {
-            graph.addRoom(new Room(7, "Room 7", 400, 100));
+            graph.addRoom(new Room("7", "Room 7", 400, 100));
             assertThrows(IllegalArgumentException.class,
-                    () -> graph.connectRooms(ROOM_1, 7, 0));
+                    () -> graph.connectRooms(ROOM_1, "7", 0));
         }
 
         @Test
@@ -230,23 +176,17 @@ class GalleryRouteFinderTest {
         @DisplayName("getAllRooms: returned map is unmodifiable")
         void testGetAllRoomsUnmodifiable() {
             assertThrows(UnsupportedOperationException.class,
-                    () -> graph.getAllRooms().put(99, new Room(99, "Fake", 0, 0)));
+                    () -> graph.getAllRooms().put("99", new Room("99", "Fake", 0, 0)));
         }
     }
-
-    // -------------------------------------------------------------------------
-    // SearchAlgorithms tests
-    // -------------------------------------------------------------------------
 
     @Nested
     @DisplayName("SearchAlgorithms — Routing Algorithms")
     class SearchAlgorithmsTests {
 
-        // Reusable empty collections — most tests don't need waypoints or avoids
-        private final List<Integer> NO_WAYPOINTS = Collections.emptyList();
-        private final Set<Integer>  NO_AVOID     = Collections.emptySet();
-
-        // --- DFS single route ---
+        // String versions of the empty collections
+        private final List<String> NO_WAYPOINTS = Collections.emptyList();
+        private final Set<String>  NO_AVOID     = Collections.emptySet();
 
         @Nested
         @DisplayName("DFS — Single Route")
@@ -275,8 +215,8 @@ class GalleryRouteFinderTest {
                 List<Room> route = SearchAlgorithms.findSingleRoute(
                         graph, ROOM_1, ROOM_6, NO_WAYPOINTS, NO_AVOID);
                 for (int i = 0; i < route.size() - 1; i++) {
-                    int a = route.get(i).getId();
-                    int b = route.get(i + 1).getId();
+                    String a = route.get(i).getId();
+                    String b = route.get(i + 1).getId();
                     assertTrue(graph.areConnected(a, b),
                             "Expected rooms " + a + " and " + b + " to be connected");
                 }
@@ -287,7 +227,7 @@ class GalleryRouteFinderTest {
             void testNoDuplicateRooms() {
                 List<Room> route = SearchAlgorithms.findSingleRoute(
                         graph, ROOM_1, ROOM_6, NO_WAYPOINTS, NO_AVOID);
-                Set<Integer> seen = new HashSet<>();
+                Set<String> seen = new HashSet<>();
                 for (Room r : route) {
                     assertTrue(seen.add(r.getId()),
                             "Room " + r.getId() + " appears more than once in route");
@@ -297,10 +237,9 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("returns empty list when destination is unreachable")
             void testUnreachableDestination() {
-                // Isolated room with no edges — nothing can reach it
-                graph.addRoom(new Room(99, "Isolated", 999, 999));
+                graph.addRoom(new Room("99", "Isolated", 999, 999));
                 List<Room> route = SearchAlgorithms.findSingleRoute(
-                        graph, ROOM_1, 99, NO_WAYPOINTS, NO_AVOID);
+                        graph, ROOM_1, "99", NO_WAYPOINTS, NO_AVOID);
                 assertTrue(route.isEmpty());
             }
 
@@ -316,8 +255,7 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("avoids specified rooms")
             void testAvoidsRooms() {
-                // Blocking 4 and 5 leaves only 1-2-3-6
-                Set<Integer> avoid = new HashSet<>();
+                Set<String> avoid = new HashSet<>();
                 avoid.add(ROOM_4);
                 avoid.add(ROOM_5);
                 List<Room> route = SearchAlgorithms.findSingleRoute(
@@ -332,8 +270,7 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("returns empty list when all routes are blocked by avoidRooms")
             void testAllRoutesBlocked() {
-                // Room 1 only connects to 2 and 4 — blocking both cuts it off completely
-                Set<Integer> avoid = new HashSet<>();
+                Set<String> avoid = new HashSet<>();
                 avoid.add(ROOM_2);
                 avoid.add(ROOM_4);
                 List<Room> route = SearchAlgorithms.findSingleRoute(
@@ -344,17 +281,15 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("visits waypoint room on the route")
             void testVisitsWaypoint() {
-                List<Integer> waypoints = List.of(ROOM_3);
+                List<String> waypoints = List.of(ROOM_3);
                 List<Room> route = SearchAlgorithms.findSingleRoute(
                         graph, ROOM_1, ROOM_6, waypoints, NO_AVOID);
                 assertFalse(route.isEmpty());
                 boolean containsWaypoint = route.stream()
-                        .anyMatch(r -> r.getId() == ROOM_3);
+                        .anyMatch(r -> r.getId().equals(ROOM_3));
                 assertTrue(containsWaypoint, "Route should pass through waypoint Room 3");
             }
         }
-
-        // --- DFS multiple routes ---
 
         @Nested
         @DisplayName("DFS — Multiple Routes")
@@ -396,8 +331,8 @@ class GalleryRouteFinderTest {
                         graph, ROOM_1, ROOM_6, NO_WAYPOINTS, NO_AVOID, 10);
                 for (List<Room> route : routes) {
                     for (int i = 0; i < route.size() - 1; i++) {
-                        int a = route.get(i).getId();
-                        int b = route.get(i + 1).getId();
+                        String a = route.get(i).getId();
+                        String b = route.get(i + 1).getId();
                         assertTrue(graph.areConnected(a, b),
                                 "Rooms " + a + " and " + b + " are not connected");
                     }
@@ -412,8 +347,6 @@ class GalleryRouteFinderTest {
                                 graph, ROOM_1, ROOM_6, NO_WAYPOINTS, NO_AVOID, 0));
             }
         }
-
-        // --- BFS shortest route (fewest hops) ---
 
         @Nested
         @DisplayName("BFS — Shortest Route (fewest rooms)")
@@ -439,7 +372,6 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("BFS finds a 4-room path (optimal hop count) from Room 1 to Room 6")
             void testOptimalHopCount() {
-                // Both 1-2-3-6 and 1-4-5-6 are 4 rooms — BFS should find one of them
                 List<Room> route = SearchAlgorithms.findShortestRouteBFS(
                         graph, ROOM_1, ROOM_6, NO_WAYPOINTS, NO_AVOID);
                 assertEquals(4, route.size());
@@ -458,16 +390,16 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("returns empty list when destination is unreachable")
             void testUnreachable() {
-                graph.addRoom(new Room(99, "Isolated", 999, 999));
+                graph.addRoom(new Room("99", "Isolated", 999, 999));
                 List<Room> route = SearchAlgorithms.findShortestRouteBFS(
-                        graph, ROOM_1, 99, NO_WAYPOINTS, NO_AVOID);
+                        graph, ROOM_1, "99", NO_WAYPOINTS, NO_AVOID);
                 assertTrue(route.isEmpty());
             }
 
             @Test
             @DisplayName("avoids specified rooms")
             void testAvoidsRooms() {
-                Set<Integer> avoid = new HashSet<>();
+                Set<String> avoid = new HashSet<>();
                 avoid.add(ROOM_4);
                 avoid.add(ROOM_5);
                 List<Room> route = SearchAlgorithms.findShortestRouteBFS(
@@ -480,15 +412,13 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("visits waypoint on the route")
             void testWaypoint() {
-                List<Integer> waypoints = List.of(ROOM_5);
+                List<String> waypoints = List.of(ROOM_5);
                 List<Room> route = SearchAlgorithms.findShortestRouteBFS(
                         graph, ROOM_1, ROOM_6, waypoints, NO_AVOID);
-                assertTrue(route.stream().anyMatch(r -> r.getId() == ROOM_5),
+                assertTrue(route.stream().anyMatch(r -> r.getId().equals(ROOM_5)),
                         "Route should pass through waypoint Room 5");
             }
         }
-
-        // --- Dijkstra shortest route (minimum total distance) ---
 
         @Nested
         @DisplayName("Dijkstra's — Shortest Route (minimum distance)")
@@ -514,11 +444,9 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("Dijkstra finds path 1-4-5-6 (dist 120) not 1-2-3-6 (dist 140)")
             void testChoosesMinimumDistancePath() {
-                // 1-4-5-6 = 60+30+30 = 120
-                // 1-2-3-6 = 50+50+40 = 140
                 List<Room> route = SearchAlgorithms.findShortestRouteDijkstra(
                         graph, ROOM_1, ROOM_6, NO_WAYPOINTS, NO_AVOID);
-                List<Integer> ids = route.stream().map(Room::getId).toList();
+                List<String> ids = route.stream().map(Room::getId).toList();
                 assertTrue(ids.contains(ROOM_4) && ids.contains(ROOM_5),
                         "Expected shortest path 1-4-5-6 but got: " + ids);
             }
@@ -526,11 +454,9 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("Dijkstra finds path 1-2-3 (dist 100) not 1-4-5-6-3 (dist 160)")
             void testShortestPathTo3() {
-                // 1-2-3     = 50+50       = 100
-                // 1-4-5-6-3 = 60+30+30+40 = 160
                 List<Room> route = SearchAlgorithms.findShortestRouteDijkstra(
                         graph, ROOM_1, ROOM_3, NO_WAYPOINTS, NO_AVOID);
-                List<Integer> ids = route.stream().map(Room::getId).toList();
+                List<String> ids = route.stream().map(Room::getId).toList();
                 assertTrue(ids.contains(ROOM_2),
                         "Expected path through Room 2 but got: " + ids);
                 assertFalse(ids.contains(ROOM_4),
@@ -540,19 +466,18 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("returns empty list when destination is unreachable")
             void testUnreachable() {
-                graph.addRoom(new Room(99, "Isolated", 999, 999));
+                graph.addRoom(new Room("99", "Isolated", 999, 999));
                 List<Room> route = SearchAlgorithms.findShortestRouteDijkstra(
-                        graph, ROOM_1, 99, NO_WAYPOINTS, NO_AVOID);
+                        graph, ROOM_1, "99", NO_WAYPOINTS, NO_AVOID);
                 assertTrue(route.isEmpty());
             }
 
             @Test
             @DisplayName("avoids specified rooms")
             void testAvoidsRooms() {
-                Set<Integer> avoid = new HashSet<>();
+                Set<String> avoid = new HashSet<>();
                 avoid.add(ROOM_4);
                 avoid.add(ROOM_5);
-                // Only route left is 1-2-3-6
                 List<Room> route = SearchAlgorithms.findShortestRouteDijkstra(
                         graph, ROOM_1, ROOM_6, NO_WAYPOINTS, avoid);
                 assertFalse(route.isEmpty());
@@ -562,11 +487,10 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("visits waypoint on the route")
             void testWaypoint() {
-                // Force through Room 2, which is on the longer path
-                List<Integer> waypoints = List.of(ROOM_2);
+                List<String> waypoints = List.of(ROOM_2);
                 List<Room> route = SearchAlgorithms.findShortestRouteDijkstra(
                         graph, ROOM_1, ROOM_6, waypoints, NO_AVOID);
-                assertTrue(route.stream().anyMatch(r -> r.getId() == ROOM_2));
+                assertTrue(route.stream().anyMatch(r -> r.getId().equals(ROOM_2)));
             }
 
             @Test
@@ -581,8 +505,6 @@ class GalleryRouteFinderTest {
             }
         }
 
-        // --- Dijkstra most interesting route ---
-
         @Nested
         @DisplayName("Dijkstra's — Most Interesting Route")
         class DijkstraMostInterestingTests {
@@ -590,22 +512,20 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("prefers route through Room 3 when visitor likes Vermeer")
             void testPrefersVermeerRoom() {
-                // Normally Dijkstra picks 1-4-5-6 (dist 120).
-                // The Vermeer bonus should make the 1-2-3-6 path attractive enough instead.
                 List<Artist> preferred = List.of(new Artist("Johannes Vermeer"));
                 List<Room> route = SearchAlgorithms.findMostInterestingRoute(
                         graph, ROOM_1, ROOM_6, NO_WAYPOINTS, NO_AVOID, preferred);
                 assertFalse(route.isEmpty());
-                boolean passesRoom3 = route.stream().anyMatch(r -> r.getId() == ROOM_3);
+                boolean passesRoom3 = route.stream()
+                        .anyMatch(r -> r.getId().equals(ROOM_3));
                 assertTrue(passesRoom3,
                         "Route should pass through Room 3 (Vermeer) but was: "
-                                + route.stream().map(r -> String.valueOf(r.getId())).toList());
+                                + route.stream().map(Room::getId).toList());
             }
 
             @Test
             @DisplayName("returns the standard shortest route when no artists are preferred")
             void testNoPreferenceFallsBackToShortest() {
-                // Empty preferences -> should behave exactly like plain Dijkstra
                 List<Room> interesting = SearchAlgorithms.findMostInterestingRoute(
                         graph, ROOM_1, ROOM_6, NO_WAYPOINTS, NO_AVOID, Collections.emptyList());
                 List<Room> shortest = SearchAlgorithms.findShortestRouteDijkstra(
@@ -642,18 +562,17 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("returns empty list when destination is unreachable")
             void testUnreachable() {
-                graph.addRoom(new Room(99, "Isolated", 999, 999));
+                graph.addRoom(new Room("99", "Isolated", 999, 999));
                 List<Artist> preferred = List.of(new Artist("Rembrandt van Rijn"));
                 List<Room> route = SearchAlgorithms.findMostInterestingRoute(
-                        graph, ROOM_1, 99, NO_WAYPOINTS, NO_AVOID, preferred);
+                        graph, ROOM_1, "99", NO_WAYPOINTS, NO_AVOID, preferred);
                 assertTrue(route.isEmpty());
             }
 
             @Test
             @DisplayName("avoids specified rooms even when they contain preferred paintings")
             void testAvoidsRoomsEvenWithPreferredArtist() {
-                // Room 3 has a Vermeer but it's in the avoid set — must not appear
-                Set<Integer> avoid = new HashSet<>();
+                Set<String> avoid = new HashSet<>();
                 avoid.add(ROOM_3);
                 List<Artist> preferred = List.of(new Artist("Johannes Vermeer"));
                 List<Room> route = SearchAlgorithms.findMostInterestingRoute(
@@ -665,8 +584,6 @@ class GalleryRouteFinderTest {
             }
         }
 
-        // --- Model tests (Room, Painting, Artist) ---
-
         @Nested
         @DisplayName("Model — Room and Painting")
         class ModelTests {
@@ -674,7 +591,7 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("Room.addPainting: painting is retrievable after being added")
             void testAddPainting() {
-                Room room = new Room(10, "Test Room", 0, 0);
+                Room room = new Room("10", "Test Room", 0, 0);
                 Painting p = new Painting("Sunflowers", "Vincent van Gogh");
                 room.addPainting(p);
                 assertEquals(1, room.getPaintings().size());
@@ -684,23 +601,23 @@ class GalleryRouteFinderTest {
             @Test
             @DisplayName("Room.addPainting: throws when null painting is added")
             void testAddNullPainting() {
-                Room room = new Room(10, "Test Room", 0, 0);
+                Room room = new Room("10", "Test Room", 0, 0);
                 assertThrows(IllegalArgumentException.class, () -> room.addPainting(null));
             }
 
             @Test
             @DisplayName("Room.equals: two rooms with the same ID are equal")
             void testRoomEquality() {
-                Room a = new Room(5, "Room A", 100, 100);
-                Room b = new Room(5, "Room B", 200, 200);
+                Room a = new Room("5", "Room A", 100, 100);
+                Room b = new Room("5", "Room B", 200, 200);
                 assertEquals(a, b);
             }
 
             @Test
             @DisplayName("Room.equals: two rooms with different IDs are not equal")
             void testRoomInequality() {
-                Room a = new Room(5, "Room A", 0, 0);
-                Room b = new Room(6, "Room B", 0, 0);
+                Room a = new Room("5", "Room A", 0, 0);
+                Room b = new Room("6", "Room B", 0, 0);
                 assertNotEquals(a, b);
             }
 

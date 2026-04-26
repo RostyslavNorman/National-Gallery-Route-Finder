@@ -38,14 +38,14 @@ public class GalleryGraph {
      * Vertex set: maps each room's unique ID to its {@link Room} object.
      * Provides O(1) room lookup by ID throughout the graph algorithms.
      */
-    private Map<Integer, Room> rooms;
+    private Map<String, Room> rooms;
 
     /**
      * Edge set: maps each room's unique ID to the list of edges leaving that room.
      * Because the graph is undirected, every edge (a↔b) is stored twice:
      * once in {@code adjacencyList.get(a)} and once in {@code adjacencyList.get(b)}.
      */
-    private Map<Integer, List<Edge>> adjacencyList;
+    private Map<String, List<Edge>> adjacencyList;
 
     // -------------------------------------------------------------------------
     // Inner class — Edge
@@ -68,7 +68,7 @@ public class GalleryGraph {
          * The ID of the room this edge leads to (the destination vertex).
          * Matches a key in {@link GalleryGraph#rooms}.
          */
-        private int targetRoomId;
+        private String targetRoomId;
 
         /**
          * Walking distance from the source room to the target room, measured in pixels
@@ -86,17 +86,17 @@ public class GalleryGraph {
          * @param targetRoomId ID of the destination room; must exist in the graph
          * @param distance     walking distance in pixels; must be positive
          */
-        public Edge(int targetRoomId, double distance) {
+        public Edge(String targetRoomId, double distance) {
             if (distance <= 0) throw new IllegalArgumentException("Edge distance must be positive.");
             this.targetRoomId = targetRoomId;
             this.distance = distance;
         }
 
         /** @return the ID of the destination room */
-        public int getTargetRoomId() { return targetRoomId; }
+        public String getTargetRoomId() { return targetRoomId; }
 
         /** @param targetRoomId the ID of the destination room */
-        public void setTargetRoomId(int targetRoomId) { this.targetRoomId = targetRoomId; }
+        public void setTargetRoomId(String targetRoomId) { this.targetRoomId = targetRoomId; }
 
         /** @return walking distance to the destination room in pixels */
         public double getDistance() { return distance; }
@@ -136,7 +136,7 @@ public class GalleryGraph {
      *
      * <p>If a room with the same ID already exists it is silently replaced.
      * An empty edge list is created for the room if one does not already exist,
-     * so it is always safe to call {@link #getNeighbours(int)} on any added room.</p>
+     * so it is always safe to call getNeighbours(int)on any added room.</p>
      *
      * @param room the room to add; must not be null
      */
@@ -163,7 +163,7 @@ public class GalleryGraph {
      * @param distance walking distance between the rooms in pixels; must be positive
      * @throws IllegalArgumentException if either room ID does not exist in the graph
      */
-    public void connectRooms(int roomIdA, int roomIdB, double distance) {
+    public void connectRooms(String roomIdA, String roomIdB, double distance) {
         if (!rooms.containsKey(roomIdA))
             throw new IllegalArgumentException("Room not found in graph: " + roomIdA);
         if (!rooms.containsKey(roomIdB))
@@ -184,7 +184,7 @@ public class GalleryGraph {
      * @param roomId the unique room identifier
      * @return the Room, or null if no room with that ID exists in the graph
      */
-    public Room getRoom(int roomId) {
+    public Room getRoom(String roomId) {
         return rooms.get(roomId);
     }
 
@@ -194,7 +194,7 @@ public class GalleryGraph {
      *
      * @return unmodifiable map of room ID → Room
      */
-    public Map<Integer, Room> getAllRooms() {
+    public Map<String, Room> getAllRooms() {
         return Collections.unmodifiableMap(rooms);
     }
 
@@ -207,7 +207,7 @@ public class GalleryGraph {
      * @param roomId the unique room identifier
      * @return list of edges from this room, or an empty list if none exist
      */
-    public List<Edge> getNeighbours(int roomId) {
+    public List<Edge> getNeighbours(String roomId) {
         return adjacencyList.getOrDefault(roomId, Collections.emptyList());
     }
 
@@ -219,10 +219,10 @@ public class GalleryGraph {
      * @param roomIdB ID of the second room
      * @return true if the two rooms are directly connected by a doorway/corridor
      */
-    public boolean areConnected(int roomIdA, int roomIdB) {
+    public boolean areConnected(String roomIdA, String roomIdB) {
         List<Edge> edges = adjacencyList.getOrDefault(roomIdA, Collections.emptyList());
         for (Edge edge : edges)
-            if (edge.getTargetRoomId() == roomIdB) return true;
+            if (roomIdB.equals(edge.getTargetRoomId())) return true;
         return false;
     }
 
@@ -232,7 +232,7 @@ public class GalleryGraph {
      * @param roomId the unique room identifier
      * @return true if the room is present in the graph
      */
-    public boolean containsRoom(int roomId) {
+    public boolean containsRoom(String roomId) {
         return rooms.containsKey(roomId);
     }
 

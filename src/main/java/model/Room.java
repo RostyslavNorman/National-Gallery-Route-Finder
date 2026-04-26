@@ -7,9 +7,9 @@ import java.util.*;
  */
 public class Room {
     //unique id of a room (matches gallery floor pan numbering)
-    private int id;
+    private String  id;
 
-    // Human readable display
+    //Human readable display
     private String name;
 
     // positioning route markers
@@ -24,7 +24,7 @@ public class Room {
         this.paintings = new ArrayList<>();
     }
 
-    public Room(int id, String name, int x, int y){
+    public Room(String id, String name, int x, int y){
         this.id = id;
         this.name = name;
         this.x = x;
@@ -32,11 +32,11 @@ public class Room {
         this.paintings = new ArrayList<>();
     }
     //Getters and Setters
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -84,12 +84,12 @@ public class Room {
         if (this == o) return true;
         if (!(o instanceof Room)) return false;
         Room other = (Room) o;
-        return this.id == other.id;
+        return Objects.equals(this.id, other.id);
     }
 
     // Hash code based solely on {@code id}, consistent with {@link #equals}.
     @Override
     public int hashCode() {
-        return Integer.hashCode(id);
+        return Objects.hashCode(id);
     }
 }

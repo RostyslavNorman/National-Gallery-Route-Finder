@@ -9,6 +9,7 @@ import model.Room;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -65,15 +66,15 @@ public class SearchAlgorithms {
      * @return list of rooms from start to end; empty if no route exists
      */
     public static List<Room> findSingleRoute(GalleryGraph graph,
-                                             int startId,
-                                             int endId,
-                                             List<Integer> waypoints,
-                                             Set<Integer> avoidRooms) {
-        List<Integer> stops = buildStops(startId, endId, waypoints);
+                                             String startId,
+                                             String endId,
+                                             List<String> waypoints,
+                                             Set<String> avoidRooms) {
+        List<String> stops = buildStops(startId, endId, waypoints);
 
         return chainSegments(graph, stops, avoidRooms, (g, a, b, avoid) -> {
             List<Room> result = new ArrayList<>();
-            Set<Integer> visited = new HashSet<>();
+            Set<String> visited = new HashSet<>();
             dfsSingle(g, a, b, visited, result, avoid);
             return result;
         });
@@ -91,18 +92,18 @@ public class SearchAlgorithms {
      * @return true if destination was found and path is complete
      */
     private static boolean dfsSingle(GalleryGraph graph,
-                                     int currentId,
-                                     int endId,
-                                     Set<Integer> visited,
+                                     String currentId,
+                                     String endId,
+                                     Set<String> visited,
                                      List<Room> path,
-                                     Set<Integer> avoidRooms) {
+                                     Set<String> avoidRooms) {
         visited.add(currentId);
         path.add(graph.getRoom(currentId));
 
-        if (currentId == endId) return true;
+        if (currentId.equals(endId)) return true;
 
         for (Edge edge : graph.getNeighbours(currentId)) {
-            int neighbourId = edge.getTargetRoomId();
+            String neighbourId = edge.getTargetRoomId();
             if (!visited.contains(neighbourId) && !avoidRooms.contains(neighbourId)) {
                 if (dfsSingle(graph, neighbourId, endId, visited, path, avoidRooms))
                     return true; // found it — no need to keep searching
@@ -134,14 +135,14 @@ public class SearchAlgorithms {
      * @return list of routes, each route being a list of rooms
      */
     public static List<List<Room>> findMultipleRoutes(GalleryGraph graph,
-                                                      int startId,
-                                                      int endId,
-                                                      List<Integer> waypoints,
-                                                      Set<Integer> avoidRooms,
+                                                      String startId,
+                                                      String endId,
+                                                      List<String> waypoints,
+                                                      Set<String> avoidRooms,
                                                       int maxRoutes) {
         if (maxRoutes < 1) throw new IllegalArgumentException("maxRoutes must be at least 1.");
 
-        List<Integer> stops = buildStops(startId, endId, waypoints);
+        List<String> stops = buildStops(startId, endId, waypoints);
         List<List<Room>> allRoutes = new ArrayList<>();
 
         collectMultipleRoutes(graph, stops, avoidRooms, maxRoutes, new ArrayList<>(), allRoutes);
@@ -160,8 +161,8 @@ public class SearchAlgorithms {
      * @param allRoutes   accumulator for finished routes
      */
     private static void collectMultipleRoutes(GalleryGraph graph,
-                                              List<Integer> stops,
-                                              Set<Integer> avoidRooms,
+                                              List<String> stops,
+                                              Set<String> avoidRooms,
                                               int maxRoutes,
                                               List<Room> currentPath,
                                               List<List<Room>> allRoutes) {
@@ -172,23 +173,23 @@ public class SearchAlgorithms {
             return;
         }
 
-        int fromId = stops.get(0);
-        int toId   = stops.get(1);
+        String fromId = stops.get(0);
+        String toId   = stops.get(1);
 
         // Find all DFS paths between this pair of stops
         List<List<Room>> segments = new ArrayList<>();
-        Set<Integer> visited = new HashSet<>();
+        Set<String> visited = new HashSet<>();
         List<Room> segment = new ArrayList<>();
         dfsMultiple(graph, fromId, toId, visited, segment, avoidRooms, segments, maxRoutes);
 
-        List<Integer> remainingStops = stops.subList(1, stops.size());
+        List<String> remainingStops = stops.subList(1, stops.size());
         for (List<Room> seg : segments) {
             if (allRoutes.size() >= maxRoutes) return;
 
             // Append segment to current path, removing the duplicate junction room
             List<Room> extended = new ArrayList<>(currentPath);
             if (!extended.isEmpty() && !seg.isEmpty()
-                    && extended.get(extended.size() - 1).getId() == seg.get(0).getId()) {
+                    && extended.get(extended.size() - 1).getId().equals(seg.get(0).getId())) {
                 extended.addAll(seg.subList(1, seg.size()));
             } else {
                 extended.addAll(seg);
@@ -212,11 +213,11 @@ public class SearchAlgorithms {
      * @param maxRoutes  stop once this many segment paths are collected
      */
     private static void dfsMultiple(GalleryGraph graph,
-                                    int currentId,
-                                    int endId,
-                                    Set<Integer> visited,
+                                    String currentId,
+                                    String endId,
+                                    Set<String> visited,
                                     List<Room> path,
-                                    Set<Integer> avoidRooms,
+                                    Set<String> avoidRooms,
                                     List<List<Room>> results,
                                     int maxRoutes) {
         if (results.size() >= maxRoutes) return;
@@ -224,11 +225,11 @@ public class SearchAlgorithms {
         visited.add(currentId);
         path.add(graph.getRoom(currentId));
 
-        if (currentId == endId) {
+        if (currentId.equals(endId)) {
             results.add(new ArrayList<>(path)); // snapshot the current path
         } else {
             for (Edge edge : graph.getNeighbours(currentId)) {
-                int neighbourId = edge.getTargetRoomId();
+                String neighbourId = edge.getTargetRoomId();
                 if (!visited.contains(neighbourId) && !avoidRooms.contains(neighbourId)) {
                     dfsMultiple(graph, neighbourId, endId, visited, path,
                             avoidRooms, results, maxRoutes);
@@ -261,11 +262,11 @@ public class SearchAlgorithms {
      * @return shortest route as a list of rooms; empty if no route exists
      */
     public static List<Room> findShortestRouteBFS(GalleryGraph graph,
-                                                  int startId,
-                                                  int endId,
-                                                  List<Integer> waypoints,
-                                                  Set<Integer> avoidRooms) {
-        List<Integer> stops = buildStops(startId, endId, waypoints);
+                                                  String startId,
+                                                  String endId,
+                                                  List<String> waypoints,
+                                                  Set<String> avoidRooms) {
+        List<String> stops = buildStops(startId, endId, waypoints);
         return chainSegments(graph, stops, avoidRooms, SearchAlgorithms::bfsSegment);
     }
 
@@ -280,23 +281,23 @@ public class SearchAlgorithms {
      * @return shortest hop-count path; empty if unreachable
      */
     private static List<Room> bfsSegment(GalleryGraph graph,
-                                         int startId,
-                                         int endId,
-                                         Set<Integer> avoidRooms) {
-        // parent[roomId] = the room we came from; -1 means this is the start
-        Map<Integer, Integer> parent = new HashMap<>();
-        Queue<Integer> queue = new LinkedList<>();
+                                         String startId,
+                                         String endId,
+                                         Set<String> avoidRooms) {
+        // parent[roomId] = the room we came from; null means this is the start
+        Map<String, String> parent = new HashMap<>();
+        Queue<String> queue = new LinkedList<>();
 
-        parent.put(startId, -1);
+        parent.put(startId, null);
         queue.add(startId);
 
         while (!queue.isEmpty()) {
-            int current = queue.poll();
+            String current = queue.poll();
 
-            if (current == endId) return reconstructPath(graph, parent, startId, endId);
+            if (current.equals(endId)) return reconstructPath(graph, parent, endId);
 
             for (Edge edge : graph.getNeighbours(current)) {
-                int neighbourId = edge.getTargetRoomId();
+                String neighbourId = edge.getTargetRoomId();
                 if (!parent.containsKey(neighbourId) && !avoidRooms.contains(neighbourId)) {
                     parent.put(neighbourId, current);
                     queue.add(neighbourId);
@@ -326,11 +327,11 @@ public class SearchAlgorithms {
      * @return shortest route as a list of rooms; empty if no route exists
      */
     public static List<Room> findShortestRouteDijkstra(GalleryGraph graph,
-                                                       int startId,
-                                                       int endId,
-                                                       List<Integer> waypoints,
-                                                       Set<Integer> avoidRooms) {
-        List<Integer> stops = buildStops(startId, endId, waypoints);
+                                                       String startId,
+                                                       String endId,
+                                                       List<String> waypoints,
+                                                       Set<String> avoidRooms) {
+        List<String> stops = buildStops(startId, endId, waypoints);
         return chainSegments(graph, stops, avoidRooms,
                 (g, a, b, avoid) -> dijkstraSegment(g, a, b, avoid, null));
     }
@@ -353,34 +354,32 @@ public class SearchAlgorithms {
      * @return optimal path as a list of rooms; empty if unreachable
      */
     private static List<Room> dijkstraSegment(GalleryGraph graph,
-                                              int startId,
-                                              int endId,
-                                              Set<Integer> avoidRooms,
+                                              String startId,
+                                              String endId,
+                                              Set<String> avoidRooms,
                                               Set<String> preferredArtists) {
-        Map<Integer, Double>  dist   = new HashMap<>();
-        Map<Integer, Integer> parent = new HashMap<>();
+        Map<String, Double> dist = new HashMap<>();
+        Map<String, String> parent = new HashMap<>();
 
-        // Min-heap: entries are [totalDistance, roomId]
-        PriorityQueue<double[]> pq = new PriorityQueue<>(
-                (a, b) -> Double.compare(a[0], b[0])
-        );
+        // Min-heap ordered by cumulative distance
+        PriorityQueue<RouteState> pq = new PriorityQueue<>(Comparator.comparingDouble(state -> state.distance));
 
         dist.put(startId, 0.0);
-        parent.put(startId, -1);
-        pq.offer(new double[]{0.0, startId});
+        parent.put(startId, null);
+        pq.offer(new RouteState(startId, 0.0));
 
         while (!pq.isEmpty()) {
-            double[] entry     = pq.poll();
-            double   costSoFar = entry[0];
-            int      currentId = (int) entry[1];
+            RouteState entry = pq.poll();
+            double costSoFar = entry.distance;
+            String currentId = entry.roomId;
 
             // A better path to this room was already found — skip this entry
             if (costSoFar > dist.getOrDefault(currentId, Double.MAX_VALUE)) continue;
 
-            if (currentId == endId) return reconstructPath(graph, parent, startId, endId);
+            if (currentId.equals(endId)) return reconstructPath(graph, parent, endId);
 
             for (Edge edge : graph.getNeighbours(currentId)) {
-                int neighbourId = edge.getTargetRoomId();
+                String neighbourId = edge.getTargetRoomId();
                 if (avoidRooms.contains(neighbourId)) continue;
 
                 double effectiveWeight = edge.getDistance();
@@ -393,7 +392,7 @@ public class SearchAlgorithms {
                 if (newDist < dist.getOrDefault(neighbourId, Double.MAX_VALUE)) {
                     dist.put(neighbourId, newDist);
                     parent.put(neighbourId, currentId);
-                    pq.offer(new double[]{newDist, neighbourId});
+                    pq.offer(new RouteState(neighbourId, newDist));
                 }
             }
         }
@@ -423,16 +422,16 @@ public class SearchAlgorithms {
      * @return most interesting route as a list of rooms; empty if no route exists
      */
     public static List<Room> findMostInterestingRoute(GalleryGraph graph,
-                                                      int startId,
-                                                      int endId,
-                                                      List<Integer> waypoints,
-                                                      Set<Integer> avoidRooms,
+                                                      String startId,
+                                                      String endId,
+                                                      List<String> waypoints,
+                                                      Set<String> avoidRooms,
                                                       List<Artist> preferredArtists) {
         // Convert to a name set for O(1) lookups inside dijkstraSegment
         Set<String> preferredNames = new HashSet<>();
         for (Artist a : preferredArtists) preferredNames.add(a.getName());
 
-        List<Integer> stops = buildStops(startId, endId, waypoints);
+        List<String> stops = buildStops(startId, endId, waypoints);
         return chainSegments(graph, stops, avoidRooms,
                 (g, a, b, avoid) -> dijkstraSegment(g, a, b, avoid, preferredNames));
     }
@@ -598,8 +597,8 @@ public class SearchAlgorithms {
     /**
      * Builds the full list of stops: [startId, wp1, wp2, ..., endId].
      */
-    private static List<Integer> buildStops(int startId, int endId, List<Integer> waypoints) {
-        List<Integer> stops = new ArrayList<>();
+    private static List<String> buildStops(String startId, String endId, List<String> waypoints) {
+        List<String> stops = new ArrayList<>();
         stops.add(startId);
         if (waypoints != null) stops.addAll(waypoints);
         stops.add(endId);
@@ -612,7 +611,18 @@ public class SearchAlgorithms {
      */
     @FunctionalInterface
     private interface SegmentFinder {
-        List<Room> find(GalleryGraph graph, int from, int to, Set<Integer> avoidRooms);
+        List<Room> find(GalleryGraph graph, String from, String to, Set<String> avoidRooms);
+    }
+
+    /** Simple state object for Dijkstra's priority queue. */
+    private static final class RouteState {
+        private final String roomId;
+        private final double distance;
+
+        private RouteState(String roomId, double distance) {
+            this.roomId = roomId;
+            this.distance = distance;
+        }
     }
 
     /**
@@ -629,14 +639,14 @@ public class SearchAlgorithms {
      * @return full concatenated route; empty if any single segment fails
      */
     private static List<Room> chainSegments(GalleryGraph graph,
-                                            List<Integer> stops,
-                                            Set<Integer> avoidRooms,
+                                            List<String> stops,
+                                            Set<String> avoidRooms,
                                             SegmentFinder finder) {
         List<Room> fullRoute = new ArrayList<>();
 
         for (int i = 0; i < stops.size() - 1; i++) {
-            int from = stops.get(i);
-            int to   = stops.get(i + 1);
+            String from = stops.get(i);
+            String to   = stops.get(i + 1);
 
             List<Room> segment = finder.find(graph, from, to, avoidRooms);
 
@@ -659,20 +669,18 @@ public class SearchAlgorithms {
      *
      * @param graph    used to look up Room objects by ID
      * @param parent   map of roomId -> parentRoomId; -1 marks the start
-     * @param startId  starting room ID
      * @param endId    destination room ID
      * @return ordered list of rooms from start to end
      */
     private static List<Room> reconstructPath(GalleryGraph graph,
-                                              Map<Integer, Integer> parent,
-                                              int startId,
-                                              int endId) {
+                                              Map<String, String> parent,
+                                              String endId) {
         List<Room> path = new ArrayList<>();
-        int current = endId;
+        String current = endId;
 
-        while (current != -1) {
+        while (current != null) {
             path.add(graph.getRoom(current));
-            current = parent.getOrDefault(current, -1);
+            current = parent.get(current);
         }
 
         Collections.reverse(path);

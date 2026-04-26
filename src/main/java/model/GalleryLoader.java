@@ -170,7 +170,7 @@ public class GalleryLoader {
      * <p>Pass 1 — add all rooms as vertices (so every room exists before any
      * edge is registered).</p>
      * <p>Pass 2 — iterate each room's connections and call
-     * {@link GalleryGraph#connectRooms(int, int, double)} for each one.
+     * {@link GalleryGraph#connectRooms(String, String, double)} for each one.
      * Because {@code connectRooms} stores the edge in both directions, and the
      * XML defines each connection from one side only, we get a correct undirected
      * graph without duplicate edges.</p>
@@ -206,7 +206,7 @@ public class GalleryLoader {
 
             for (ConnectionData conn : rd.connections) {
                 // Guard: skip if the target room wasn't loaded (data inconsistency)
-                if (!g.containsRoom(conn.roomId)) {
+                if (g.areConnected(rd.id, conn.roomId)) {
                     System.err.println("WARNING: Room " + rd.id +
                             " references unknown neighbour " + conn.roomId +
                             " — skipping this connection.");
@@ -214,7 +214,7 @@ public class GalleryLoader {
                 }
 
                 // Guard: skip self-loops (room connected to itself — invalid)
-                if (rd.id == conn.roomId) {
+                if (rd.id.equals(conn.roomId)) {
                     System.err.println("WARNING: Room " + rd.id +
                             " has a self-loop connection — skipping.");
                     continue;
@@ -253,7 +253,7 @@ public class GalleryLoader {
      * Converted to a proper {@link Room} during graph construction.
      */
     private static class RoomData {
-        int                  id;
+        String                  id;
         String               name;
         int                  x;
         int                  y;
@@ -266,7 +266,7 @@ public class GalleryLoader {
      * Converted to a {@link GalleryGraph.Edge} during graph construction.
      */
     private static class ConnectionData {
-        int    roomId;
+        String   roomId;
         double distance;
     }
 }
