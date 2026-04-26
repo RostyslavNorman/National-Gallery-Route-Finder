@@ -253,7 +253,7 @@ public class GalleryLoader {
      * Converted to a proper {@link Room} during graph construction.
      */
     private static class RoomData {
-        String                  id;
+        String               id;
         String               name;
         int                  x;
         int                  y;
