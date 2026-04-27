@@ -4,10 +4,10 @@ import data.GalleryDataParser;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.event.ActionEvent;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,10 +16,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
+import javafx.stage.Popup;
 import model.Room;
 import ui.uiRoom;
 
+import java.io.IOException;
 import java.util.*;
 
 public class MainUIController {
@@ -158,24 +159,54 @@ public class MainUIController {
             );
             StackPane marker = new StackPane(circle, text);
             marker.setPickOnBounds(false);
-            // Center marker on its layout position
             marker.translateXProperty().bind(
                     marker.widthProperty().divide(-2)
             );
             marker.translateYProperty().bind(
                     marker.heightProperty().divide(-2)
             );
-
-            uiRoom uiRoom = new uiRoom(room, marker, new double[] {xRatio, yRatio});
             marker.layoutXProperty().bind(
                     displayedImageWidth.multiply(xRatio)
             );
             marker.layoutYProperty().bind(
                     displayedImageHeight.multiply(yRatio)
             );
+            marker.setUserData(room);
+            createAssociatedPopup(marker);
             overlayPane.getChildren().add(marker);
-            interactables.add(uiRoom);
         }
+    }
+
+    private void createAssociatedPopup(StackPane marker) {
+        Parent content;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/roomInfoPopoutContent.fxml"));
+            content = loader.load();
+            RoomInfoController popupController = loader.getController();
+            popupController.setRoom((Room) marker.getUserData());
+        } catch(Exception e){
+            System.out.println(e);
+            return;
+        }
+
+        Popup popup = new Popup();
+        popup.getContent().add(content);
+        popup.setAutoHide(true);
+
+        marker.setOnMouseEntered(e -> {
+            popup.show(
+                    marker,
+                    e.getScreenX() + 14,
+                    e.getScreenY() + 14
+            );
+        });
+        marker.setOnMouseMoved(e -> {
+            if (popup.isShowing()) {
+                popup.setX(e.getScreenX() + 14);
+                popup.setY(e.getScreenY() + 14);
+            }
+        });
+        marker.setOnMouseExited(e -> popup.hide());
     }
 
     private void checkCanGeneratePath(){
