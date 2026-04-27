@@ -18,7 +18,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Popup;
 import model.Room;
-import ui.uiRoom;
 
 import java.io.IOException;
 import java.util.*;
@@ -36,7 +35,6 @@ public class MainUIController {
     public StackPane stackPane;
     public Group group;
 
-    private ArrayList<uiRoom> interactables = new ArrayList<>();
     private LinkedList<Integer> selectedNodes = new LinkedList<>();
     private final GalleryDataParser galleryData = new GalleryDataParser();
     private DoubleBinding displayedImageWidth, displayedImageHeight, offsetX, offsetY, markerScale;
