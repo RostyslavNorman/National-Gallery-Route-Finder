@@ -5,6 +5,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.event.ActionEvent;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.*;
@@ -104,6 +105,35 @@ public class MainUIController {
         overlayPane.translateXProperty().bind(offsetX);
         overlayPane.translateYProperty().bind(offsetY);
         setupMarkers();
+
+        overlayPane.setOnMouseClicked(e -> {
+            Image img = imageView.getImage();
+            if (img == null) return;
+
+            double mouseX = e.getX();
+            double mouseY = e.getY();
+
+            // Ignore clicks outside the rendered image
+            if (mouseX < offsetX.get() ||
+                    mouseX > offsetX.get() + displayedImageWidth.get() ||
+                    mouseY < offsetY.get() ||
+                    mouseY > offsetY.get() + displayedImageHeight.get()) {
+                return;
+            }
+
+            double imageX =
+                    (mouseX - offsetX.get()) / displayedImageWidth.get() * img.getWidth();
+
+            double imageY =
+                    (mouseY - offsetY.get()) / displayedImageHeight.get() * img.getHeight();
+
+            System.out.printf(
+                    "imageX=%d imageY=%d%n",
+                    Math.round(imageX),
+                    Math.round(imageY)
+            );
+        });
+
     }
 
     private void setupMarkers() {
@@ -127,6 +157,15 @@ public class MainUIController {
                     )
             );
             StackPane marker = new StackPane(circle, text);
+            marker.setPickOnBounds(false);
+            // Center marker on its layout position
+            marker.translateXProperty().bind(
+                    marker.widthProperty().divide(-2)
+            );
+            marker.translateYProperty().bind(
+                    marker.heightProperty().divide(-2)
+            );
+
             uiRoom uiRoom = new uiRoom(room, marker, new double[] {xRatio, yRatio});
             marker.layoutXProperty().bind(
                     displayedImageWidth.multiply(xRatio)

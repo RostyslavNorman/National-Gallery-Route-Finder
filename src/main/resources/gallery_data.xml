@@ -107,7 +107,7 @@
         <room>
             <id>61</id>
             <n>Room 61 - Leonardo da Vinci</n>
-            <x>30</x><y>255</y>
+            <x>25</x><y>255</y>
             <connections>
                 <connection><roomId>60</roomId><distance>55</distance></connection>
                 <connection><roomId>62</roomId><distance>55</distance></connection>
@@ -131,7 +131,7 @@
         <room>
             <id>60</id>
             <n>Room 60 - Bruegel and Early Netherlandish</n>
-            <x>75</x><y>255</y>
+            <x>61</x><y>255</y>
             <connections>
                 <connection><roomId>51</roomId><distance>55</distance></connection>
                 <connection><roomId>59</roomId><distance>55</distance></connection>
