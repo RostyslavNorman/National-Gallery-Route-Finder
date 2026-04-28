@@ -2,7 +2,6 @@ package controller;
 
 import data.GalleryDataParser;
 import data.MapColours;
-import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.FXCollections;
@@ -10,7 +9,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -27,7 +25,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Popup;
 import model.Room;
 
-import java.io.IOException;
 import java.util.*;
 
 public class MainUIController {
@@ -88,6 +85,7 @@ public class MainUIController {
             cell.setOnMouseClicked(e -> {
                 if(e.getButton() == MouseButton.SECONDARY) {
                     whitelist.remove(whitelistView.getSelectionModel().getSelectedItem());
+                    checkCanGeneratePath();
                 }
             });
 
@@ -103,7 +101,6 @@ public class MainUIController {
                     e.setDropCompleted(true);
                 }
             });
-
             return cell;
         });
 
@@ -304,11 +301,12 @@ public class MainUIController {
                     blacklist.remove(waypoint);
                 }
             } else if (e.getButton() == MouseButton.SECONDARY) {
-                if (!blacklist.contains(waypoint)) {
+                if (!blacklist.contains(waypoint) && !searchButton.getText().equals("BFS")) {
                     blacklist.add(waypoint);
                     whitelist.remove(waypoint);
                 }
             }
+            checkCanGeneratePath();
             e.consume();
         });
     }
@@ -345,9 +343,8 @@ public class MainUIController {
     }
 
     private void checkCanGeneratePath(){
-        if(!searchButton.getText().equals("Search"))
-            generatePathButton.setDisable(false);
-        if(whitelist.isEmpty())
+        generatePathButton.setDisable(false);
+        if(searchButton.getText().equals("Search Type") || whitelist.size() < 2)
             generatePathButton.setDisable(true);
     }
 
@@ -357,8 +354,19 @@ public class MainUIController {
 
     public void selectSearch(ActionEvent actionEvent) {
         MenuItem item = (MenuItem) actionEvent.getSource();
+        if(item.getText().equals("BFS"))
+            imageView.setImage(new Image(
+                    Objects.requireNonNull(
+                            getClass().getResource("/Images/Floor2_filled_walls_structural_final.png")
+                    ).toExternalForm()
+            ));
+        else
+            imageView.setImage(new Image(
+                    Objects.requireNonNull(
+                            getClass().getResource("/Images/Floor2Layout.png")
+                    ).toExternalForm()
+            ));
         searchButton.setText(item.getText());
         checkCanGeneratePath();
-        generatePathButton.setDisable(false);
     }
 }
