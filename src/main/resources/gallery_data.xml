@@ -109,8 +109,8 @@
             <n>Room 61 - Leonardo da Vinci</n>
             <x>25</x><y>255</y>
             <connections>
-                <connection><roomId>60</roomId><distance>55</distance></connection>
-                <connection><roomId>62</roomId><distance>55</distance></connection>
+                <connection><roomId>60</roomId><distance>55</distance><throughpoint><x>44</x><y>257</y></throughpoint></connection>
+                <connection><roomId>62</roomId><distance>55</distance><throughpoint><x>30</x><y>273</y></throughpoint></connection>
             </connections>
             <paintings>
                 <painting>
@@ -133,8 +133,8 @@
             <n>Room 60 - Bruegel and Early Netherlandish</n>
             <x>61</x><y>255</y>
             <connections>
-                <connection><roomId>51</roomId><distance>55</distance></connection>
-                <connection><roomId>59</roomId><distance>55</distance></connection>
+                <connection><roomId>51</roomId><distance>55</distance><throughpoint><x>78</x><y>260</y></throughpoint></connection>
+                <connection><roomId>59</roomId><distance>55</distance><throughpoint><x>60</x><y>283</y></throughpoint></connection>
             </connections>
             <paintings>
                 <painting>
