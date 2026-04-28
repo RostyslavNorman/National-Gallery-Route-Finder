@@ -42,15 +42,21 @@ public class MainUIController {
     public ImageView imageView;
     public StackPane stackPane;
 
-    private LinkedList<Integer> selectedNodes = new LinkedList<>();
     private final GalleryDataParser galleryData = new GalleryDataParser();
     private DoubleBinding displayedImageWidth, displayedImageHeight, offsetX, offsetY, markerScale;
-    private ObservableList<Room> whitelist = FXCollections.observableArrayList();
-    private ObservableList<Room> blacklist = FXCollections.observableArrayList();
+    private final ObservableList<Room> whitelist = FXCollections.observableArrayList();
+    private final ObservableList<Room> blacklist = FXCollections.observableArrayList();
     public ListView<Room> whitelistView = new ListView<>(whitelist);;
     public ListView<Room> blacklistView  = new ListView<>(blacklist);;
 
     public void initialize() {
+        setupUserLists();
+        setupImageViewer();
+        setupMarkers();
+        setupMapPixelPrintout();
+    }
+
+    private void setupUserLists(){
         whitelistView.setItems(whitelist);
         blacklistView.setItems(blacklist);
 
@@ -79,6 +85,12 @@ public class MainUIController {
                 }
             });
 
+            cell.setOnMouseClicked(e -> {
+                if(e.getButton() == MouseButton.SECONDARY) {
+                    whitelist.remove(whitelistView.getSelectionModel().getSelectedItem());
+                }
+            });
+
             cell.setOnDragDropped(e -> {
                 if (!cell.isEmpty()) {
                     int draggedIdx = whitelist.indexOf(
@@ -94,14 +106,27 @@ public class MainUIController {
 
             return cell;
         });
-        blacklistView.setCellFactory(lv -> new ListCell<>() {
-            @Override
-            protected void updateItem(Room item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty ? null : item.getName());
-            }
-        });
 
+        blacklistView.setCellFactory(lv -> {
+            ListCell<Room> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(Room item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item.getName());
+                }
+            };
+
+            cell.setOnMouseClicked(e -> {
+                if (e.getButton() == MouseButton.SECONDARY) {
+                    blacklist.remove(blacklistView.getSelectionModel().getSelectedItem());
+                }
+            });
+
+            return cell;
+        });
+    }
+
+    private void setupImageViewer(){
         StackPane.setAlignment(imageView, Pos.CENTER);
         StackPane.setAlignment(overlayPane, Pos.CENTER);
         overlayPane.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
@@ -160,8 +185,9 @@ public class MainUIController {
         overlayPane.prefHeightProperty().bind(displayedImageHeight);
         overlayPane.translateXProperty().bind(offsetX);
         overlayPane.translateYProperty().bind(offsetY);
-        setupMarkers();
+    }
 
+    private void setupMapPixelPrintout(){
         overlayPane.setOnMouseClicked(e -> {
             Image img = imageView.getImage();
             if (img == null) return;
@@ -189,7 +215,6 @@ public class MainUIController {
                     Math.round(imageY)
             );
         });
-
     }
 
     private void setupMarkers() {
@@ -322,7 +347,7 @@ public class MainUIController {
     private void checkCanGeneratePath(){
         if(!searchButton.getText().equals("Search"))
             generatePathButton.setDisable(false);
-        if(selectedNodes.isEmpty())
+        if(whitelist.isEmpty())
             generatePathButton.setDisable(true);
     }
 
