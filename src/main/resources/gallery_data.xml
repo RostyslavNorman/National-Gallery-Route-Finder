@@ -29,7 +29,6 @@
       2. Add ONE <connection> to/from a neighbouring room — GalleryLoader adds the reverse.
       3. Keep any new <artist> value in a <painting> in sync with an entry in <artists>.
 -->
-
 <gallery>
 
     <!-- ============================================================
@@ -334,7 +333,7 @@
         <room>
             <id>65</id>
             <n>Room 65 - Sainsbury Wing Lower B</n>
-            <x>30</x><y>435</y>
+            <x>29</x><y>375</y>
             <connections>
                 <connection><roomId>66</roomId><distance>55</distance></connection>
             </connections>
@@ -345,7 +344,7 @@
         <room>
             <id>55</id>
             <n>Room 55 - Venetian and North Italian</n>
-            <x>120</x><y>435</y>
+            <x>100</x><y>378</y>
             <connections>
                 <connection><roomId>56</roomId><distance>55</distance></connection>
                 <connection><roomId>65</roomId><distance>60</distance></connection>
@@ -365,7 +364,7 @@
         <room>
             <id>66</id>
             <n>Room 66 - Sainsbury Wing Lower C</n>
-            <x>30</x><y>480</y>
+            <x>30</x><y>395</y>
             <connections>
                 <connection><roomId>56</roomId><distance>60</distance></connection>
             </connections>
@@ -376,7 +375,7 @@
         <room>
             <id>56</id>
             <n>Room 56 - Netherlandish</n>
-            <x>120</x><y>480</y>
+            <x>100</x><y>403</y>
             <connections>
             </connections>
             <paintings>
@@ -412,7 +411,7 @@
         <room>
             <id>1</id>
             <n>Room 1 - South Entrance Hall</n>
-            <x>395</x><y>380</y>
+            <x>398</x><y>375</y>
             <connections>
                 <connection><roomId>2</roomId><distance>55</distance></connection>
                 <connection><roomId>4</roomId><distance>55</distance></connection>
@@ -424,7 +423,7 @@
         <room>
             <id>2</id>
             <n>Room 2 - Michelangelo and Bronzino</n>
-            <x>450</x><y>350</y>
+            <x>360</x><y>353</y>
             <connections>
                 <connection><roomId>4</roomId><distance>55</distance></connection>
                 <connection><roomId>8</roomId><distance>65</distance></connection>
@@ -448,7 +447,7 @@
         <room>
             <id>4</id>
             <n>Room 4 - Raphael and Titian</n>
-            <x>395</x><y>295</y>
+            <x>325</x><y>353</y>
             <connections>
                 <connection><roomId>6</roomId><distance>55</distance></connection>
                 <connection><roomId>7</roomId><distance>60</distance></connection>
@@ -476,7 +475,7 @@
         <room>
             <id>5</id>
             <n>Room 5 - West Wing South Passage</n>
-            <x>450</x><y>295</y>
+            <x>325</x><y>305</y>
             <connections>
                 <connection><roomId>6</roomId><distance>55</distance></connection>
                 <connection><roomId>11</roomId><distance>55</distance></connection>
@@ -488,7 +487,7 @@
         <room>
             <id>6</id>
             <n>Room 6 - West Wing Corridor</n>
-            <x>395</x><y>240</y>
+            <x>290</x><y>355</y>
             <connections>
                 <connection><roomId>8</roomId><distance>55</distance></connection>
                 <connection><roomId>9</roomId><distance>55</distance></connection>
@@ -501,7 +500,7 @@
         <room>
             <id>7</id>
             <n>Room 7 - Titian and Venetian</n>
-            <x>340</x><y>350</y>
+            <x>258</x><y>375</y>
             <connections>
             </connections>
             <paintings>
@@ -517,7 +516,7 @@
         <room>
             <id>8</id>
             <n>Room 8 - Holbein and 16th Century</n>
-            <x>340</x><y>240</y>
+            <x>225</x><y>345</y>
             <connections>
                 <connection><roomId>9</roomId><distance>55</distance></connection>
                 <connection><roomId>12</roomId><distance>60</distance></connection>
@@ -535,7 +534,7 @@
         <room>
             <id>9</id>
             <n>Room 9 - West Vestibule</n>
-            <x>280</x><y>240</y>
+            <x>225</x><y>268</y>
             <connections>
                 <connection><roomId>10</roomId><distance>55</distance></connection>
             </connections>
@@ -546,7 +545,7 @@
         <room>
             <id>10</id>
             <n>Room 10 - Central Hall</n>
-            <x>340</x><y>185</y>
+            <x>280</x><y>268</y>
             <connections>
                 <connection><roomId>11</roomId><distance>55</distance></connection>
                 <connection><roomId>14</roomId><distance>60</distance></connection>
@@ -559,7 +558,7 @@
         <room>
             <id>11</id>
             <n>Room 11 - East Vestibule</n>
-            <x>450</x><y>185</y>
+            <x>325</x><y>268</y>
             <connections>
                 <connection><roomId>12</roomId><distance>55</distance></connection>
                 <connection><roomId>33</roomId><distance>65</distance></connection>
@@ -572,7 +571,7 @@
         <room>
             <id>12</id>
             <n>Room 12 - 16th Century Flemish</n>
-            <x>500</x><y>140</y>
+            <x>365</x><y>268</y>
             <connections>
                 <connection><roomId>13</roomId><distance>55</distance></connection>
                 <connection><roomId>14</roomId><distance>60</distance></connection>
@@ -581,24 +580,12 @@
             </paintings>
         </room>
 
-        <!--
-            Room 13: a dead-end gallery north of Room 12.
-            Only connection is back to Room 12.
-        -->
-        <room>
-            <id>13</id>
-            <n>Room 13 - Wohl Room</n>
-            <x>500</x><y>90</y>
-            <connections>
-            </connections>
-            <paintings>
-            </paintings>
-        </room>
+
 
         <room>
             <id>14</id>
             <n>Room 14 - North European 16th Century</n>
-            <x>395</x><y>140</y>
+            <x>325</x><y>235</y>
             <connections>
                 <connection><roomId>29</roomId><distance>65</distance></connection>
             </connections>
@@ -630,7 +617,7 @@
         <room>
             <id>15</id>
             <n>Room 15 - Rembrandt</n>
-            <x>220</x><y>185</y>
+            <x>240</x><y>190</y>
             <connections>
                 <connection><roomId>16</roomId><distance>55</distance></connection>
                 <connection><roomId>15a</roomId><distance>40</distance></connection>
@@ -653,7 +640,7 @@
         <room>
             <id>15a</id>
             <n>Room 15a - North Wing Passage</n>
-            <x>265</x><y>185</y>
+            <x>221</x><y>178</y>
             <connections>
                 <connection><roomId>17a</roomId><distance>40</distance></connection>
                 <connection><roomId>26</roomId><distance>55</distance></connection>
@@ -665,7 +652,7 @@
         <room>
             <id>16</id>
             <n>Room 16 - Vermeer and Dutch</n>
-            <x>175</x><y>185</y>
+            <x>205</x><y>205</y>
             <connections>
                 <connection><roomId>17</roomId><distance>55</distance></connection>
             </connections>
@@ -682,7 +669,7 @@
         <room>
             <id>17</id>
             <n>Room 17 - Dutch Genre</n>
-            <x>175</x><y>140</y>
+            <x>205</x><y>180</y>
             <connections>
                 <connection><roomId>17a</roomId><distance>40</distance></connection>
                 <connection><roomId>18</roomId><distance>55</distance></connection>
@@ -704,7 +691,7 @@
         <room>
             <id>17a</id>
             <n>Room 17a - North Wing Side Passage</n>
-            <x>220</x><y>140</y>
+            <x>205</x><y>160</y>
             <connections>
                 <connection><roomId>18</roomId><distance>40</distance></connection>
             </connections>
@@ -715,7 +702,7 @@
         <room>
             <id>18</id>
             <n>Room 18 - Rubens</n>
-            <x>265</x><y>115</y>
+            <x>240</x><y>115</y>
             <connections>
                 <connection><roomId>19</roomId><distance>55</distance></connection>
                 <connection><roomId>23</roomId><distance>55</distance></connection>
@@ -739,7 +726,7 @@
         <room>
             <id>19</id>
             <n>Room 19 - Van Dyck</n>
-            <x>220</x><y>115</y>
+            <x>195</x><y>140</y>
             <connections>
                 <connection><roomId>20</roomId><distance>55</distance></connection>
             </connections>
@@ -756,7 +743,7 @@
         <room>
             <id>20</id>
             <n>Room 20 - Velazquez and Spanish</n>
-            <x>220</x><y>75</y>
+            <x>200</x><y>110</y>
             <connections>
                 <connection><roomId>21</roomId><distance>55</distance></connection>
                 <connection><roomId>29</roomId><distance>65</distance></connection>
@@ -780,7 +767,7 @@
         <room>
             <id>21</id>
             <n>Room 21 - Caravaggio</n>
-            <x>265</x><y>75</y>
+            <x>200</x><y>80</y>
             <connections>
                 <connection><roomId>22</roomId><distance>55</distance></connection>
             </connections>
@@ -803,7 +790,7 @@
         <room>
             <id>22</id>
             <n>Room 22 - Poussin</n>
-            <x>310</x><y>75</y>
+            <x>285</x><y>80</y>
             <connections>
                 <connection><roomId>23</roomId><distance>55</distance></connection>
             </connections>
@@ -820,7 +807,7 @@
         <room>
             <id>23</id>
             <n>Room 23 - Claude</n>
-            <x>310</x><y>115</y>
+            <x>285</x><y>110</y>
             <connections>
                 <connection><roomId>24</roomId><distance>55</distance></connection>
             </connections>
@@ -843,7 +830,7 @@
         <room>
             <id>24</id>
             <n>Room 24 - Rembrandt Late Works</n>
-            <x>310</x><y>155</y>
+            <x>285</x><y>140</y>
             <connections>
                 <connection><roomId>25</roomId><distance>55</distance></connection>
             </connections>
@@ -860,7 +847,7 @@
         <room>
             <id>25</id>
             <n>Room 25 - North Wing Passage East</n>
-            <x>355</x><y>155</y>
+            <x>325</x><y>140</y>
             <connections>
                 <connection><roomId>26</roomId><distance>55</distance></connection>
             </connections>
@@ -871,7 +858,7 @@
         <room>
             <id>26</id>
             <n>Room 26 - Dutch Portraits</n>
-            <x>355</x><y>185</y>
+            <x>265</x><y>160</y>
             <connections>
                 <connection><roomId>27</roomId><distance>55</distance></connection>
             </connections>
@@ -888,7 +875,7 @@
         <room>
             <id>27</id>
             <n>Room 27 - Vermeer</n>
-            <x>400</x><y>185</y>
+            <x>295</x><y>160</y>
             <connections>
                 <connection><roomId>28</roomId><distance>55</distance></connection>
             </connections>
@@ -905,7 +892,7 @@
         <room>
             <id>28</id>
             <n>Room 28 - Still Life and Genre</n>
-            <x>450</x><y>185</y>
+            <x>325</x><y>160</y>
             <connections>
                 <connection><roomId>29</roomId><distance>55</distance></connection>
             </connections>
@@ -916,7 +903,7 @@
         <room>
             <id>29</id>
             <n>Room 29 - Annenberg Court</n>
-            <x>500</x><y>230</y>
+            <x>325</x><y>190</y>
             <connections>
                 <connection><roomId>30</roomId><distance>55</distance></connection>
             </connections>
@@ -927,7 +914,7 @@
         <room>
             <id>30</id>
             <n>Room 30 - 17th Century Paintings</n>
-            <x>545</x><y>185</y>
+            <x>430</x><y>190</y>
             <connections>
                 <connection><roomId>31</roomId><distance>55</distance></connection>
             </connections>
@@ -938,7 +925,7 @@
         <room>
             <id>31</id>
             <n>Room 31 - Julia and Hans Rausing Room</n>
-            <x>545</x><y>140</y>
+            <x>430</x><y>155</y>
             <connections>
                 <connection><roomId>32</roomId><distance>55</distance></connection>
             </connections>
@@ -949,7 +936,7 @@
         <room>
             <id>32</id>
             <n>Room 32 - North Wing End</n>
-            <x>590</x><y>185</y>
+            <x>540</x><y>190</y>
             <connections>
                 <connection><roomId>33</roomId><distance>60</distance></connection>
             </connections>
@@ -973,7 +960,7 @@
         <room>
             <id>33</id>
             <n>Room 33 - 18th Century</n>
-            <x>590</x><y>235</y>
+            <x>625</x><y>190</y>
             <connections>
                 <connection><roomId>34</roomId><distance>55</distance></connection>
                 <connection><roomId>37</roomId><distance>60</distance></connection>
@@ -991,7 +978,7 @@
         <room>
             <id>34</id>
             <n>Room 34 - Blavatnik Family Foundation Room (Turner)</n>
-            <x>635</x><y>255</y>
+            <x>625</x><y>270</y>
             <connections>
                 <connection><roomId>35</roomId><distance>55</distance></connection>
             </connections>
@@ -1014,7 +1001,7 @@
         <room>
             <id>35</id>
             <n>Room 35 - Constable</n>
-            <x>635</x><y>300</y>
+            <x>585</x><y>270</y>
             <connections>
                 <connection><roomId>36</roomId><distance>55</distance></connection>
             </connections>
@@ -1041,7 +1028,7 @@
         <room>
             <id>36</id>
             <n>Room 36 - Claude and Turner</n>
-            <x>590</x><y>300</y>
+            <x>540</x><y>270</y>
             <connections>
                 <connection><roomId>37</roomId><distance>55</distance></connection>
                 <connection><roomId>38</roomId><distance>55</distance></connection>
@@ -1060,7 +1047,7 @@
         <room>
             <id>37</id>
             <n>Room 37 - Goya</n>
-            <x>590</x><y>185</y>
+            <x>540</x><y>230</y>
             <connections>
             </connections>
             <paintings>
@@ -1082,7 +1069,7 @@
         <room>
             <id>38</id>
             <n>Room 38 - French Paintings</n>
-            <x>545</x><y>300</y>
+            <x>495</x><y>270</y>
             <connections>
                 <connection><roomId>39</roomId><distance>55</distance></connection>
                 <connection><roomId>40</roomId><distance>55</distance></connection>
@@ -1094,7 +1081,7 @@
         <room>
             <id>39</id>
             <n>Room 39 - Impressionism</n>
-            <x>500</x><y>300</y>
+            <x>465</x><y>270</y>
             <connections>
                 <connection><roomId>40</roomId><distance>55</distance></connection>
             </connections>
@@ -1111,7 +1098,7 @@
         <room>
             <id>40</id>
             <n>Room 40 - Van Gogh and Post-Impressionism</n>
-            <x>500</x><y>345</y>
+            <x>540</x><y>310</y>
             <connections>
                 <connection><roomId>41</roomId><distance>55</distance></connection>
                 <connection><roomId>44</roomId><distance>65</distance></connection>
@@ -1158,7 +1145,7 @@
         <room>
             <id>46</id>
             <n>Room 46 - Wohl Gallery Entrance</n>
-            <x>455</x><y>345</y>
+            <x>465</x><y>375</y>
             <connections>
                 <connection><roomId>45</roomId><distance>55</distance></connection>
             </connections>
@@ -1169,7 +1156,7 @@
         <room>
             <id>45</id>
             <n>Room 45 - Wohl Gallery C</n>
-            <x>500</x><y>390</y>
+            <x>505</x><y>365</y>
             <connections>
                 <connection><roomId>44</roomId><distance>55</distance></connection>
             </connections>
@@ -1180,7 +1167,7 @@
         <room>
             <id>44</id>
             <n>Room 44 - Late Monet (Wohl Gallery)</n>
-            <x>545</x><y>390</y>
+            <x>545</x><y>365</y>
             <connections>
                 <connection><roomId>43</roomId><distance>55</distance></connection>
             </connections>
@@ -1203,7 +1190,7 @@
         <room>
             <id>43</id>
             <n>Room 43 - Wohl Gallery B</n>
-            <x>590</x><y>390</y>
+            <x>580</x><y>365</y>
             <connections>
                 <connection><roomId>42</roomId><distance>55</distance></connection>
             </connections>
@@ -1215,7 +1202,7 @@
         <room>
             <id>42</id>
             <n>Room 42 - Wohl Gallery A</n>
-            <x>635</x><y>390</y>
+            <x>610</x><y>375</y>
             <connections>
             </connections>
             <paintings>
