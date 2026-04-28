@@ -1,8 +1,11 @@
 package controller;
 
 import data.GalleryDataParser;
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -11,6 +14,10 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -23,30 +30,79 @@ import java.io.IOException;
 import java.util.*;
 
 public class MainUIController {
+    private static final double BASE_IMAGE_WIDTH  = 675;
+    private static final double BASE_IMAGE_HEIGHT = 693;
     public AnchorPane rootAnchor;
     public MenuButton searchButton;
     public Button generatePathButton;
-    public AnchorPane selectionList;
-    public ScrollPane scrollPane;
     public VBox controlsVBOX;
     public AnchorPane scrollPaneAnchor;
     public Pane overlayPane;
     public ImageView imageView;
     public StackPane stackPane;
-    public Group group;
 
     private LinkedList<Integer> selectedNodes = new LinkedList<>();
     private final GalleryDataParser galleryData = new GalleryDataParser();
     private DoubleBinding displayedImageWidth, displayedImageHeight, offsetX, offsetY, markerScale;
-    private static final double BASE_IMAGE_WIDTH  = 675;
-    private static final double BASE_IMAGE_HEIGHT = 693;
-
+    private ObservableList<Room> whitelist = FXCollections.observableArrayList();
+    private ObservableList<Room> blacklist = FXCollections.observableArrayList();
+    public ListView<Room> whitelistView = new ListView<>(whitelist);;
+    public ListView<Room> blacklistView  = new ListView<>(blacklist);;
 
     public void initialize() {
+        whitelistView.setItems(whitelist);
+        blacklistView.setItems(blacklist);
+
+        whitelistView.setCellFactory(lv -> {
+            ListCell<Room> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(Room item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item.getName());
+                }
+            };
+
+            cell.setOnDragDetected(e -> {
+                if (!cell.isEmpty()) {
+                    Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
+                    ClipboardContent cc = new ClipboardContent();
+                    cc.putString(cell.getItem().getId());
+                    db.setContent(cc);
+                    e.consume();
+                }
+            });
+
+            cell.setOnDragOver(e -> {
+                if (e.getGestureSource() != cell && e.getDragboard().hasString()) {
+                    e.acceptTransferModes(TransferMode.MOVE);
+                }
+            });
+
+            cell.setOnDragDropped(e -> {
+                if (!cell.isEmpty()) {
+                    int draggedIdx = whitelist.indexOf(
+                            whitelistView.getSelectionModel().getSelectedItem()
+                    );
+                    int thisIdx = cell.getIndex();
+
+                    Room temp = whitelist.remove(draggedIdx);
+                    whitelist.add(thisIdx, temp);
+                    e.setDropCompleted(true);
+                }
+            });
+
+            return cell;
+        });
+        blacklistView.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Room item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? null : item.getName());
+            }
+        });
 
         StackPane.setAlignment(imageView, Pos.CENTER);
         StackPane.setAlignment(overlayPane, Pos.CENTER);
-
         overlayPane.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         overlayPane.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
@@ -141,38 +197,61 @@ public class MainUIController {
         for (Room room : galleryData.getRooms()) {
             double xRatio = room.getX() / imageWidth;
             double yRatio = room.getY() / imageHeight;
-            Circle circle = new Circle(10);
-            circle.radiusProperty().bind(
-                    markerScale.multiply(10)
-            );
-            Label text = new Label(room.getId());
-            text.setMouseTransparent(true);
-            text.setAlignment(Pos.CENTER);
-            text.setTextFill(Color.WHITE);
-            text.fontProperty().bind(
-                    Bindings.createObjectBinding(
-                            () -> Font.font(12 * markerScale.get()),
-                            markerScale
-                    )
-            );
-            StackPane marker = new StackPane(circle, text);
-            marker.setPickOnBounds(false);
-            marker.translateXProperty().bind(
-                    marker.widthProperty().divide(-2)
-            );
-            marker.translateYProperty().bind(
-                    marker.heightProperty().divide(-2)
-            );
-            marker.layoutXProperty().bind(
-                    displayedImageWidth.multiply(xRatio)
-            );
-            marker.layoutYProperty().bind(
-                    displayedImageHeight.multiply(yRatio)
-            );
+            StackPane marker = createMarker(room.getId());
+            setMarkerProperties(marker, xRatio, yRatio);
             marker.setUserData(room);
             createAssociatedPopup(marker);
             overlayPane.getChildren().add(marker);
         }
+    }
+
+    private StackPane createMarker(String roomId){
+        Circle circle = new Circle(10);
+        circle.radiusProperty().bind(
+                markerScale.multiply(10)
+        );
+        Label text = new Label(roomId);
+        text.setMouseTransparent(true);
+        text.setAlignment(Pos.CENTER);
+        text.setTextFill(Color.WHITE);
+        text.fontProperty().bind(
+                Bindings.createObjectBinding(
+                        () -> Font.font(12 * markerScale.get()),
+                        markerScale
+                )
+        );
+        return new StackPane(circle, text);
+    }
+
+    private void setMarkerProperties(StackPane marker, double xRatio, double yRatio){
+        marker.setPickOnBounds(false);
+        marker.translateXProperty().bind(
+                marker.widthProperty().divide(-2)
+        );
+        marker.translateYProperty().bind(
+                marker.heightProperty().divide(-2)
+        );
+        marker.layoutXProperty().bind(
+                displayedImageWidth.multiply(xRatio)
+        );
+        marker.layoutYProperty().bind(
+                displayedImageHeight.multiply(yRatio)
+        );
+        marker.setOnMouseClicked(e -> {
+            Room waypoint = (Room) marker.getUserData();
+            if (e.getButton() == MouseButton.PRIMARY) {
+                if (!whitelist.contains(waypoint)) {
+                    whitelist.add(waypoint);
+                    blacklist.remove(waypoint);
+                }
+            } else if (e.getButton() == MouseButton.SECONDARY) {
+                if (!blacklist.contains(waypoint)) {
+                    blacklist.add(waypoint);
+                    whitelist.remove(waypoint);
+                }
+            }
+            e.consume();
+        });
     }
 
     private void createAssociatedPopup(StackPane marker) {
@@ -186,7 +265,6 @@ public class MainUIController {
             System.out.println(e);
             return;
         }
-
         Popup popup = new Popup();
         popup.getContent().add(content);
         popup.setAutoHide(true);
