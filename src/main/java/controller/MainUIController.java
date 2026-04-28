@@ -23,6 +23,8 @@ import javafx.scene.shape.Circle;
 
 import javafx.scene.text.Font;
 import javafx.stage.Popup;
+import model.GalleryGraph;
+import model.GalleryLoader;
 import model.Room;
 
 import java.util.*;
@@ -39,7 +41,9 @@ public class MainUIController {
     public ImageView imageView;
     public StackPane stackPane;
 
-    private final GalleryDataParser galleryData = new GalleryDataParser();
+    private final GalleryLoader galleryLoader = new GalleryLoader();
+    private final GalleryGraph graph = galleryLoader.getGraph();
+
     private DoubleBinding displayedImageWidth, displayedImageHeight, offsetX, offsetY, markerScale;
     private final ObservableList<Room> whitelist = FXCollections.observableArrayList();
     private final ObservableList<Room> blacklist = FXCollections.observableArrayList();
@@ -217,7 +221,7 @@ public class MainUIController {
     private void setupMarkers() {
         double imageHeight = imageView.getImage().getHeight();
         double imageWidth = imageView.getImage().getWidth();
-        for (Room room : galleryData.getRooms()) {
+        for (Room room : graph.getAllRooms().values()) {
             double xRatio = room.getX() / imageWidth;
             double yRatio = room.getY() / imageHeight;
             StackPane marker = createMarker(room.getId());
@@ -349,6 +353,22 @@ public class MainUIController {
     }
 
     public void generatePath(ActionEvent actionEvent) {
+        switch(searchButton.getText()){
+            case "DFS" -> DFSSearch();
+            case "BFS" -> BFSSearch();
+            case "Dijkstra" -> {}
+        }
+    }
+
+    private void DFSSearch(){
+
+    }
+
+    private void DikjstraSearch(){
+
+    }
+
+    private void BFSSearch(){
 
     }
 
