@@ -41,8 +41,10 @@ public class MainUIController {
     public ImageView imageView;
     public StackPane stackPane;
 
-    private final GalleryLoader galleryLoader = new GalleryLoader();
-    private final GalleryGraph graph = galleryLoader.getGraph();
+//    private final GalleryLoader galleryLoader = new GalleryLoader();
+//    private final GalleryGraph graph = galleryLoader.getGraph();
+
+    private final GalleryDataParser parser = new GalleryDataParser();
 
     private DoubleBinding displayedImageWidth, displayedImageHeight, offsetX, offsetY, markerScale;
     private final ObservableList<Room> whitelist = FXCollections.observableArrayList();
@@ -221,7 +223,7 @@ public class MainUIController {
     private void setupMarkers() {
         double imageHeight = imageView.getImage().getHeight();
         double imageWidth = imageView.getImage().getWidth();
-        for (Room room : graph.getAllRooms().values()) {
+        for (Room room : parser.getRooms()) {
             double xRatio = room.getX() / imageWidth;
             double yRatio = room.getY() / imageHeight;
             StackPane marker = createMarker(room.getId());
