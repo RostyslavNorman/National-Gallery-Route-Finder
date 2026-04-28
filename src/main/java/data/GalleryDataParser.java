@@ -75,7 +75,7 @@ public class GalleryDataParser {
         NodeList rawRooms = data.getElementsByTagName("rooms");
         Element roomsElement = (Element) rawRooms.item(0);
         NodeList list = roomsElement.getElementsByTagName("room");
-        // Room(int id, String name, int x, int y)
+        // Room(String id, String name, int x, int y)
         int x, y;
         String id, name;
         Element e;

@@ -149,7 +149,7 @@
         <room>
             <id>51</id>
             <n>Room 51 - Early Italian</n>
-            <x>120</x><y>255</y>
+            <x>96</x><y>255</y>
             <connections>
                 <connection><roomId>52</roomId><distance>55</distance></connection>
                 <connection><roomId>51a</roomId><distance>45</distance></connection>
@@ -172,7 +172,7 @@
         <room>
             <id>51a</id>
             <n>Room 51a - Sainsbury Wing Link Lobby</n>
-            <x>175</x><y>255</y>
+            <x>94</x><y>235</y>
             <connections>
                 <connection><roomId>9</roomId><distance>80</distance></connection>
             </connections>
@@ -185,7 +185,7 @@
         <room>
             <id>62</id>
             <n>Room 62 - Sainsbury Wing Hall</n>
-            <x>30</x><y>300</y>
+            <x>25</x><y>290</y>
             <connections>
                 <connection><roomId>59</roomId><distance>55</distance></connection>
                 <connection><roomId>63</roomId><distance>55</distance></connection>
@@ -197,7 +197,7 @@
         <room>
             <id>59</id>
             <n>Room 59 - Italian Renaissance</n>
-            <x>75</x><y>300</y>
+            <x>61</x><y>310</y>
             <connections>
                 <connection><roomId>52</roomId><distance>60</distance></connection>
                 <connection><roomId>58</roomId><distance>55</distance></connection>
@@ -215,7 +215,7 @@
         <room>
             <id>52</id>
             <n>Room 52 - Netherlandish and German</n>
-            <x>120</x><y>300</y>
+            <x>100</x><y>295</y>
             <connections>
                 <connection><roomId>53</roomId><distance>55</distance></connection>
             </connections>
@@ -234,7 +234,7 @@
         <room>
             <id>63</id>
             <n>Room 63 - Sainsbury Wing South Passage</n>
-            <x>30</x><y>345</y>
+            <x>25</x><y>320</y>
             <connections>
                 <connection><roomId>58</roomId><distance>55</distance></connection>
                 <connection><roomId>64</roomId><distance>55</distance></connection>
@@ -246,7 +246,7 @@
         <room>
             <id>58</id>
             <n>Room 58 - Late Netherlandish</n>
-            <x>75</x><y>345</y>
+            <x>61</x><y>350</y>
             <connections>
                 <connection><roomId>53</roomId><distance>55</distance></connection>
                 <connection><roomId>57</roomId><distance>55</distance></connection>
@@ -265,7 +265,7 @@
         <room>
             <id>53</id>
             <n>Room 53 - Botticelli and Italian</n>
-            <x>120</x><y>345</y>
+            <x>100</x><y>325</y>
             <connections>
                 <connection><roomId>54</roomId><distance>55</distance></connection>
             </connections>
@@ -284,7 +284,7 @@
         <room>
             <id>64</id>
             <n>Room 64 - Sainsbury Wing Lower A</n>
-            <x>30</x><y>390</y>
+            <x>25</x><y>355</y>
             <connections>
                 <connection><roomId>57</roomId><distance>55</distance></connection>
                 <connection><roomId>65</roomId><distance>55</distance></connection>
@@ -296,7 +296,7 @@
         <room>
             <id>57</id>
             <n>Room 57 - German and Netherlandish</n>
-            <x>75</x><y>390</y>
+            <x>61</x><y>390</y>
             <connections>
                 <connection><roomId>54</roomId><distance>60</distance></connection>
                 <connection><roomId>65</roomId><distance>55</distance></connection>
@@ -315,7 +315,7 @@
         <room>
             <id>54</id>
             <n>Room 54 - Florentine Painting</n>
-            <x>120</x><y>390</y>
+            <x>100</x><y>350</y>
             <connections>
                 <connection><roomId>55</roomId><distance>55</distance></connection>
             </connections>
