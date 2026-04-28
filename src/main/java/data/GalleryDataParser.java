@@ -4,6 +4,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
 import model.Artist;
+import model.Doorway;
 import model.Painting;
 import model.Room;
 import org.w3c.dom.Document;
@@ -43,7 +44,7 @@ public class GalleryDataParser {
             data.getDocumentElement().normalize();
 
             readArtists();
-            readRoomsPaintingsAndConnections(); // paintings & connections are stored in room, I don't want to reprocess the doc multiple times
+            readRoomsPaintingsAndConnectionsAndDoorways(); // paintings & connections are stored in room, I don't want to reprocess the doc multiple times
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -69,7 +70,7 @@ public class GalleryDataParser {
             artistPaintingsHashMap.put(artist, new ArrayList<>());
     }
 
-    private void readRoomsPaintingsAndConnections(){
+    private void readRoomsPaintingsAndConnectionsAndDoorways(){
         // id (int), n (string), x (int), y (int), connections[roomid, distance] (int)
         // paintings[painting(title, artist, imageFilename, description)] (string)
         NodeList rawRooms = data.getElementsByTagName("rooms");
@@ -94,7 +95,7 @@ public class GalleryDataParser {
                 throw new IllegalArgumentException("ID already registered for connections Map!");
             else
                 connections.put(id, new HashMap<>());
-            readConnections(e.getElementsByTagName("connections"), id);
+            readConnections(e.getElementsByTagName("connections"), id, room);
         }
     }
 
@@ -131,17 +132,29 @@ public class GalleryDataParser {
                 }
     }
 
-    private void readConnections(NodeList connectionsList, String key){
+    private void readConnections(NodeList connectionsList, String key, Room room){
         Element connectionsElement = (Element) connectionsList.item(0);
         NodeList list = connectionsElement.getElementsByTagName("connection");
         String connectionKey;
         int connectionValue;
+        List<Doorway> doorways = new ArrayList<>();
+        int x = 0,y = 0;
+        // TODO remove this later when all the throughpoints have been added
+        boolean hasThroughpoints = false;
         for(int i = 0; i < list.getLength(); i++){
             Element e = (Element) list.item(i);
             connectionKey = e.getElementsByTagName("roomId").item(0).getTextContent();
             connectionValue = Integer.parseInt(e.getElementsByTagName("distance").item(0).getTextContent());
+            if(e.hasAttribute("throughpoint")) {
+                hasThroughpoints = true;
+                x = Integer.parseInt(e.getElementsByTagName("throughpoint").item(0).getTextContent());
+                y = Integer.parseInt(e.getElementsByTagName("throughpoint").item(1).getTextContent());
+            }
             connections.get(key).put(connectionKey, connectionValue);
+            doorways.add(new Doorway(x,y, connectionKey));
         }
+        if(hasThroughpoints)
+            room.setDoorways(doorways);
     }
 
     public List<Artist> getArtists(){
