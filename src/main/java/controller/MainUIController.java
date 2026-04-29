@@ -61,13 +61,15 @@ public class MainUIController {
     public ListView<Room> blacklistView  = new ListView<>(blacklist);;
     public ListView<Artist> allArtistsList = new ListView<>(allArtists);
     public ListView<Artist> preferredArtistList = new ListView<>(preferredArtists);
-    private Polyline path;
+    private Polyline pixelPath = new Polyline(), roomPath = new Polyline();
+    private List<List<Room>> DFSPermutations;
 
     public void initialize() {
         setupUserLists();
         setupImageViewer();
         setupMarkers();
         setupMapPixelPrintout();
+        setupPathMarker();
     }
 
     private void setupUserLists(){
@@ -281,6 +283,19 @@ public class MainUIController {
         }
     }
 
+    private void setupPathMarker(){
+        pixelPath.setStroke(Color.BLUEVIOLET);
+        pixelPath.setStrokeLineCap(StrokeLineCap.ROUND);
+        pixelPath.setStrokeLineJoin(StrokeLineJoin.ROUND);
+        pixelPath.setMouseTransparent(true);
+        pixelPath.strokeWidthProperty().bind(markerScale.multiply(2));
+        roomPath.setStroke(Color.BLUEVIOLET);
+        roomPath.setStrokeLineCap(StrokeLineCap.ROUND);
+        roomPath.setStrokeLineJoin(StrokeLineJoin.ROUND);
+        roomPath.setMouseTransparent(true);
+        roomPath.strokeWidthProperty().bind(markerScale.multiply(2));
+    }
+
     private StackPane createMarker(String roomId){
         Circle circle = new Circle(10);
         circle.radiusProperty().bind(
@@ -432,12 +447,14 @@ public class MainUIController {
         List<List<Room>> paths = SearchAlgorithms.findMultipleRoutes(graph, startId, endId, waypoints, avoid, MAXIMUM_DFS_ROUTES);
         paths.sort(Comparator.comparingInt(List::size));
         System.out.println("Number of paths: " + paths.size());
-        System.out.println("Shortest path: " + paths.get(0).size());
-        System.out.println("Longest path: " + paths.get(paths.size() - 1).size());
+        System.out.println("Shortest pixelPath: " + paths.get(0).size());
+        System.out.println("Longest pixelPath: " + paths.get(paths.size() - 1).size());
         System.out.println("Shortest route:");
         for(Room r : paths.get(0)){
             System.out.println(r.getId());
         }
+        DFSPermutations = paths;
+        drawRoomPath(paths.get(0));
     }
 
     private void DijkstraShortestSearch(){
@@ -456,6 +473,7 @@ public class MainUIController {
         for(Room room : path){
             System.out.println(room.getId());
         }
+        drawRoomPath(path);
     }
 
     private void DijkstraInterestSearch(){
@@ -476,6 +494,7 @@ public class MainUIController {
         for(Room room : path){
             System.out.println(room.getId());
         }
+        drawRoomPath(path);
     }
 
     private void BFSSearch(){
@@ -499,25 +518,16 @@ public class MainUIController {
         endPixel[1] = endRoom.getY();
         List<int[]> path = SearchAlgorithms.findPixelRoute(image, startPixel, endPixel);
         System.out.println("BFS Path length: " + path.size());
-        drawPath(path);
+        drawPixelPath(path);
     }
 
 
-    private void drawPath(List<int[]> points) {
-        if (path != null) {
-            overlayPane.getChildren().remove(path);
-        }
+    private void drawPixelPath(List<int[]> points) {
+        if (pixelPath != null)
+            overlayPane.getChildren().remove(pixelPath);
 
-        path = new Polyline();
-        path.setStroke(Color.BLUEVIOLET);
-        path.setStrokeLineCap(StrokeLineCap.ROUND);
-        path.setStrokeLineJoin(StrokeLineJoin.ROUND);
-        path.setMouseTransparent(true);
-
-        path.strokeWidthProperty().bind(markerScale.multiply(2));
-
-        Runnable updatePath = () -> {
-            path.getPoints().clear();
+        Runnable updatePixelPath = () -> {
+            pixelPath.getPoints().clear();
 
             double scaleX = displayedImageWidth.get() /
                     imageView.getImage().getWidth();
@@ -525,21 +535,42 @@ public class MainUIController {
                     imageView.getImage().getHeight();
 
             for (int[] p : points) {
-                path.getPoints().addAll(
+                pixelPath.getPoints().addAll(
                         p[0] * scaleX,
                         p[1] * scaleY
                 );
             }
         };
-
-        updatePath.run();
-
-        displayedImageWidth.addListener((o, oldV, newV) -> updatePath.run());
-        displayedImageHeight.addListener((o, oldV, newV) -> updatePath.run());
-
-        overlayPane.getChildren().add(path);
+        updatePixelPath.run();
+        displayedImageWidth.addListener((o, oldV, newV) -> updatePixelPath.run());
+        displayedImageHeight.addListener((o, oldV, newV) -> updatePixelPath.run());
+        overlayPane.getChildren().add(pixelPath);
     }
 
+    private void drawRoomPath(List<Room> rooms){
+        if (pixelPath != null)
+            overlayPane.getChildren().remove(pixelPath);
+
+        Runnable updatePixelPath = () -> {
+            pixelPath.getPoints().clear();
+
+            double scaleX = displayedImageWidth.get() /
+                    imageView.getImage().getWidth();
+            double scaleY = displayedImageHeight.get() /
+                    imageView.getImage().getHeight();
+
+            for (Room r : rooms) {
+                pixelPath.getPoints().addAll(
+                        r.getX() * scaleX,
+                        r.getY() * scaleY
+                );
+            }
+        };
+        updatePixelPath.run();
+        displayedImageWidth.addListener((o, oldV, newV) -> updatePixelPath.run());
+        displayedImageHeight.addListener((o, oldV, newV) -> updatePixelPath.run());
+        overlayPane.getChildren().add(pixelPath);
+    }
 
     private List<String> convertWhitelistToString(){
         List<String> whitelist = new ArrayList<>();
