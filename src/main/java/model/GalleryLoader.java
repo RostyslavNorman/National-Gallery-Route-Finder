@@ -116,6 +116,7 @@ public class GalleryLoader {
         xstream.alias("room",       RoomData.class);
         xstream.alias("painting",   Painting.class);
         xstream.alias("connection", ConnectionData.class);
+        xstream.alias("throughpoint", Point.class);
 
         // ── Field aliases — map short XML tag names to Java field names ───────
 
@@ -136,6 +137,7 @@ public class GalleryLoader {
         // ConnectionData fields
         xstream.aliasField("roomId",   ConnectionData.class, "roomId");
         xstream.aliasField("distance", ConnectionData.class, "distance");
+        xstream.aliasField("throughpoint", ConnectionData.class, "throughpoint");
 
         // Painting fields
         xstream.aliasField("title",         Painting.class, "title");
@@ -170,7 +172,7 @@ public class GalleryLoader {
      * <p>Pass 1 — add all rooms as vertices (so every room exists before any
      * edge is registered).</p>
      * <p>Pass 2 — iterate each room's connections and call
-     * {@link GalleryGraph#connectRooms(String, String, double)} for each one.
+     * {@link GalleryGraph connectRooms(String, String, double)} for each one.
      * Because {@code connectRooms} stores the edge in both directions, and the
      * XML defines each connection from one side only, we get a correct undirected
      * graph without duplicate edges.</p>
@@ -190,7 +192,6 @@ public class GalleryLoader {
         for (RoomData rd : data.rooms) {
             Room room = new Room(rd.id, rd.name, rd.x, rd.y);
 
-            // Attach paintings to the room
             if (rd.paintings != null) {
                 for (Painting p : rd.paintings) {
                     room.addPainting(p);
@@ -205,25 +206,32 @@ public class GalleryLoader {
             if (rd.connections == null) continue;
 
             for (ConnectionData conn : rd.connections) {
-                // Guard: skip if the target room wasn't loaded (data inconsistency)
-                if (g.areConnected(rd.id, conn.roomId)) {
+
+                // Guard: skip if target room doesn't exist in the graph
+                if (!g.containsRoom(conn.roomId)) {
                     System.err.println("WARNING: Room " + rd.id +
                             " references unknown neighbour " + conn.roomId +
                             " — skipping this connection.");
                     continue;
                 }
 
-                // Guard: skip self-loops (room connected to itself — invalid)
+                // Guard: skip self-loops
                 if (rd.id.equals(conn.roomId)) {
                     System.err.println("WARNING: Room " + rd.id +
                             " has a self-loop connection — skipping.");
                     continue;
                 }
 
-                // Guard: skip if edge already exists (XML defined it from both sides)
+                // Guard: skip if edge already exists (avoid duplicates)
                 if (g.areConnected(rd.id, conn.roomId)) continue;
 
-                g.connectRooms(rd.id, conn.roomId, conn.distance);
+                // Pull throughpoints from the connection, default to empty list
+                List<Point> throughpoints = new ArrayList<>();
+                if (conn.throughpoint != null) {
+                    throughpoints.add(conn.throughpoint);
+                }
+
+                g.connectRooms(rd.id, conn.roomId, conn.distance, throughpoints);
             }
         }
 
@@ -266,7 +274,9 @@ public class GalleryLoader {
      * Converted to a {@link GalleryGraph.Edge} during graph construction.
      */
     private static class ConnectionData {
-        String   roomId;
+        String roomId;
         double distance;
+        Point throughpoint;
     }
 }
+

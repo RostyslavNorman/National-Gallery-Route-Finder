@@ -138,23 +138,22 @@ public class GalleryDataParser {
         String connectionKey;
         int connectionValue;
         List<Doorway> doorways = new ArrayList<>();
-        int x = 0,y = 0;
-        // TODO remove this later when all the throughpoints have been added
-        boolean hasThroughpoints = false;
         for(int i = 0; i < list.getLength(); i++){
             Element e = (Element) list.item(i);
             connectionKey = e.getElementsByTagName("roomId").item(0).getTextContent();
             connectionValue = Integer.parseInt(e.getElementsByTagName("distance").item(0).getTextContent());
-            if(e.hasAttribute("throughpoint")) {
-                hasThroughpoints = true;
-                x = Integer.parseInt(e.getElementsByTagName("throughpoint").item(0).getTextContent());
-                y = Integer.parseInt(e.getElementsByTagName("throughpoint").item(1).getTextContent());
+
+            NodeList throughpoints = e.getElementsByTagName("throughpoint");
+            if(throughpoints.getLength() > 0) {
+                Element tp = (Element) throughpoints.item(0);
+                int x = Integer.parseInt(tp.getElementsByTagName("x").item(0).getTextContent());
+                int y = Integer.parseInt(tp.getElementsByTagName("y").item(0).getTextContent());
+                doorways.add(new Doorway(x, y, connectionKey));
             }
+
             connections.get(key).put(connectionKey, connectionValue);
-            doorways.add(new Doorway(x,y, connectionKey));
         }
-        if(hasThroughpoints)
-            room.setDoorways(doorways);
+        room.setDoorways(doorways);
     }
 
     public List<Artist> getArtists(){
