@@ -20,7 +20,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.*;
 
 import javafx.scene.text.Font;
 import javafx.stage.Popup;
@@ -60,7 +60,8 @@ public class MainUIController {
     public ListView<Room> whitelistView = new ListView<>(whitelist);;
     public ListView<Room> blacklistView  = new ListView<>(blacklist);;
     public ListView<Artist> allArtistsList = new ListView<>(allArtists);
-    public ListView<Artist> preferredArtistList = new ListView<>(preferredArtists);;
+    public ListView<Artist> preferredArtistList = new ListView<>(preferredArtists);
+    private Polyline path;
 
     public void initialize() {
         setupUserLists();
@@ -229,7 +230,6 @@ public class MainUIController {
                 () -> displayedImageWidth.get() / BASE_IMAGE_WIDTH,
                 displayedImageWidth
         );
-
 
         overlayPane.prefWidthProperty().bind(displayedImageWidth);
         overlayPane.prefHeightProperty().bind(displayedImageHeight);
@@ -499,7 +499,47 @@ public class MainUIController {
         endPixel[1] = endRoom.getY();
         List<int[]> path = SearchAlgorithms.findPixelRoute(image, startPixel, endPixel);
         System.out.println("BFS Path length: " + path.size());
+        drawPath(path);
     }
+
+
+    private void drawPath(List<int[]> points) {
+        if (path != null) {
+            overlayPane.getChildren().remove(path);
+        }
+
+        path = new Polyline();
+        path.setStroke(Color.BLUEVIOLET);
+        path.setStrokeLineCap(StrokeLineCap.ROUND);
+        path.setStrokeLineJoin(StrokeLineJoin.ROUND);
+        path.setMouseTransparent(true);
+
+        path.strokeWidthProperty().bind(markerScale.multiply(2));
+
+        Runnable updatePath = () -> {
+            path.getPoints().clear();
+
+            double scaleX = displayedImageWidth.get() /
+                    imageView.getImage().getWidth();
+            double scaleY = displayedImageHeight.get() /
+                    imageView.getImage().getHeight();
+
+            for (int[] p : points) {
+                path.getPoints().addAll(
+                        p[0] * scaleX,
+                        p[1] * scaleY
+                );
+            }
+        };
+
+        updatePath.run();
+
+        displayedImageWidth.addListener((o, oldV, newV) -> updatePath.run());
+        displayedImageHeight.addListener((o, oldV, newV) -> updatePath.run());
+
+        overlayPane.getChildren().add(path);
+    }
+
 
     private List<String> convertWhitelistToString(){
         List<String> whitelist = new ArrayList<>();
@@ -538,7 +578,8 @@ public class MainUIController {
                             getClass().getResource("/Images/Floor2_filled_walls_structural_final.png")
                     ).toExternalForm()
             ));
-            blacklistView.setDisable(false);
+            blacklistView.setDisable(true);
+            blacklistView.getItems().clear();
             whitelistView.setDisable(false);
             preferredArtistList.setDisable(true);
             preferredArtistList.getItems().clear();
