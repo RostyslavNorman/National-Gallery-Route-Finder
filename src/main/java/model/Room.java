@@ -19,6 +19,9 @@ public class Room {
     //current painting in the room, initialize in constructor -> safe iteration
     private List<Painting> paintings;
 
+    //needed for path finding - otherwise routes may pass through walls
+    private List<Doorway> doorways;
+
     //No-arg constructor required by XStream for XML deserialization.
     public Room(){
         this.paintings = new ArrayList<>();
@@ -75,6 +78,14 @@ public class Room {
     public void addPainting(Painting painting) {
         if (painting == null) throw new IllegalArgumentException("Painting must not be null.");
         paintings.add(painting);
+    }
+
+    public List<Doorway> getDoorways() {
+        return doorways;
+    }
+
+    public void setDoorways(List<Doorway> doorways) {
+        this.doorways = doorways;
     }
 
      // Two rooms are equal if and only if they share the same {@code id}.

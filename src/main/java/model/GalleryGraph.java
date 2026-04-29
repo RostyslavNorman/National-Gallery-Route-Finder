@@ -63,35 +63,19 @@ public class GalleryGraph {
      * a reference to the enclosing {@link GalleryGraph} instance.</p>
      */
     public static class Edge {
-
-        /**
-         * The ID of the room this edge leads to (the destination vertex).
-         * Matches a key in {@link GalleryGraph#rooms}.
-         */
         private String targetRoomId;
-
-        /**
-         * Walking distance from the source room to the target room, measured in pixels
-         * relative to the floorplan image. Used as the edge weight in Dijkstra's algorithm.
-         * Must be a positive value.
-         */
         private double distance;
+        private List<Point> throughpoints; // ordered waypoints to avoid walls
 
-        /** No-arg constructor required by XStream for XML deserialisation. */
-        public Edge() {}
-
-        /**
-         * Creates an Edge pointing to the given target room with the given distance.
-         *
-         * @param targetRoomId ID of the destination room; must exist in the graph
-         * @param distance     walking distance in pixels; must be positive
-         */
-        public Edge(String targetRoomId, double distance) {
-            if (distance <= 0) throw new IllegalArgumentException("Edge distance must be positive.");
+        public Edge(String targetRoomId, double distance, List<Point> throughpoints) {
             this.targetRoomId = targetRoomId;
             this.distance = distance;
+            this.throughpoints = throughpoints != null ? throughpoints : new ArrayList<>();
         }
 
+
+
+        public List<Point> getThroughpoints() { return throughpoints; }
         /** @return the ID of the destination room */
         public String getTargetRoomId() { return targetRoomId; }
 
@@ -163,15 +147,24 @@ public class GalleryGraph {
      * @param distance walking distance between the rooms in pixels; must be positive
      * @throws IllegalArgumentException if either room ID does not exist in the graph
      */
-    public void connectRooms(String roomIdA, String roomIdB, double distance) {
+    public void connectRooms(String roomIdA, String roomIdB, double distance, List<Point> throughpoints) {
+        if (distance <= 0)
+            throw new IllegalArgumentException("Edge distance must be positive.");
         if (!rooms.containsKey(roomIdA))
             throw new IllegalArgumentException("Room not found in graph: " + roomIdA);
         if (!rooms.containsKey(roomIdB))
             throw new IllegalArgumentException("Room not found in graph: " + roomIdB);
 
-        // Add edge in both directions (undirected graph)
-        adjacencyList.get(roomIdA).add(new Edge(roomIdB, distance));
-        adjacencyList.get(roomIdB).add(new Edge(roomIdA, distance));
+        // Reverse the throughpoints for the B→A direction
+        List<Point> reversed = new ArrayList<>(throughpoints);
+        Collections.reverse(reversed);
+
+        adjacencyList.get(roomIdA).add(new Edge(roomIdB, distance, throughpoints));
+        adjacencyList.get(roomIdB).add(new Edge(roomIdA, distance, reversed));
+    }
+
+    public void connectRooms(String roomIdA, String roomIdB, double distance) {
+        connectRooms(roomIdA, roomIdB, distance, Collections.emptyList());
     }
 
     // -------------------------------------------------------------------------

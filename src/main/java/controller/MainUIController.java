@@ -2,7 +2,6 @@ package controller;
 
 import data.GalleryDataParser;
 import data.MapColours;
-import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.FXCollections;
@@ -10,7 +9,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -25,9 +23,10 @@ import javafx.scene.shape.Circle;
 
 import javafx.scene.text.Font;
 import javafx.stage.Popup;
+import model.GalleryGraph;
+import model.GalleryLoader;
 import model.Room;
 
-import java.io.IOException;
 import java.util.*;
 
 public class MainUIController {
@@ -42,15 +41,25 @@ public class MainUIController {
     public ImageView imageView;
     public StackPane stackPane;
 
-    private LinkedList<Integer> selectedNodes = new LinkedList<>();
-    private final GalleryDataParser galleryData = new GalleryDataParser();
+//    private final GalleryLoader galleryLoader = new GalleryLoader();
+//    private final GalleryGraph graph = galleryLoader.getGraph();
+
+    private final GalleryDataParser parser = new GalleryDataParser();
+
     private DoubleBinding displayedImageWidth, displayedImageHeight, offsetX, offsetY, markerScale;
-    private ObservableList<Room> whitelist = FXCollections.observableArrayList();
-    private ObservableList<Room> blacklist = FXCollections.observableArrayList();
+    private final ObservableList<Room> whitelist = FXCollections.observableArrayList();
+    private final ObservableList<Room> blacklist = FXCollections.observableArrayList();
     public ListView<Room> whitelistView = new ListView<>(whitelist);;
     public ListView<Room> blacklistView  = new ListView<>(blacklist);;
 
     public void initialize() {
+        setupUserLists();
+        setupImageViewer();
+        setupMarkers();
+        setupMapPixelPrintout();
+    }
+
+    private void setupUserLists(){
         whitelistView.setItems(whitelist);
         blacklistView.setItems(blacklist);
 
@@ -79,6 +88,13 @@ public class MainUIController {
                 }
             });
 
+            cell.setOnMouseClicked(e -> {
+                if(e.getButton() == MouseButton.SECONDARY) {
+                    whitelist.remove(whitelistView.getSelectionModel().getSelectedItem());
+                    checkCanGeneratePath();
+                }
+            });
+
             cell.setOnDragDropped(e -> {
                 if (!cell.isEmpty()) {
                     int draggedIdx = whitelist.indexOf(
@@ -91,17 +107,29 @@ public class MainUIController {
                     e.setDropCompleted(true);
                 }
             });
+            return cell;
+        });
+
+        blacklistView.setCellFactory(lv -> {
+            ListCell<Room> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(Room item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item.getName());
+                }
+            };
+
+            cell.setOnMouseClicked(e -> {
+                if (e.getButton() == MouseButton.SECONDARY) {
+                    blacklist.remove(blacklistView.getSelectionModel().getSelectedItem());
+                }
+            });
 
             return cell;
         });
-        blacklistView.setCellFactory(lv -> new ListCell<>() {
-            @Override
-            protected void updateItem(Room item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty ? null : item.getName());
-            }
-        });
+    }
 
+    private void setupImageViewer(){
         StackPane.setAlignment(imageView, Pos.CENTER);
         StackPane.setAlignment(overlayPane, Pos.CENTER);
         overlayPane.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
@@ -160,8 +188,9 @@ public class MainUIController {
         overlayPane.prefHeightProperty().bind(displayedImageHeight);
         overlayPane.translateXProperty().bind(offsetX);
         overlayPane.translateYProperty().bind(offsetY);
-        setupMarkers();
+    }
 
+    private void setupMapPixelPrintout(){
         overlayPane.setOnMouseClicked(e -> {
             Image img = imageView.getImage();
             if (img == null) return;
@@ -189,13 +218,12 @@ public class MainUIController {
                     Math.round(imageY)
             );
         });
-
     }
 
     private void setupMarkers() {
         double imageHeight = imageView.getImage().getHeight();
         double imageWidth = imageView.getImage().getWidth();
-        for (Room room : galleryData.getRooms()) {
+        for (Room room : parser.getRooms()) {
             double xRatio = room.getX() / imageWidth;
             double yRatio = room.getY() / imageHeight;
             StackPane marker = createMarker(room.getId());
@@ -225,31 +253,66 @@ public class MainUIController {
         return new StackPane(circle, text);
     }
 
+//    private Color findColor(String roomId) {
+//        int id = 0;
+//        if(!roomId.matches("\\d+")){
+//            StringBuilder newId = new StringBuilder();
+//            for(int i = 0; i < roomId.length(); i++){
+//                if(Character.isDigit(roomId.charAt(i))){
+//                    newId.append(roomId.charAt(i));
+//                }else{
+//                    break;
+//                }
+//            }
+//            id = Integer.parseInt(newId.toString());
+//        }else{
+//            id = Integer.parseInt(roomId);
+//        }
+//        if(id == 1)
+//            return MapColours.yellow;
+//        if(inRangeInclusive(id, 2, 14))
+//            return MapColours.pink;
+//        if(inRangeInclusive(id, 15, 32))
+//            return MapColours.purple;
+//        if(inRangeInclusive(id, 33, 37))
+//            return MapColours.blue;
+//        if(inRangeInclusive(id, 38, 46))
+//            return MapColours.green;
+//        return MapColours.orange;
+//    }
+
     private Color findColor(String roomId) {
-        int id = 0;
-        if(!roomId.matches("\\d+")){
-            StringBuilder newId = new StringBuilder();
-            for(int i = 0; i < roomId.length(); i++){
-                if(Character.isDigit(roomId.charAt(i))){
-                    newId.append(roomId.charAt(i));
-                }else{
-                    break;
-                }
-            }
-            id = Integer.parseInt(newId.toString());
-        }else{
-            id = Integer.parseInt(roomId);
+        // Special named rooms
+        if (roomId.equals("C")) return MapColours.blue;
+        if (roomId.equals("S")) return MapColours.yellow;
+        // If the ID has no digits at all (e.g. "C", "S"), return a default color
+        String digits = roomId.replaceAll("[^0-9]", "");
+        if (digits.isEmpty()) {
+            return MapColours.orange;
         }
-        if(id == 1)
-            return MapColours.yellow;
-        if(inRangeInclusive(id, 2, 14))
-            return MapColours.pink;
-        if(inRangeInclusive(id, 15, 32))
-            return MapColours.purple;
-        if(inRangeInclusive(id, 33, 37))
-            return MapColours.blue;
-        if(inRangeInclusive(id, 38, 46))
-            return MapColours.green;
+
+        // Extract the leading digit sequence (e.g. "51a" → "51")
+        StringBuilder leadingDigits = new StringBuilder();
+        for (int i = 0; i < roomId.length(); i++) {
+            if (Character.isDigit(roomId.charAt(i))) {
+                leadingDigits.append(roomId.charAt(i));
+            } else {
+                break;
+            }
+        }
+
+        // If the ID starts with letters (no leading digits), fall back to orange
+        if (leadingDigits.isEmpty()) {
+            return MapColours.orange;
+        }
+
+        int id = Integer.parseInt(leadingDigits.toString());
+
+        if (id == 1)                        return MapColours.yellow;
+        if (inRangeInclusive(id, 2, 14))    return MapColours.pink;
+        if (inRangeInclusive(id, 15, 32))   return MapColours.purple;
+        if (inRangeInclusive(id, 33, 37))   return MapColours.blue;
+        if (inRangeInclusive(id, 38, 46))   return MapColours.green;
         return MapColours.orange;
     }
 
@@ -279,11 +342,12 @@ public class MainUIController {
                     blacklist.remove(waypoint);
                 }
             } else if (e.getButton() == MouseButton.SECONDARY) {
-                if (!blacklist.contains(waypoint)) {
+                if (!blacklist.contains(waypoint) && !searchButton.getText().equals("BFS")) {
                     blacklist.add(waypoint);
                     whitelist.remove(waypoint);
                 }
             }
+            checkCanGeneratePath();
             e.consume();
         });
     }
@@ -320,20 +384,46 @@ public class MainUIController {
     }
 
     private void checkCanGeneratePath(){
-        if(!searchButton.getText().equals("Search"))
-            generatePathButton.setDisable(false);
-        if(selectedNodes.isEmpty())
+        generatePathButton.setDisable(false);
+        if(searchButton.getText().equals("Search Type") || whitelist.size() < 2)
             generatePathButton.setDisable(true);
     }
 
     public void generatePath(ActionEvent actionEvent) {
+        switch(searchButton.getText()){
+            case "DFS" -> DFSSearch();
+            case "BFS" -> BFSSearch();
+            case "Dijkstra" -> {}
+        }
+    }
+
+    private void DFSSearch(){
+
+    }
+
+    private void DikjstraSearch(){
+
+    }
+
+    private void BFSSearch(){
 
     }
 
     public void selectSearch(ActionEvent actionEvent) {
         MenuItem item = (MenuItem) actionEvent.getSource();
+        if(item.getText().equals("BFS"))
+            imageView.setImage(new Image(
+                    Objects.requireNonNull(
+                            getClass().getResource("/Images/Floor2_filled_walls_structural_final.png")
+                    ).toExternalForm()
+            ));
+        else
+            imageView.setImage(new Image(
+                    Objects.requireNonNull(
+                            getClass().getResource("/Images/Floor2Layout.png")
+                    ).toExternalForm()
+            ));
         searchButton.setText(item.getText());
         checkCanGeneratePath();
-        generatePathButton.setDisable(false);
     }
 }
