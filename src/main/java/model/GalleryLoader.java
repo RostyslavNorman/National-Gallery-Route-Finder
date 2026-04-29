@@ -231,11 +231,10 @@ public class GalleryLoader {
                 if (g.areConnected(rd.id, conn.roomId)) continue;
 
                 // Pull throughpoints from the connection, default to empty list
-                List<Point> throughpoints = new ArrayList<>();
-                if (conn.throughpoint != null) {
-                    throughpoints.add(conn.throughpoint);
-                }
-
+                // Replace the manual single-point wrapping with:
+                List<Point> throughpoints = conn.throughpoints != null
+                        ? conn.throughpoints
+                        : new ArrayList<>();
                 g.connectRooms(rd.id, conn.roomId, conn.distance, throughpoints);
             }
         }
@@ -281,7 +280,7 @@ public class GalleryLoader {
     private static class ConnectionData {
         String roomId;
         double distance;
-        Point throughpoint;
+        List<Point> throughpoints;
     }
 }
 

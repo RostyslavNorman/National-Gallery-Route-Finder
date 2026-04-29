@@ -480,63 +480,71 @@ public class SearchAlgorithms {
      * @return ordered list of [x, y] coordinates forming the path;
      *         empty if no walkable path exists
      */
+    private static final int WALKABLE_THRESHOLD = 200;
+
     public static List<int[]> findPixelRoute(BufferedImage mapImage,
                                              int[] startPixel,
                                              int[] endPixel) {
         int width  = mapImage.getWidth();
         int height = mapImage.getHeight();
-
-        // Pure white = 0xFFFFFF. Near-white pixels are walkable too.
-        final int PIXEL_THRESHOLD = 200;
-
-        // parent[y][x] = the pixel [x,y] we arrived from; null = not yet visited
-        int[][][] parent  = new int[height][width][];
-        boolean[][] visited = new boolean[height][width];
-
         int sx = startPixel[0], sy = startPixel[1];
         int ex = endPixel[0],   ey = endPixel[1];
 
-        // Sanity checks before we start
-        if (!inBounds(sx, sy, width, height) || !inBounds(ex, ey, width, height)) {
-            return Collections.emptyList();
-        }
-        if (!isWalkable(mapImage, sx, sy, PIXEL_THRESHOLD)
-                || !isWalkable(mapImage, ex, ey, PIXEL_THRESHOLD)) {
-            return Collections.emptyList();
-        }
+        if (!inBounds(sx, sy, width, height) || !inBounds(ex, ey, width, height)) return List.of();
+        if (!isWalkable(mapImage, sx, sy, WALKABLE_THRESHOLD))  return List.of();
+        if (!isWalkable(mapImage, ex, ey, WALKABLE_THRESHOLD))  return List.of();
+        if (sx == ex && sy == ey) return List.of(new int[]{sx, sy});
 
-        Queue<int[]> queue = new LinkedList<>();
-        visited[sy][sx] = true;
-        parent[sy][sx]  = new int[]{-1, -1}; // sentinel: start has no parent
-        queue.add(new int[]{sx, sy});
+        // Flat int array: parentX[y*width+x], parentY[y*width+x], -1 = unvisited
+        int[] parentX = new int[width * height];
+        int[] parentY = new int[width * height];
+        java.util.Arrays.fill(parentX, -1);
 
-        // 4-directional movement: right, left, down, up
+        Queue<Integer> queue = new LinkedList<>();
+        int startIdx = sy * width + sx;
+        parentX[startIdx] = sx;   // self-parent marks the start
+        parentY[startIdx] = sy;
+        queue.add(startIdx);
+
         int[] dx = {1, -1, 0, 0};
         int[] dy = {0, 0, 1, -1};
+        boolean found = false;
 
+        outer:
         while (!queue.isEmpty()) {
-            int[] current = queue.poll();
-            int cx = current[0], cy = current[1];
-
-            if (cx == ex && cy == ey) {
-                return reconstructPixelPath(parent, sx, sy, ex, ey);
-            }
+            int idx = queue.poll();
+            int cx = idx % width;
+            int cy = idx / width;
 
             for (int d = 0; d < 4; d++) {
                 int nx = cx + dx[d];
                 int ny = cy + dy[d];
-
-                if (inBounds(nx, ny, width, height)
-                        && !visited[ny][nx]
-                        && isWalkable(mapImage, nx, ny, PIXEL_THRESHOLD)) {
-                    visited[ny][nx] = true;
-                    parent[ny][nx]  = new int[]{cx, cy};
-                    queue.add(new int[]{nx, ny});
-                }
+                if (!inBounds(nx, ny, width, height)) continue;
+                int nIdx = ny * width + nx;
+                if (parentX[nIdx] != -1) continue;                       // already visited
+                if (!isWalkable(mapImage, nx, ny, WALKABLE_THRESHOLD)) continue;
+                parentX[nIdx] = cx;
+                parentY[nIdx] = cy;
+                if (nx == ex && ny == ey) { found = true; break outer; }
+                queue.add(nIdx);
             }
         }
 
-        return Collections.emptyList(); // no walkable path
+        if (!found) return List.of();
+
+        // Reconstruct path end -> start, then reverse
+        List<int[]> path = new ArrayList<>();
+        int cx = ex, cy = ey;
+        while (!(cx == sx && cy == sy)) {
+            path.add(new int[]{cx, cy});
+            int idx = cy * width + cx;
+            int px = parentX[idx];
+            int py = parentY[idx];
+            cx = px; cy = py;
+        }
+        path.add(new int[]{sx, sy});
+        Collections.reverse(path);
+        return path;
     }
 
     /**
