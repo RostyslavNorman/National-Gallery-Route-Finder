@@ -622,35 +622,6 @@ public class SearchAlgorithms {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
-    /**
-     * Reconstructs the pixel path from start to end by following parent
-     * pointers back from the destination, then reversing.
-     *
-     * @param parent 2D array where parent[y][x] = the pixel we came from
-     * @param sx     start x
-     * @param sy     start y
-     * @param ex     end x
-     * @param ey     end y
-     * @return ordered list of [x, y] pixel coordinates, start to end
-     */
-    private static List<int[]> reconstructPixelPath(int[][][] parent,
-                                                    int sx, int sy,
-                                                    int ex, int ey) {
-        List<int[]> path = new ArrayList<>();
-        int cx = ex, cy = ey;
-
-        while (!(cx == sx && cy == sy)) {
-            path.add(new int[]{cx, cy});
-            int[] p = parent[cy][cx];
-            cx = p[0];
-            cy = p[1];
-        }
-        path.add(new int[]{sx, sy});
-
-        Collections.reverse(path); // flip so it runs start -> end
-        return path;
-    }
-
     // -------------------------------------------------------------------------
     // Shared private utilities
     // -------------------------------------------------------------------------
