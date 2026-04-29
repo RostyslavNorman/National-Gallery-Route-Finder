@@ -548,6 +548,59 @@ public class SearchAlgorithms {
     }
 
     /**
+     * Reduces a dense pixel path to a minimal set of waypoints using
+     * Douglas-Peucker. epsilon=2.0 is a good default — raise it for
+     * smoother lines, lower it to preserve tight corridor bends.
+     */
+    public static List<int[]> simplifyPath(List<int[]> path, double epsilon) {
+        if (path.size() < 3) return path;
+        return douglasPeucker(path, 0, path.size() - 1, epsilon);
+    }
+
+    private static List<int[]> douglasPeucker(List<int[]> pts, int start, int end, double eps) {
+        if (end <= start + 1) {
+            List<int[]> result = new ArrayList<>();
+            result.add(pts.get(start));
+            result.add(pts.get(end));
+            return result;
+        }
+
+        double maxDist = 0;
+        int maxIdx = start;
+        int[] a = pts.get(start), b = pts.get(end);
+
+        for (int i = start + 1; i < end; i++) {
+            double d = perpendicularDistance(pts.get(i), a, b);
+            if (d > maxDist) { maxDist = d; maxIdx = i; }
+        }
+
+        if (maxDist > eps) {
+            List<int[]> left  = douglasPeucker(pts, start, maxIdx, eps);
+            List<int[]> right = douglasPeucker(pts, maxIdx, end,   eps);
+            // merge: drop duplicate junction point
+            List<int[]> merged = new ArrayList<>(left);
+            merged.addAll(right.subList(1, right.size()));
+            return merged;
+        }
+
+        // All intermediate points are within epsilon — just keep endpoints
+        List<int[]> result = new ArrayList<>();
+        result.add(a);
+        result.add(b);
+        return result;
+    }
+
+    private static double perpendicularDistance(int[] p, int[] a, int[] b) {
+        double ax = a[0], ay = a[1], bx = b[0], by = b[1];
+        double px = p[0], py = p[1];
+        double dx = bx - ax, dy = by - ay;
+        if (dx == 0 && dy == 0) return Math.hypot(px - ax, py - ay);
+        double t = ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy);
+        t = Math.max(0, Math.min(1, t));
+        return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+    }
+
+    /**
      * Returns true if the pixel at (x, y) is walkable (bright enough).
      * Uses the red channel as a brightness proxy — fine for greyscale images.
      *
