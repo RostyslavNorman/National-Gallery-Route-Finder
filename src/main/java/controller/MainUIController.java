@@ -41,8 +41,8 @@ public class MainUIController {
     public ImageView imageView;
     public StackPane stackPane;
 
-//    private final GalleryLoader galleryLoader = new GalleryLoader();
-//    private final GalleryGraph graph = galleryLoader.getGraph();
+    private final GalleryLoader galleryLoader = new GalleryLoader();
+    private final GalleryGraph graph = galleryLoader.getGraph();
 
     private final GalleryDataParser parser = new GalleryDataParser();
 
@@ -223,7 +223,7 @@ public class MainUIController {
     private void setupMarkers() {
         double imageHeight = imageView.getImage().getHeight();
         double imageWidth = imageView.getImage().getWidth();
-        for (Room room : parser.getRooms()) {
+        for (Room room : graph.getAllRooms().values()) {
             double xRatio = room.getX() / imageWidth;
             double yRatio = room.getY() / imageHeight;
             StackPane marker = createMarker(room.getId());
