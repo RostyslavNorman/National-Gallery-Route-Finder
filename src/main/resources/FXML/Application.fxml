@@ -44,7 +44,7 @@
                               <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Whitelist" />
-                                    <ListView fx:id="whitelistView" prefHeight="200.0" prefWidth="200.0" />
+                                    <ListView fx:id="whitelistView" disable="true" prefHeight="200.0" prefWidth="200.0" />
                                  </children>
                               </VBox>
                            </children>
@@ -60,7 +60,7 @@
                               <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Blacklist" />
-                                    <ListView fx:id="blacklistView" prefHeight="200.0" prefWidth="200.0" />
+                                    <ListView fx:id="blacklistView" disable="true" prefHeight="200.0" prefWidth="200.0" />
                                  </children>
                               </VBox>
                            </children>
@@ -75,13 +75,13 @@
                                     <VBox HBox.hgrow="ALWAYS">
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Preferred Artists" />
-                                          <ListView fx:id="preferredArtistList" prefHeight="200.0" prefWidth="150.0" />
+                                          <ListView fx:id="preferredArtistList" disable="true" prefHeight="200.0" prefWidth="150.0" />
                                        </children>
                                     </VBox>
                                     <VBox HBox.hgrow="ALWAYS">
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="All Artists" />
-                                          <ListView fx:id="allArtistsList" prefHeight="200.0" prefWidth="150.0" />
+                                          <ListView fx:id="allArtistsList" disable="true" prefHeight="200.0" prefWidth="150.0" />
                                        </children>
                                     </VBox>
                                  </children>
