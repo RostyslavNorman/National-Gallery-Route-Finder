@@ -134,6 +134,7 @@
             <connections>
                 <connection><roomId>61</roomId><distance>55</distance><throughpoint><x>78</x><y>260</y></throughpoint></connection>
                 <connection><roomId>51</roomId><distance>55</distance><throughpoint><x>60</x><y>283</y></throughpoint></connection>
+                <connection><roomId>59</roomId><distance>55</distance><throughpoint><x>60</x><y>283</y></throughpoint></connection>
             </connections>
             <paintings>
                 <painting>
