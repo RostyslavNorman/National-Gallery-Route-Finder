@@ -41,8 +41,8 @@ public class MainUIController {
     public ImageView imageView;
     public StackPane stackPane;
 
-//    private final GalleryLoader galleryLoader = new GalleryLoader();
-//    private final GalleryGraph graph = galleryLoader.getGraph();
+    private final GalleryLoader galleryLoader = new GalleryLoader();
+    private final GalleryGraph graph = galleryLoader.getGraph();
 
     private final GalleryDataParser parser = new GalleryDataParser();
 
@@ -223,7 +223,7 @@ public class MainUIController {
     private void setupMarkers() {
         double imageHeight = imageView.getImage().getHeight();
         double imageWidth = imageView.getImage().getWidth();
-        for (Room room : parser.getRooms()) {
+        for (Room room : graph.getAllRooms().values()) {
             double xRatio = room.getX() / imageWidth;
             double yRatio = room.getY() / imageHeight;
             StackPane marker = createMarker(room.getId());
@@ -252,34 +252,6 @@ public class MainUIController {
         );
         return new StackPane(circle, text);
     }
-
-//    private Color findColor(String roomId) {
-//        int id = 0;
-//        if(!roomId.matches("\\d+")){
-//            StringBuilder newId = new StringBuilder();
-//            for(int i = 0; i < roomId.length(); i++){
-//                if(Character.isDigit(roomId.charAt(i))){
-//                    newId.append(roomId.charAt(i));
-//                }else{
-//                    break;
-//                }
-//            }
-//            id = Integer.parseInt(newId.toString());
-//        }else{
-//            id = Integer.parseInt(roomId);
-//        }
-//        if(id == 1)
-//            return MapColours.yellow;
-//        if(inRangeInclusive(id, 2, 14))
-//            return MapColours.pink;
-//        if(inRangeInclusive(id, 15, 32))
-//            return MapColours.purple;
-//        if(inRangeInclusive(id, 33, 37))
-//            return MapColours.blue;
-//        if(inRangeInclusive(id, 38, 46))
-//            return MapColours.green;
-//        return MapColours.orange;
-//    }
 
     private Color findColor(String roomId) {
         // Special named rooms

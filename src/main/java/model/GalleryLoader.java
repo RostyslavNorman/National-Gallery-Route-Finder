@@ -110,6 +110,9 @@ public class GalleryLoader {
         // Allow all types — safe here because we only load our own known XML file
         xstream.addPermission(AnyTypePermission.ANY);
 
+        // Register custom converter for ConnectionData to handle throughpoints collection
+        xstream.registerConverter(new ConnectionDataConverter());
+
         // ── Root and container aliases ────────────────────────────────────────
         xstream.alias("gallery",    GalleryData.class);
         xstream.alias("artist",     Artist.class);
@@ -137,7 +140,7 @@ public class GalleryLoader {
         // ConnectionData fields
         xstream.aliasField("roomId",   ConnectionData.class, "roomId");
         xstream.aliasField("distance", ConnectionData.class, "distance");
-        xstream.aliasField("throughpoint", ConnectionData.class, "throughpoint");
+        // Note: throughpoints are handled by the custom ConnectionDataConverter
 
         // Painting fields
         xstream.aliasField("title",         Painting.class, "title");
@@ -243,6 +246,64 @@ public class GalleryLoader {
                 " rooms and " + g.getEdgeCount() + " connections.");
 
         return g;
+    }
+
+    // =========================================================================
+    // Private inner converter classes
+    // =========================================================================
+
+    /**
+     * Custom converter for ConnectionData to handle the XML structure where
+     * throughpoint elements may or may not be present, and should be collected
+     * into a list.
+     */
+    private static class ConnectionDataConverter implements com.thoughtworks.xstream.converters.Converter {
+
+        @Override
+        public boolean canConvert(Class type) {
+            return type == ConnectionData.class;
+        }
+
+        @Override
+        public void marshal(Object source, com.thoughtworks.xstream.io.HierarchicalStreamWriter writer,
+                            com.thoughtworks.xstream.converters.MarshallingContext context) {
+            // Not needed for deserialization, but required by interface
+        }
+
+        @Override
+        public Object unmarshal(com.thoughtworks.xstream.io.HierarchicalStreamReader reader,
+                                com.thoughtworks.xstream.converters.UnmarshallingContext context) {
+            ConnectionData conn = new ConnectionData();
+            conn.throughpoints = new java.util.ArrayList<>();
+
+            while (reader.hasMoreChildren()) {
+                reader.moveDown();
+                String nodeName = reader.getNodeName();
+                String nodeValue = reader.getValue();
+
+                if ("roomId".equals(nodeName)) {
+                    conn.roomId = nodeValue;
+                } else if ("distance".equals(nodeName)) {
+                    conn.distance = Double.parseDouble(nodeValue);
+                } else if ("throughpoint".equals(nodeName)) {
+                    // Deserialize as Point
+                    Point p = new Point();
+                    while (reader.hasMoreChildren()) {
+                        reader.moveDown();
+                        if ("x".equals(reader.getNodeName())) {
+                            p.x = Integer.parseInt(reader.getValue());
+                        } else if ("y".equals(reader.getNodeName())) {
+                            p.y = Integer.parseInt(reader.getValue());
+                        }
+                        reader.moveUp();
+                    }
+                    conn.throughpoints.add(p);
+                }
+                reader.moveUp();
+            }
+
+            return conn;
+        }
     }
 
     // =========================================================================
