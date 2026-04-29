@@ -38,9 +38,9 @@ public class BFS {
 
     private void processImage(){
         PixelCoordinate position = agendaList.getFirst();
-        if(position = destination){
-            return;
-        }
+//        if(position = destination){
+//            return;
+//        }
         int x = position.x(), y = position.y();
         if(x + 1 < BASE_IMAGE_WIDTH){
             if(reader.getColor(x+1, y) != Color.WHITE)
