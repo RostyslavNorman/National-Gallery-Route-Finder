@@ -28,7 +28,8 @@
                                 <items>
                                   <MenuItem fx:id="DFS" mnemonicParsing="false" onAction="#selectSearch" text="DFS" />
                                   <MenuItem fx:id="BFS" mnemonicParsing="false" onAction="#selectSearch" text="BFS" />
-                                    <MenuItem fx:id="Dikjstra" mnemonicParsing="false" onAction="#selectSearch" text="Dikjstra" />
+                                    <MenuItem fx:id="Dikjstra" mnemonicParsing="false" onAction="#selectSearch" text="Dijkstra Interest" />
+                                    <MenuItem fx:id="Dikjstra1" mnemonicParsing="false" onAction="#selectSearch" text="Dijkstra Shortest" />
                                 </items>
                                  <opaqueInsets>
                                     <Insets />
@@ -62,6 +63,29 @@
                                     <ListView fx:id="blacklistView" prefHeight="200.0" prefWidth="200.0" />
                                  </children>
                               </VBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="scrollPaneAnchor11" layoutX="10.0" layoutY="271.0">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" />
+                           </padding>
+                           <children>
+                              <HBox prefHeight="250.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Preferred Artists" />
+                                          <ListView fx:id="preferredArtistList" prefHeight="200.0" prefWidth="150.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="All Artists" />
+                                          <ListView fx:id="allArtistsList" prefHeight="200.0" prefWidth="150.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
                            </children>
                         </AnchorPane>
                      </children>
