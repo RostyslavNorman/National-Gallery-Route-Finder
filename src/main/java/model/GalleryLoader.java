@@ -145,11 +145,10 @@ public class GalleryLoader {
         xstream.aliasField("imageFilename", Painting.class, "imageFilename");
         xstream.aliasField("description",   Painting.class, "description");
 
-        // ── Collection item aliases (tell XStream the element name for each item)
-        xstream.addImplicitCollection(GalleryData.class, "artists", Artist.class);
-        xstream.addImplicitCollection(GalleryData.class, "rooms",   RoomData.class);
-        xstream.addImplicitCollection(RoomData.class,    "connections", "connection", ConnectionData.class);
-        xstream.addImplicitCollection(RoomData.class,    "paintings",   "painting",   Painting.class);
+        // ── Collection mappings ───────────────────────────────────────────────
+        // The XML uses explicit wrapper elements (<artists>, <rooms>, <connections>,
+        // <paintings>), so we do NOT use implicit collections here. XStream will map
+        // the wrapper element directly onto these list fields by name.
 
         // ── Load the resource from the classpath ──────────────────────────────
         InputStream stream = GalleryLoader.class.getResourceAsStream(DATA_FILE);
@@ -159,7 +158,13 @@ public class GalleryLoader {
                             "Ensure it is in src/main/resources/ and Maven has run.");
         }
 
-        return (GalleryData) xstream.fromXML(stream);
+        try (InputStream in = stream) {
+            return (GalleryData) xstream.fromXML(in);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse gallery_data.xml", e);
+        }
     }
 
     // -------------------------------------------------------------------------
