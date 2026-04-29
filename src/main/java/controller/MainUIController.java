@@ -29,6 +29,9 @@ import model.GalleryGraph;
 import model.GalleryLoader;
 import model.Room;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.*;
 
 public class MainUIController {
@@ -476,7 +479,26 @@ public class MainUIController {
     }
 
     private void BFSSearch(){
-
+//        BufferedImage mapImage,
+//        int[] startPixel,
+//        int[] endPixel
+        BufferedImage image;
+        try {
+            image = ImageIO.read(new File("src/main/resources/Images/Floor2_filled_walls_structural_final.png"));
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return;
+        }
+        int[] startPixel = new int[2], endPixel = new int[2];
+        Room startRoom = whitelist.get(0);
+        Room endRoom = whitelist.get(whitelist.size() - 1);
+        startPixel[0] = startRoom.getX();
+        startPixel[1] = startRoom.getY();
+        endPixel[0] = endRoom.getX();
+        endPixel[1] = endRoom.getY();
+        List<int[]> path = SearchAlgorithms.findPixelRoute(image, startPixel, endPixel);
+        System.out.println("BFS Path length: " + path.size());
     }
 
     private List<String> convertWhitelistToString(){
@@ -505,18 +527,42 @@ public class MainUIController {
 
     public void selectSearch(ActionEvent actionEvent) {
         MenuItem item = (MenuItem) actionEvent.getSource();
-        if(item.getText().equals("BFS"))
+        imageView.setImage(new Image(
+                Objects.requireNonNull(
+                        getClass().getResource("/Images/Floor2Layout.png")
+                ).toExternalForm()
+        ));
+        if(item.getText().equals("BFS")) {
             imageView.setImage(new Image(
                     Objects.requireNonNull(
                             getClass().getResource("/Images/Floor2_filled_walls_structural_final.png")
                     ).toExternalForm()
             ));
-        else
-            imageView.setImage(new Image(
-                    Objects.requireNonNull(
-                            getClass().getResource("/Images/Floor2Layout.png")
-                    ).toExternalForm()
-            ));
+            blacklistView.setDisable(false);
+            whitelistView.setDisable(false);
+            preferredArtistList.setDisable(true);
+            preferredArtistList.getItems().clear();
+            allArtistsList.setDisable(true);
+        }
+        else if(item.getText().equals("Dijkstra Shortest")) {
+            blacklistView.setDisable(false);
+            whitelistView.setDisable(false);
+            preferredArtistList.setDisable(true);
+            preferredArtistList.getItems().clear();
+            allArtistsList.setDisable(true);
+        }else if(item.getText().equals("Dijkstra Interest")) {
+            blacklistView.setDisable(false);
+            whitelistView.setDisable(false);
+            preferredArtistList.setDisable(false);
+            preferredArtistList.getItems().clear();
+            allArtistsList.setDisable(false);
+        }else{
+            blacklistView.setDisable(false);
+            whitelistView.setDisable(false);
+            preferredArtistList.setDisable(true);
+            preferredArtistList.getItems().clear();
+            allArtistsList.setDisable(true);
+        }
         searchButton.setText(item.getText());
         checkCanGeneratePath();
     }
