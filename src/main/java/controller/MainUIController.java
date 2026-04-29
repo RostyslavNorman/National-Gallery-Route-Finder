@@ -253,31 +253,66 @@ public class MainUIController {
         return new StackPane(circle, text);
     }
 
+//    private Color findColor(String roomId) {
+//        int id = 0;
+//        if(!roomId.matches("\\d+")){
+//            StringBuilder newId = new StringBuilder();
+//            for(int i = 0; i < roomId.length(); i++){
+//                if(Character.isDigit(roomId.charAt(i))){
+//                    newId.append(roomId.charAt(i));
+//                }else{
+//                    break;
+//                }
+//            }
+//            id = Integer.parseInt(newId.toString());
+//        }else{
+//            id = Integer.parseInt(roomId);
+//        }
+//        if(id == 1)
+//            return MapColours.yellow;
+//        if(inRangeInclusive(id, 2, 14))
+//            return MapColours.pink;
+//        if(inRangeInclusive(id, 15, 32))
+//            return MapColours.purple;
+//        if(inRangeInclusive(id, 33, 37))
+//            return MapColours.blue;
+//        if(inRangeInclusive(id, 38, 46))
+//            return MapColours.green;
+//        return MapColours.orange;
+//    }
+
     private Color findColor(String roomId) {
-        int id = 0;
-        if(!roomId.matches("\\d+")){
-            StringBuilder newId = new StringBuilder();
-            for(int i = 0; i < roomId.length(); i++){
-                if(Character.isDigit(roomId.charAt(i))){
-                    newId.append(roomId.charAt(i));
-                }else{
-                    break;
-                }
-            }
-            id = Integer.parseInt(newId.toString());
-        }else{
-            id = Integer.parseInt(roomId);
+        // Special named rooms
+        if (roomId.equals("C")) return MapColours.blue;
+        if (roomId.equals("S")) return MapColours.yellow;
+        // If the ID has no digits at all (e.g. "C", "S"), return a default color
+        String digits = roomId.replaceAll("[^0-9]", "");
+        if (digits.isEmpty()) {
+            return MapColours.orange;
         }
-        if(id == 1)
-            return MapColours.yellow;
-        if(inRangeInclusive(id, 2, 14))
-            return MapColours.pink;
-        if(inRangeInclusive(id, 15, 32))
-            return MapColours.purple;
-        if(inRangeInclusive(id, 33, 37))
-            return MapColours.blue;
-        if(inRangeInclusive(id, 38, 46))
-            return MapColours.green;
+
+        // Extract the leading digit sequence (e.g. "51a" → "51")
+        StringBuilder leadingDigits = new StringBuilder();
+        for (int i = 0; i < roomId.length(); i++) {
+            if (Character.isDigit(roomId.charAt(i))) {
+                leadingDigits.append(roomId.charAt(i));
+            } else {
+                break;
+            }
+        }
+
+        // If the ID starts with letters (no leading digits), fall back to orange
+        if (leadingDigits.isEmpty()) {
+            return MapColours.orange;
+        }
+
+        int id = Integer.parseInt(leadingDigits.toString());
+
+        if (id == 1)                        return MapColours.yellow;
+        if (inRangeInclusive(id, 2, 14))    return MapColours.pink;
+        if (inRangeInclusive(id, 15, 32))   return MapColours.purple;
+        if (inRangeInclusive(id, 33, 37))   return MapColours.blue;
+        if (inRangeInclusive(id, 38, 46))   return MapColours.green;
         return MapColours.orange;
     }
 

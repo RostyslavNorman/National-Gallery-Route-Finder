@@ -291,7 +291,30 @@
             <paintings>
             </paintings>
         </room>
+        <room>
+            <id>C</id>
+            <n>Central Hall</n>
+            <x>430</x><y>270</y>
+            <connections>
+                <connection><roomId>39</roomId><distance>50</distance></connection>
+                <connection><roomId>40</roomId><distance>50</distance></connection>
+            </connections>
+            <paintings>
 
+            </paintings>
+
+        </room>
+
+        <room>
+            <id>S</id>
+            <n>Sunday Room</n>
+            <x>375</x><y>235</y>
+            <connections>
+                <connection><roomId>1</roomId><distance>50</distance></connection>
+            </connections>
+            <paintings>
+            </paintings>
+        </room>
         <room>
             <id>57</id>
             <n>Room 57 - German and Netherlandish</n>
@@ -544,7 +567,7 @@
 
         <room>
             <id>10</id>
-            <n>Room 10 - Central Hall</n>
+            <n>Room 10</n>
             <x>280</x><y>268</y>
             <connections>
                 <connection><roomId>11</roomId><distance>55</distance></connection>
