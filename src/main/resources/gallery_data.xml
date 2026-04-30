@@ -202,6 +202,9 @@
             <connections>
                 <connection><roomId>60</roomId></connection>
                 <connection><roomId>58</roomId></connection>
+                <connection><roomId>63</roomId></connection>
+                <connection><roomId>53</roomId></connection>
+
             </connections>
             <paintings>
                 <painting>
