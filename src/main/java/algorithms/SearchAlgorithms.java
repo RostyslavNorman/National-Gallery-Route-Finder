@@ -7,17 +7,7 @@ import model.Painting;
 import model.Room;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * All route-finding algorithms for the National Gallery Route Finder.
@@ -34,19 +24,19 @@ import java.util.Set;
  *   findMostInterestingRoute  - Dijkstra biased toward preferred artists
  *   findPixelRoute            - BFS on a map image pixel by pixel
  *
- * Waypoints: all graph methods accept an ordered waypoints list.
- * The route is split into segments (start -> wp1 -> wp2 -> end) and
- * the chosen algorithm runs on each segment. Segments are joined with
- * duplicate junction rooms removed.
- *
- * Avoid rooms: all graph methods accept an avoidRooms set. Rooms in
- * that set are skipped entirely during search.
+ * WAYPOINTS NOTE:
+ *   All graph methods expect waypoints to contain ONLY the intermediate stops
+ *   between start and end — NOT the start or end themselves. The callers in
+ *   MainUIController must pass subList(1, size-1) of the whitelist.
+ *   buildStops() assembles the full [start, wp1, wp2, ..., end] list internally.
  */
 public class SearchAlgorithms {
 
     // How much an edge weight is reduced per painting by a preferred artist.
-    // Higher = algorithm steers toward those rooms more aggressively.
     private static final double INTEREST_BONUS = 30.0;
+
+    // Minimum brightness for a pixel to count as walkable in BFS pixel search.
+    private static final int WALKABLE_THRESHOLD = 200;
 
     // -------------------------------------------------------------------------
     // 1. DFS — Single Route
@@ -54,14 +44,12 @@ public class SearchAlgorithms {
 
     /**
      * Finds any single valid route between two rooms using DFS.
-     *
-     * Stops as soon as the destination is reached, so this won't necessarily
-     * be the shortest path — just the first one DFS stumbles upon.
+     * Not guaranteed to be shortest — just the first path DFS finds.
      *
      * @param graph      the gallery graph
      * @param startId    starting room ID
      * @param endId      destination room ID
-     * @param waypoints  rooms to pass through in order; empty list for direct route
+     * @param waypoints  intermediate rooms to pass through (NOT including start/end)
      * @param avoidRooms rooms to treat as impassable
      * @return list of rooms from start to end; empty if no route exists
      */
@@ -82,14 +70,7 @@ public class SearchAlgorithms {
 
     /**
      * Recursive DFS helper. Explores depth-first and backtracks on dead ends.
-     *
-     * @param graph      the gallery graph
-     * @param currentId  room currently being visited
-     * @param endId      destination room ID
-     * @param visited    rooms already on the current path (prevents cycles)
-     * @param path       rooms on the current path, mutated in place
-     * @param avoidRooms rooms to skip
-     * @return true if destination was found and path is complete
+     * Returns true once the destination is found.
      */
     private static boolean dfsSingle(GalleryGraph graph,
                                      String currentId,
@@ -106,7 +87,7 @@ public class SearchAlgorithms {
             String neighbourId = edge.getTargetRoomId();
             if (!visited.contains(neighbourId) && !avoidRooms.contains(neighbourId)) {
                 if (dfsSingle(graph, neighbourId, endId, visited, path, avoidRooms))
-                    return true; // found it — no need to keep searching
+                    return true;
             }
         }
 
@@ -120,19 +101,16 @@ public class SearchAlgorithms {
     // -------------------------------------------------------------------------
 
     /**
-     * Finds multiple routes between two rooms using DFS.
-     *
-     * Keeps going until all paths are exhausted or maxRoutes is hit.
-     * The number of permutations can blow up fast in dense graphs,
-     * so always pass a sensible limit (e.g. 10).
+     * Finds multiple distinct routes between two rooms using DFS.
+     * Stops when maxRoutes is reached or all paths are exhausted.
      *
      * @param graph      the gallery graph
      * @param startId    starting room ID
      * @param endId      destination room ID
-     * @param waypoints  rooms to pass through in order
+     * @param waypoints  intermediate rooms to pass through (NOT including start/end)
      * @param avoidRooms rooms to treat as impassable
      * @param maxRoutes  maximum number of routes to return; must be >= 1
-     * @return list of routes, each route being a list of rooms
+     * @return list of routes, each route being an ordered list of rooms
      */
     public static List<List<Room>> findMultipleRoutes(GalleryGraph graph,
                                                       String startId,
@@ -144,21 +122,13 @@ public class SearchAlgorithms {
 
         List<String> stops = buildStops(startId, endId, waypoints);
         List<List<Room>> allRoutes = new ArrayList<>();
-
         collectMultipleRoutes(graph, stops, avoidRooms, maxRoutes, new ArrayList<>(), allRoutes);
         return allRoutes;
     }
 
     /**
-     * Recursively builds complete routes by collecting all segment permutations
-     * at each waypoint gap and combining them.
-     *
-     * @param graph       the gallery graph
-     * @param stops       ordered room IDs to pass through
-     * @param avoidRooms  rooms to skip
-     * @param maxRoutes   stop once this many full routes have been collected
-     * @param currentPath rooms collected so far (partial path)
-     * @param allRoutes   accumulator for finished routes
+     * Recursively collects all segment permutations across each pair of stops,
+     * building up complete routes in allRoutes.
      */
     private static void collectMultipleRoutes(GalleryGraph graph,
                                               List<String> stops,
@@ -166,28 +136,28 @@ public class SearchAlgorithms {
                                               int maxRoutes,
                                               List<Room> currentPath,
                                               List<List<Room>> allRoutes) {
-        // All stops consumed — save the completed path
         if (stops.size() == 1) {
-            if (currentPath.isEmpty()) return;
-            allRoutes.add(new ArrayList<>(currentPath));
+            if (!currentPath.isEmpty()) {
+                allRoutes.add(new ArrayList<>(currentPath));
+            }
             return;
         }
 
         String fromId = stops.get(0);
         String toId   = stops.get(1);
 
-        // Find all DFS paths between this pair of stops
         List<List<Room>> segments = new ArrayList<>();
-        Set<String> visited = new HashSet<>();
-        List<Room> segment = new ArrayList<>();
-        dfsMultiple(graph, fromId, toId, visited, segment, avoidRooms, segments, maxRoutes);
+        dfsMultiple(graph, fromId, toId, new HashSet<>(), new ArrayList<>(),
+                avoidRooms, segments, maxRoutes);
 
         List<String> remainingStops = stops.subList(1, stops.size());
+
         for (List<Room> seg : segments) {
             if (allRoutes.size() >= maxRoutes) return;
 
-            // Append segment to current path, removing the duplicate junction room
             List<Room> extended = new ArrayList<>(currentPath);
+
+            // Remove duplicate junction room at the segment join point
             if (!extended.isEmpty() && !seg.isEmpty()
                     && extended.get(extended.size() - 1).getId().equals(seg.get(0).getId())) {
                 extended.addAll(seg.subList(1, seg.size()));
@@ -200,17 +170,8 @@ public class SearchAlgorithms {
     }
 
     /**
-     * Recursive DFS helper that collects ALL paths to endId, not just the first.
-     * Unlike dfsSingle, this keeps exploring after finding a solution.
-     *
-     * @param graph      the gallery graph
-     * @param currentId  room currently being explored
-     * @param endId      destination room ID
-     * @param visited    rooms on the current path (prevents cycles)
-     * @param path       rooms on the current path
-     * @param avoidRooms rooms to skip
-     * @param results    accumulator for complete paths
-     * @param maxRoutes  stop once this many segment paths are collected
+     * Recursive DFS that collects ALL paths to endId, not just the first.
+     * Backtracks fully so every route variation is explored.
      */
     private static void dfsMultiple(GalleryGraph graph,
                                     String currentId,
@@ -226,7 +187,7 @@ public class SearchAlgorithms {
         path.add(graph.getRoom(currentId));
 
         if (currentId.equals(endId)) {
-            results.add(new ArrayList<>(path)); // snapshot the current path
+            results.add(new ArrayList<>(path));
         } else {
             for (Edge edge : graph.getNeighbours(currentId)) {
                 String neighbourId = edge.getTargetRoomId();
@@ -249,15 +210,12 @@ public class SearchAlgorithms {
 
     /**
      * Finds the shortest route by number of rooms visited using BFS.
-     *
-     * BFS guarantees the fewest-hops path because it explores all rooms
-     * at distance N before touching anything at distance N+1. This is the
-     * room-graph BFS — see findPixelRoute for the image-based version.
+     * BFS guarantees fewest hops because it explores distance N before N+1.
      *
      * @param graph      the gallery graph
      * @param startId    starting room ID
      * @param endId      destination room ID
-     * @param waypoints  rooms to pass through in order
+     * @param waypoints  intermediate rooms to pass through (NOT including start/end)
      * @param avoidRooms rooms to treat as impassable
      * @return shortest route as a list of rooms; empty if no route exists
      */
@@ -271,20 +229,12 @@ public class SearchAlgorithms {
     }
 
     /**
-     * BFS between two rooms. Tracks where each room was discovered from
-     * so the path can be reconstructed once we reach the destination.
-     *
-     * @param graph      the gallery graph
-     * @param startId    starting room ID
-     * @param endId      destination room ID
-     * @param avoidRooms rooms to skip
-     * @return shortest hop-count path; empty if unreachable
+     * BFS between two rooms. Tracks parents so the path can be reconstructed.
      */
     private static List<Room> bfsSegment(GalleryGraph graph,
                                          String startId,
                                          String endId,
                                          Set<String> avoidRooms) {
-        // parent[roomId] = the room we came from; null means this is the start
         Map<String, String> parent = new HashMap<>();
         Queue<String> queue = new LinkedList<>();
 
@@ -305,24 +255,22 @@ public class SearchAlgorithms {
             }
         }
 
-        return Collections.emptyList(); // unreachable
+        return Collections.emptyList();
     }
 
     // -------------------------------------------------------------------------
-    // 4. Dijkstra's — Shortest Route (minimum distance)
+    // 4. Dijkstra — Shortest Route (minimum walking distance)
     // -------------------------------------------------------------------------
 
     /**
      * Finds the shortest route by total walking distance using Dijkstra's algorithm.
-     *
-     * Uses a min-heap ordered by cumulative distance. The first time the
-     * destination is popped from the queue it's guaranteed to be via the
-     * cheapest path, since all edge weights are positive.
+     * Uses a min-heap; first time the destination is popped is guaranteed optimal
+     * because all edge weights are positive.
      *
      * @param graph      the gallery graph
      * @param startId    starting room ID
      * @param endId      destination room ID
-     * @param waypoints  rooms to pass through in order
+     * @param waypoints  intermediate rooms to pass through (NOT including start/end)
      * @param avoidRooms rooms to treat as impassable
      * @return shortest route as a list of rooms; empty if no route exists
      */
@@ -337,32 +285,23 @@ public class SearchAlgorithms {
     }
 
     /**
-     * Core Dijkstra implementation for one segment of the route.
+     * Core Dijkstra implementation for one segment.
      *
-     * When preferredArtists is non-null, the effective edge weight into a room
-     * is reduced by INTEREST_BONUS per painting by a preferred artist. This is
-     * how the "most interesting route" variant works — same algorithm, tweaked weights.
-     * When null, pure distance is used.
+     * When preferredArtists is non-null, the effective edge weight into a room is
+     * reduced by INTEREST_BONUS per matching painting — this is how the "most
+     * interesting route" variant works. Weight is clamped to >= 1.0.
      *
-     * Effective weight is clamped to at least 1.0 so the graph stays valid.
-     *
-     * @param graph            the gallery graph
-     * @param startId          starting room ID
-     * @param endId            destination room ID
-     * @param avoidRooms       rooms to skip
      * @param preferredArtists set of preferred artist name strings, or null for plain Dijkstra
-     * @return optimal path as a list of rooms; empty if unreachable
      */
     private static List<Room> dijkstraSegment(GalleryGraph graph,
                                               String startId,
                                               String endId,
                                               Set<String> avoidRooms,
                                               Set<String> preferredArtists) {
-        Map<String, Double> dist = new HashMap<>();
+        Map<String, Double> dist   = new HashMap<>();
         Map<String, String> parent = new HashMap<>();
-
-        // Min-heap ordered by cumulative distance
-        PriorityQueue<RouteState> pq = new PriorityQueue<>(Comparator.comparingDouble(state -> state.distance));
+        PriorityQueue<RouteState> pq =
+                new PriorityQueue<>(Comparator.comparingDouble(s -> s.distance));
 
         dist.put(startId, 0.0);
         parent.put(startId, null);
@@ -370,10 +309,10 @@ public class SearchAlgorithms {
 
         while (!pq.isEmpty()) {
             RouteState entry = pq.poll();
-            double costSoFar = entry.distance;
-            String currentId = entry.roomId;
+            String currentId  = entry.roomId;
+            double costSoFar  = entry.distance;
 
-            // A better path to this room was already found — skip this entry
+            // Stale entry — a cheaper path was already found
             if (costSoFar > dist.getOrDefault(currentId, Double.MAX_VALUE)) continue;
 
             if (currentId.equals(endId)) return reconstructPath(graph, parent, endId);
@@ -382,13 +321,13 @@ public class SearchAlgorithms {
                 String neighbourId = edge.getTargetRoomId();
                 if (avoidRooms.contains(neighbourId)) continue;
 
-                double effectiveWeight = edge.getDistance();
+                double weight = edge.getDistance();
                 if (preferredArtists != null) {
-                    effectiveWeight -= interestBonus(graph.getRoom(neighbourId), preferredArtists);
+                    weight -= interestBonus(graph.getRoom(neighbourId), preferredArtists);
                 }
-                effectiveWeight = Math.max(effectiveWeight, 1.0); // clamp — can't go negative
+                weight = Math.max(weight, 1.0); // never let weight go negative
 
-                double newDist = costSoFar + effectiveWeight;
+                double newDist = costSoFar + weight;
                 if (newDist < dist.getOrDefault(neighbourId, Double.MAX_VALUE)) {
                     dist.put(neighbourId, newDist);
                     parent.put(neighbourId, currentId);
@@ -397,26 +336,26 @@ public class SearchAlgorithms {
             }
         }
 
-        return Collections.emptyList(); // unreachable
+        return Collections.emptyList();
     }
 
     // -------------------------------------------------------------------------
-    // 5. Dijkstra's — Most Interesting Route
+    // 5. Dijkstra — Most Interesting Route
     // -------------------------------------------------------------------------
 
     /**
      * Finds the most interesting route using Dijkstra with artist-preference weighting.
      *
-     * For each edge leading into room B, the effective cost is:
-     *   distance - (INTEREST_BONUS x paintings by preferred artists in B)
+     * For each edge leading into room B:
+     *   effective cost = distance - (INTEREST_BONUS x paintings by preferred artists in B)
      *
-     * Rooms with more matching paintings are cheaper to enter, so Dijkstra
-     * naturally routes through them unless they're too far out of the way.
+     * Rooms with more matching paintings become cheaper to enter, so Dijkstra
+     * naturally routes through them unless they are too far out of the way.
      *
      * @param graph            the gallery graph
      * @param startId          starting room ID
      * @param endId            destination room ID
-     * @param waypoints        rooms to pass through in order
+     * @param waypoints        intermediate rooms to pass through (NOT including start/end)
      * @param avoidRooms       rooms to treat as impassable
      * @param preferredArtists artists the visitor wants to see
      * @return most interesting route as a list of rooms; empty if no route exists
@@ -427,7 +366,6 @@ public class SearchAlgorithms {
                                                       List<String> waypoints,
                                                       Set<String> avoidRooms,
                                                       List<Artist> preferredArtists) {
-        // Convert to a name set for O(1) lookups inside dijkstraSegment
         Set<String> preferredNames = new HashSet<>();
         for (Artist a : preferredArtists) preferredNames.add(a.getName());
 
@@ -437,12 +375,8 @@ public class SearchAlgorithms {
     }
 
     /**
-     * Calculates the interest bonus for a room — how much to knock off the
-     * edge weight when entering it. One matching painting = INTEREST_BONUS reduction.
-     *
-     * @param room           the room being evaluated
-     * @param preferredNames set of preferred artist name strings
-     * @return total discount to apply to the entry edge weight
+     * Calculates the interest bonus for entering a room.
+     * One matching painting reduces the entry edge weight by INTEREST_BONUS.
      */
     private static double interestBonus(Room room, Set<String> preferredNames) {
         if (room == null || preferredNames.isEmpty()) return 0.0;
@@ -460,28 +394,20 @@ public class SearchAlgorithms {
     // -------------------------------------------------------------------------
 
     /**
-     * Finds the shortest path between two pixel coordinates on the floorplan
-     * image using BFS.
+     * Finds the shortest walkable path between two pixel coordinates on the
+     * floorplan image using BFS.
      *
-     * White (or near-white) pixels are walkable. The search expands
-     * 4-directionally (up, down, left, right) from the start pixel until
-     * it reaches the end pixel. Each step costs 1 unit.
+     * White/near-white pixels (brightness >= WALKABLE_THRESHOLD) are walkable.
+     * Expands 4-directionally. Each step costs 1 unit.
      *
-     * The returned list of int[] pairs are [x, y] pixel coordinates
-     * ordered from start to end. The UI draws a line through them on the map.
+     * The returned list contains [x, y] pixel coordinates ordered start to end.
+     * Waypoints and avoidRooms do not apply here — this operates on raw pixels.
      *
-     * Waypoints and avoidRooms don't apply here — this operates directly
-     * on the image with no knowledge of the room graph.
-     *
-     * @param mapImage   black-and-white floorplan image; walkable pixels must be
-     *                   above PIXEL_THRESHOLD brightness
+     * @param mapImage   black-and-white floorplan; walkable pixels must be bright
      * @param startPixel starting pixel as [x, y]
      * @param endPixel   destination pixel as [x, y]
-     * @return ordered list of [x, y] coordinates forming the path;
-     *         empty if no walkable path exists
+     * @return ordered list of [x, y] coordinates forming the path; empty if unreachable
      */
-    private static final int WALKABLE_THRESHOLD = 200;
-
     public static List<int[]> findPixelRoute(BufferedImage mapImage,
                                              int[] startPixel,
                                              int[] endPixel) {
@@ -490,39 +416,41 @@ public class SearchAlgorithms {
         int sx = startPixel[0], sy = startPixel[1];
         int ex = endPixel[0],   ey = endPixel[1];
 
-        if (!inBounds(sx, sy, width, height) || !inBounds(ex, ey, width, height)) return List.of();
-        if (!isWalkable(mapImage, sx, sy, WALKABLE_THRESHOLD))  return List.of();
-        if (!isWalkable(mapImage, ex, ey, WALKABLE_THRESHOLD))  return List.of();
-        if (sx == ex && sy == ey) return List.of(new int[]{sx, sy});
+        if (!inBounds(sx, sy, width, height) || !inBounds(ex, ey, width, height))
+            return Collections.emptyList();
+        if (!isWalkable(mapImage, sx, sy) || !isWalkable(mapImage, ex, ey))
+            return Collections.emptyList();
+        if (sx == ex && sy == ey)
+            return List.of(new int[]{sx, sy});
 
-        // Flat int array: parentX[y*width+x], parentY[y*width+x], -1 = unvisited
+        // parentX/parentY store where each pixel was discovered from; -1 = unvisited
         int[] parentX = new int[width * height];
         int[] parentY = new int[width * height];
-        java.util.Arrays.fill(parentX, -1);
+        Arrays.fill(parentX, -1);
 
         Queue<Integer> queue = new LinkedList<>();
         int startIdx = sy * width + sx;
-        parentX[startIdx] = sx;   // self-parent marks the start
+        parentX[startIdx] = sx; // self-parent marks the start
         parentY[startIdx] = sy;
         queue.add(startIdx);
 
-        int[] dx = {1, -1, 0, 0};
-        int[] dy = {0, 0, 1, -1};
+        int[] dx = {1, -1, 0,  0};
+        int[] dy = {0,  0, 1, -1};
         boolean found = false;
 
         outer:
         while (!queue.isEmpty()) {
             int idx = queue.poll();
-            int cx = idx % width;
-            int cy = idx / width;
+            int cx  = idx % width;
+            int cy  = idx / width;
 
             for (int d = 0; d < 4; d++) {
                 int nx = cx + dx[d];
                 int ny = cy + dy[d];
                 if (!inBounds(nx, ny, width, height)) continue;
                 int nIdx = ny * width + nx;
-                if (parentX[nIdx] != -1) continue;                       // already visited
-                if (!isWalkable(mapImage, nx, ny, WALKABLE_THRESHOLD)) continue;
+                if (parentX[nIdx] != -1) continue;          // already visited
+                if (!isWalkable(mapImage, nx, ny)) continue;
                 parentX[nIdx] = cx;
                 parentY[nIdx] = cy;
                 if (nx == ex && ny == ey) { found = true; break outer; }
@@ -530,7 +458,7 @@ public class SearchAlgorithms {
             }
         }
 
-        if (!found) return List.of();
+        if (!found) return Collections.emptyList();
 
         // Reconstruct path end -> start, then reverse
         List<int[]> path = new ArrayList<>();
@@ -540,7 +468,8 @@ public class SearchAlgorithms {
             int idx = cy * width + cx;
             int px = parentX[idx];
             int py = parentY[idx];
-            cx = px; cy = py;
+            cx = px;
+            cy = py;
         }
         path.add(new int[]{sx, sy});
         Collections.reverse(path);
@@ -548,9 +477,9 @@ public class SearchAlgorithms {
     }
 
     /**
-     * Reduces a dense pixel path to a minimal set of waypoints using
-     * Douglas-Peucker. epsilon=2.0 is a good default — raise it for
-     * smoother lines, lower it to preserve tight corridor bends.
+     * Simplifies a dense pixel path using Douglas-Peucker.
+     * epsilon=2.0 is a good default — raise for smoother lines,
+     * lower to preserve tight corridor bends.
      */
     public static List<int[]> simplifyPath(List<int[]> path, double epsilon) {
         if (path.size() < 3) return path;
@@ -566,8 +495,9 @@ public class SearchAlgorithms {
         }
 
         double maxDist = 0;
-        int maxIdx = start;
-        int[] a = pts.get(start), b = pts.get(end);
+        int    maxIdx  = start;
+        int[]  a       = pts.get(start);
+        int[]  b       = pts.get(end);
 
         for (int i = start + 1; i < end; i++) {
             double d = perpendicularDistance(pts.get(i), a, b);
@@ -575,15 +505,13 @@ public class SearchAlgorithms {
         }
 
         if (maxDist > eps) {
-            List<int[]> left  = douglasPeucker(pts, start, maxIdx, eps);
-            List<int[]> right = douglasPeucker(pts, maxIdx, end,   eps);
-            // merge: drop duplicate junction point
+            List<int[]> left  = douglasPeucker(pts, start,  maxIdx, eps);
+            List<int[]> right = douglasPeucker(pts, maxIdx, end,    eps);
             List<int[]> merged = new ArrayList<>(left);
-            merged.addAll(right.subList(1, right.size()));
+            merged.addAll(right.subList(1, right.size())); // drop duplicate junction
             return merged;
         }
 
-        // All intermediate points are within epsilon — just keep endpoints
         List<int[]> result = new ArrayList<>();
         result.add(a);
         result.add(b);
@@ -602,22 +530,15 @@ public class SearchAlgorithms {
 
     /**
      * Returns true if the pixel at (x, y) is walkable (bright enough).
-     * Uses the red channel as a brightness proxy — fine for greyscale images.
-     *
-     * @param image     the map image
-     * @param x         pixel x
-     * @param y         pixel y
-     * @param threshold minimum brightness value (0-255) to count as walkable
+     * Uses the red channel as brightness — correct for greyscale images.
      */
-    private static boolean isWalkable(BufferedImage image, int x, int y, int threshold) {
+    private static boolean isWalkable(BufferedImage image, int x, int y) {
         int rgb = image.getRGB(x, y);
-        int red = (rgb >> 16) & 0xFF; // red channel as brightness for greyscale
-        return red >= threshold;
+        int red = (rgb >> 16) & 0xFF;
+        return red >= WALKABLE_THRESHOLD;
     }
 
-    /**
-     * Returns true if (x, y) is inside the image bounds.
-     */
+    /** Returns true if (x, y) is inside the image bounds. */
     private static boolean inBounds(int x, int y, int width, int height) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
@@ -627,7 +548,8 @@ public class SearchAlgorithms {
     // -------------------------------------------------------------------------
 
     /**
-     * Builds the full list of stops: [startId, wp1, wp2, ..., endId].
+     * Builds the full stop list: [startId, wp1, wp2, ..., endId].
+     * waypoints must NOT include start or end — they are added here.
      */
     private static List<String> buildStops(String startId, String endId, List<String> waypoints) {
         List<String> stops = new ArrayList<>();
@@ -646,29 +568,22 @@ public class SearchAlgorithms {
         List<Room> find(GalleryGraph graph, String from, String to, Set<String> avoidRooms);
     }
 
-    /** Simple state object for Dijkstra's priority queue. */
+    /** State object for Dijkstra's priority queue. */
     private static final class RouteState {
-        private final String roomId;
-        private final double distance;
+        final String roomId;
+        final double distance;
 
-        private RouteState(String roomId, double distance) {
-            this.roomId = roomId;
+        RouteState(String roomId, double distance) {
+            this.roomId   = roomId;
             this.distance = distance;
         }
     }
 
     /**
-     * Runs a SegmentFinder on each consecutive pair of stops and joins
-     * the results into one continuous route.
-     *
-     * The junction room shared between two adjacent segments is included
-     * only once in the final path.
-     *
-     * @param graph      the gallery graph
-     * @param stops      ordered room IDs: [start, wp1, ..., end]
-     * @param avoidRooms rooms to skip
-     * @param finder     the algorithm to apply to each segment
-     * @return full concatenated route; empty if any single segment fails
+     * Runs a SegmentFinder on each consecutive pair of stops and joins the
+     * results into one continuous route. The shared junction room between
+     * adjacent segments appears only once in the final path.
+     * Returns an empty list immediately if any single segment has no route.
      */
     private static List<Room> chainSegments(GalleryGraph graph,
                                             List<String> stops,
@@ -687,7 +602,7 @@ public class SearchAlgorithms {
             if (fullRoute.isEmpty()) {
                 fullRoute.addAll(segment);
             } else {
-                // First room of this segment is the junction — already in fullRoute
+                // First room of segment is the junction — already the last room in fullRoute
                 fullRoute.addAll(segment.subList(1, segment.size()));
             }
         }
@@ -696,25 +611,18 @@ public class SearchAlgorithms {
     }
 
     /**
-     * Reconstructs a room path from a parent map by walking back from
-     * endId to startId (parent = -1), then reversing the result.
-     *
-     * @param graph    used to look up Room objects by ID
-     * @param parent   map of roomId -> parentRoomId; -1 marks the start
-     * @param endId    destination room ID
-     * @return ordered list of rooms from start to end
+     * Reconstructs a room path from a parent map by walking back from endId
+     * to the start (where parent value is null), then reversing.
      */
     private static List<Room> reconstructPath(GalleryGraph graph,
                                               Map<String, String> parent,
                                               String endId) {
         List<Room> path = new ArrayList<>();
         String current = endId;
-
         while (current != null) {
             path.add(graph.getRoom(current));
             current = parent.get(current);
         }
-
         Collections.reverse(path);
         return path;
     }

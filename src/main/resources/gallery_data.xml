@@ -108,8 +108,8 @@
             <n>Room 61 - Leonardo da Vinci</n>
             <x>25</x><y>255</y>
             <connections>
-                <connection><roomId>60</roomId><distance>55</distance><throughpoint><x>44</x><y>257</y></throughpoint></connection>
-                <connection><roomId>62</roomId><distance>55</distance><throughpoint><x>30</x><y>273</y></throughpoint></connection>
+                <connection><roomId>60</roomId><throughpoint><x>44</x><y>257</y></throughpoint></connection>
+                <connection><roomId>62</roomId><throughpoint><x>30</x><y>273</y></throughpoint></connection>
             </connections>
             <paintings>
                 <painting>
@@ -117,12 +117,6 @@
                     <artist>Leonardo da Vinci</artist>
                     <imageFilename>leonardo_virgin_rocks.jpg</imageFilename>
                     <description>The Virgin, Infant Jesus, Infant John the Baptist and an angel, c.1491-1508.</description>
-                </painting>
-                <painting>
-                    <title>The Burlington House Cartoon</title>
-                    <artist>Leonardo da Vinci</artist>
-                    <imageFilename>leonardo_burlington_cartoon.jpg</imageFilename>
-                    <description>The Virgin and Child with Saint Anne and the Infant Saint John, c.1499-1500.</description>
                 </painting>
             </paintings>
         </room>
@@ -132,8 +126,9 @@
             <n>Room 60 - Bruegel and Early Netherlandish</n>
             <x>61</x><y>255</y>
             <connections>
-                <connection><roomId>51</roomId><distance>55</distance><throughpoint><x>78</x><y>260</y></throughpoint></connection>
-                <connection><roomId>59</roomId><distance>55</distance><throughpoint><x>60</x><y>283</y></throughpoint></connection>
+                <connection><roomId>61</roomId><throughpoint><x>78</x><y>260</y></throughpoint></connection>
+                <connection><roomId>51</roomId><throughpoint><x>60</x><y>283</y></throughpoint></connection>
+                <connection><roomId>59</roomId><throughpoint><x>60</x><y>283</y></throughpoint></connection>
             </connections>
             <paintings>
                 <painting>
@@ -150,8 +145,9 @@
             <n>Room 51 - Early Italian</n>
             <x>96</x><y>255</y>
             <connections>
-                <connection><roomId>52</roomId><distance>55</distance></connection>
-                <connection><roomId>51a</roomId><distance>45</distance></connection>
+                <connection><roomId>52</roomId></connection>
+                <connection><roomId>51a</roomId></connection>
+                <connection><roomId>60</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -173,9 +169,15 @@
             <n>Room 51a - Sainsbury Wing Link Lobby</n>
             <x>94</x><y>235</y>
             <connections>
-                <connection><roomId>9</roomId><distance>80</distance></connection>
+                <connection><roomId>51</roomId></connection>
             </connections>
             <paintings>
+                <painting>
+                    <title>The Burlington House Cartoon</title>
+                    <artist>Da Vinci</artist>
+                    <imageFilename>da_vinci.jpg</imageFilename>
+                    <description>One of the earliest works in the collection, c.1300.</description>
+                </painting>
             </paintings>
         </room>
 
@@ -186,10 +188,13 @@
             <n>Room 62 - Sainsbury Wing Hall</n>
             <x>25</x><y>290</y>
             <connections>
-                <connection><roomId>59</roomId><distance>55</distance></connection>
-                <connection><roomId>63</roomId><distance>55</distance></connection>
+                <connection><roomId>61</roomId></connection>
+                <connection><roomId>63</roomId></connection>
             </connections>
             <paintings>
+                <painting>
+                    <imageFilename>n-0698-00-000145-xl-hd.jpg</imageFilename>
+                </painting>
             </paintings>
         </room>
 
@@ -198,8 +203,11 @@
             <n>Room 59 - Italian Renaissance</n>
             <x>61</x><y>310</y>
             <connections>
-                <connection><roomId>52</roomId><distance>60</distance></connection>
-                <connection><roomId>58</roomId><distance>55</distance></connection>
+                <connection><roomId>60</roomId></connection>
+                <connection><roomId>58</roomId></connection>
+                <connection><roomId>63</roomId></connection>
+                <connection><roomId>53</roomId></connection>
+
             </connections>
             <paintings>
                 <painting>
@@ -216,7 +224,8 @@
             <n>Room 52 - Netherlandish and German</n>
             <x>100</x><y>295</y>
             <connections>
-                <connection><roomId>53</roomId><distance>55</distance></connection>
+                <connection><roomId>53</roomId></connection>
+                <connection><roomId>51</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -235,10 +244,14 @@
             <n>Room 63 - Sainsbury Wing South Passage</n>
             <x>25</x><y>320</y>
             <connections>
-                <connection><roomId>58</roomId><distance>55</distance></connection>
-                <connection><roomId>64</roomId><distance>55</distance></connection>
+                <connection><roomId>62</roomId></connection>
+                <connection><roomId>64</roomId></connection>
+                <connection><roomId>59</roomId></connection>
             </connections>
             <paintings>
+                <painting>
+                    <imageFilename>N-0673-00-000020-wpu.jpg</imageFilename>
+                </painting>
             </paintings>
         </room>
 
@@ -247,9 +260,8 @@
             <n>Room 58 - Late Netherlandish</n>
             <x>61</x><y>350</y>
             <connections>
-                <connection><roomId>53</roomId><distance>55</distance></connection>
-                <connection><roomId>57</roomId><distance>55</distance></connection>
-                <connection><roomId>64</roomId><distance>60</distance></connection>
+                <connection><roomId>59</roomId></connection>
+                <connection><roomId>57</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -266,7 +278,9 @@
             <n>Room 53 - Botticelli and Italian</n>
             <x>100</x><y>325</y>
             <connections>
-                <connection><roomId>54</roomId><distance>55</distance></connection>
+                <connection><roomId>52</roomId></connection>
+                <connection><roomId>54</roomId></connection>
+                <connection><roomId>59</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -285,10 +299,11 @@
             <n>Room 64 - Sainsbury Wing Lower A</n>
             <x>25</x><y>355</y>
             <connections>
-                <connection><roomId>57</roomId><distance>55</distance></connection>
-                <connection><roomId>65</roomId><distance>55</distance></connection>
+                <connection><roomId>63</roomId></connection>
+                <connection><roomId>65</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-6553-00-000124-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
         <room>
@@ -296,11 +311,11 @@
             <n>Central Hall</n>
             <x>430</x><y>270</y>
             <connections>
-                <connection><roomId>39</roomId><distance>50</distance></connection>
-                <connection><roomId>40</roomId><distance>50</distance></connection>
+                <connection><roomId>39</roomId></connection>
+                <connection><roomId>S</roomId></connection>
             </connections>
             <paintings>
-
+            <painting><imageFilename>N-6440-00-000039-wpu.jpg</imageFilename></painting>
             </paintings>
 
         </room>
@@ -310,9 +325,11 @@
             <n>Sunday Room</n>
             <x>375</x><y>235</y>
             <connections>
-                <connection><roomId>1</roomId><distance>50</distance></connection>
+                <connection><roomId>C</roomId></connection>
+                <connection><roomId>30</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>1920x1080-carousel_02.jpg</imageFilename></painting>
             </paintings>
         </room>
         <room>
@@ -320,9 +337,9 @@
             <n>Room 57 - German and Netherlandish</n>
             <x>61</x><y>390</y>
             <connections>
-                <connection><roomId>54</roomId><distance>60</distance></connection>
-                <connection><roomId>65</roomId><distance>55</distance></connection>
-                <connection><roomId>66</roomId><distance>60</distance></connection>
+                <connection><roomId>65</roomId></connection>
+                <connection><roomId>58</roomId></connection>
+                <connection><roomId>55</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -339,7 +356,8 @@
             <n>Room 54 - Florentine Painting</n>
             <x>100</x><y>350</y>
             <connections>
-                <connection><roomId>55</roomId><distance>55</distance></connection>
+                <connection><roomId>55</roomId></connection>
+                <connection><roomId>53</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -358,9 +376,12 @@
             <n>Room 65 - Sainsbury Wing Lower B</n>
             <x>29</x><y>375</y>
             <connections>
-                <connection><roomId>66</roomId><distance>55</distance></connection>
+                <connection><roomId>66</roomId></connection>
+                <connection><roomId>64</roomId></connection>
+                <connection><roomId>57</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-1437-00-000009-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -369,8 +390,9 @@
             <n>Room 55 - Venetian and North Italian</n>
             <x>100</x><y>378</y>
             <connections>
-                <connection><roomId>56</roomId><distance>55</distance></connection>
-                <connection><roomId>65</roomId><distance>60</distance></connection>
+                <connection><roomId>56</roomId></connection>
+                <connection><roomId>54</roomId></connection>
+                <connection><roomId>57</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -389,9 +411,10 @@
             <n>Room 66 - Sainsbury Wing Lower C</n>
             <x>30</x><y>395</y>
             <connections>
-                <connection><roomId>56</roomId><distance>60</distance></connection>
+                <connection><roomId>65</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-0665-00-000155-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -400,6 +423,7 @@
             <n>Room 56 - Netherlandish</n>
             <x>100</x><y>403</y>
             <connections>
+                <connection><roomId>55</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -436,10 +460,11 @@
             <n>Room 1 - South Entrance Hall</n>
             <x>398</x><y>375</y>
             <connections>
-                <connection><roomId>2</roomId><distance>55</distance></connection>
-                <connection><roomId>4</roomId><distance>55</distance></connection>
+                <connection><roomId>2</roomId></connection>
+                <connection><roomId>C</roomId></connection>
             </connections>
             <paintings>
+            <painting><imageFilename>N-1287-00-000050-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -448,8 +473,8 @@
             <n>Room 2 - Michelangelo and Bronzino</n>
             <x>360</x><y>353</y>
             <connections>
-                <connection><roomId>4</roomId><distance>55</distance></connection>
-                <connection><roomId>8</roomId><distance>65</distance></connection>
+                <connection><roomId>1</roomId></connection>
+                <connection><roomId>4</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -457,12 +482,6 @@
                     <artist>Bronzino</artist>
                     <imageFilename>bronzino_venus_cupid.jpg</imageFilename>
                     <description>A complex moral allegory presented as an erotic image, c.1545.</description>
-                </painting>
-                <painting>
-                    <title>The Entombment of Christ</title>
-                    <artist>Michelangelo</artist>
-                    <imageFilename>michelangelo_entombment.jpg</imageFilename>
-                    <description>One of only three surviving panel paintings by Michelangelo, c.1500-1501.</description>
                 </painting>
             </paintings>
         </room>
@@ -472,8 +491,9 @@
             <n>Room 4 - Raphael and Titian</n>
             <x>325</x><y>353</y>
             <connections>
-                <connection><roomId>6</roomId><distance>55</distance></connection>
-                <connection><roomId>7</roomId><distance>60</distance></connection>
+                <connection><roomId>6</roomId></connection>
+                <connection><roomId>2</roomId></connection>
+                <connection><roomId>5</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -481,12 +501,6 @@
                     <artist>Raphael</artist>
                     <imageFilename>raphael_julius_ii.jpg</imageFilename>
                     <description>A powerful portrait of the aging pope, 1511-1512.</description>
-                </painting>
-                <painting>
-                    <title>Portrait of a Man</title>
-                    <artist>Titian</artist>
-                    <imageFilename>titian_portrait_man.jpg</imageFilename>
-                    <description>One of Titian's earliest portraits, c.1512.</description>
                 </painting>
             </paintings>
         </room>
@@ -500,10 +514,11 @@
             <n>Room 5 - West Wing South Passage</n>
             <x>325</x><y>305</y>
             <connections>
-                <connection><roomId>6</roomId><distance>55</distance></connection>
-                <connection><roomId>11</roomId><distance>55</distance></connection>
+                <connection><roomId>4</roomId></connection>
+                <connection><roomId>11</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-1845-00-000019-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -512,11 +527,12 @@
             <n>Room 6 - West Wing Corridor</n>
             <x>290</x><y>355</y>
             <connections>
-                <connection><roomId>8</roomId><distance>55</distance></connection>
-                <connection><roomId>9</roomId><distance>55</distance></connection>
-                <connection><roomId>7</roomId><distance>60</distance></connection>
+                <connection><roomId>8</roomId></connection>
+                <connection><roomId>4</roomId></connection>
+                <connection><roomId>7</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-0029-00-000064-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -525,6 +541,8 @@
             <n>Room 7 - Titian and Venetian</n>
             <x>258</x><y>375</y>
             <connections>
+                <connection><roomId>6</roomId></connection>
+                <connection><roomId>8</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -541,8 +559,9 @@
             <n>Room 8 - Holbein and 16th Century</n>
             <x>225</x><y>345</y>
             <connections>
-                <connection><roomId>9</roomId><distance>55</distance></connection>
-                <connection><roomId>12</roomId><distance>60</distance></connection>
+                <connection><roomId>7</roomId></connection>
+                <connection><roomId>6</roomId></connection>
+                <connection><roomId>9</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -559,9 +578,14 @@
             <n>Room 9 - West Vestibule</n>
             <x>225</x><y>268</y>
             <connections>
-                <connection><roomId>10</roomId><distance>55</distance></connection>
+                <connection><roomId>51</roomId></connection>
+                <connection><roomId>10</roomId></connection>
+                <connection><roomId>8</roomId></connection>
+                <connection><roomId>16</roomId></connection>
+                <connection><roomId>15</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-0277-00-000045-wpu</imageFilename></painting>
             </paintings>
         </room>
 
@@ -570,11 +594,11 @@
             <n>Room 10</n>
             <x>280</x><y>268</y>
             <connections>
-                <connection><roomId>11</roomId><distance>55</distance></connection>
-                <connection><roomId>14</roomId><distance>60</distance></connection>
-                <connection><roomId>15</roomId><distance>60</distance></connection>
+                <connection><roomId>11</roomId></connection>
+                <connection><roomId>9</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-1077-02-000009-wpu</imageFilename></painting>
             </paintings>
         </room>
 
@@ -583,11 +607,13 @@
             <n>Room 11 - East Vestibule</n>
             <x>325</x><y>268</y>
             <connections>
-                <connection><roomId>12</roomId><distance>55</distance></connection>
-                <connection><roomId>33</roomId><distance>65</distance></connection>
-                <connection><roomId>46</roomId><distance>70</distance></connection>
+                <connection><roomId>12</roomId></connection>
+                <connection><roomId>5</roomId></connection>
+                <connection><roomId>14</roomId></connection>
+                <connection><roomId>10</roomId><distance>52</distance></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-2475-00-000065-wpu</imageFilename></painting>
             </paintings>
         </room>
 
@@ -596,13 +622,16 @@
             <n>Room 12 - 16th Century Flemish</n>
             <x>365</x><y>268</y>
             <connections>
-                <connection><roomId>13</roomId><distance>55</distance></connection>
-                <connection><roomId>14</roomId><distance>60</distance></connection>
+                <connection><roomId>11</roomId></connection>
             </connections>
             <paintings>
+                <painting>
+                    <title>The Triumphs of Caesar: 1, The Trumpeters</title>
+                    <artist>Andrea Mantegna</artist>
+                    <imageFilename>l-1323-00-000002-web-hd.jpg</imageFilename>v
+                </painting>
             </paintings>
         </room>
-
 
 
         <room>
@@ -610,9 +639,11 @@
             <n>Room 14 - North European 16th Century</n>
             <x>325</x><y>235</y>
             <connections>
-                <connection><roomId>29</roomId><distance>65</distance></connection>
+                <connection><roomId>29</roomId></connection>
+                <connection><roomId>11</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-1410-00-000009-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -642,9 +673,9 @@
             <n>Room 15 - Rembrandt</n>
             <x>240</x><y>190</y>
             <connections>
-                <connection><roomId>16</roomId><distance>55</distance></connection>
-                <connection><roomId>15a</roomId><distance>40</distance></connection>
-                <connection><roomId>23</roomId><distance>70</distance></connection>
+                <connection><roomId>16</roomId></connection>
+                <connection><roomId>15a</roomId></connection>
+                <connection><roomId>29</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -665,10 +696,11 @@
             <n>Room 15a - North Wing Passage</n>
             <x>221</x><y>178</y>
             <connections>
-                <connection><roomId>17a</roomId><distance>40</distance></connection>
-                <connection><roomId>26</roomId><distance>55</distance></connection>
+                <connection><roomId>17</roomId></connection>
+                <connection><roomId>15</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-2527-00-000009-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -677,7 +709,8 @@
             <n>Room 16 - Vermeer and Dutch</n>
             <x>205</x><y>205</y>
             <connections>
-                <connection><roomId>17</roomId><distance>55</distance></connection>
+                <connection><roomId>17</roomId></connection>
+                <connection><roomId>15</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -694,8 +727,9 @@
             <n>Room 17 - Dutch Genre</n>
             <x>205</x><y>180</y>
             <connections>
-                <connection><roomId>17a</roomId><distance>40</distance></connection>
-                <connection><roomId>18</roomId><distance>55</distance></connection>
+                <connection><roomId>17a</roomId></connection>
+                <connection><roomId>15a</roomId><distance>25</distance></connection>
+                <connection><roomId>16</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -716,9 +750,13 @@
             <n>Room 17a - North Wing Side Passage</n>
             <x>205</x><y>160</y>
             <connections>
-                <connection><roomId>18</roomId><distance>40</distance></connection>
+                <connection><roomId>17</roomId></connection>
+                <connection><roomId>19</roomId></connection>
             </connections>
             <paintings>
+                <painting>
+                    <imageFilename>N-3714-00-000029-wpu.jpg</imageFilename>
+                </painting>
             </paintings>
         </room>
 
@@ -727,8 +765,10 @@
             <n>Room 18 - Rubens</n>
             <x>240</x><y>115</y>
             <connections>
-                <connection><roomId>19</roomId><distance>55</distance></connection>
-                <connection><roomId>23</roomId><distance>55</distance></connection>
+                <connection><roomId>19</roomId></connection>
+                <connection><roomId>22</roomId></connection>
+                <connection><roomId>21</roomId></connection>
+                <connection><roomId>24</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -736,12 +776,6 @@
                     <artist>Peter Paul Rubens</artist>
                     <imageFilename>rubens_judgement_paris.jpg</imageFilename>
                     <description>Paris awards the golden apple to Venus, c.1632-1635.</description>
-                </painting>
-                <painting>
-                    <title>Samson and Delilah</title>
-                    <artist>Peter Paul Rubens</artist>
-                    <imageFilename>rubens_samson_delilah.jpg</imageFilename>
-                    <description>Delilah holds the shorn hair of the sleeping Samson, c.1609-1610.</description>
                 </painting>
             </paintings>
         </room>
@@ -751,13 +785,15 @@
             <n>Room 19 - Van Dyck</n>
             <x>195</x><y>140</y>
             <connections>
-                <connection><roomId>20</roomId><distance>55</distance></connection>
+                <connection><roomId>20</roomId></connection>
+                <connection><roomId>17a</roomId></connection>
+                <connection><roomId>18</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>Equestrian Portrait of Charles I</title>
                     <artist>Anthony van Dyck</artist>
-                    <imageFilename>van_dyck_charles_i.jpg</imageFilename>
+                    <imageFilename>N-1172-00-000122-wpu.jpg</imageFilename>
                     <description>A monumental portrait of King Charles I on horseback, c.1637-1638.</description>
                 </painting>
             </paintings>
@@ -768,21 +804,15 @@
             <n>Room 20 - Velazquez and Spanish</n>
             <x>200</x><y>110</y>
             <connections>
-                <connection><roomId>21</roomId><distance>55</distance></connection>
-                <connection><roomId>29</roomId><distance>65</distance></connection>
+                <connection><roomId>21</roomId></connection>
+                <connection><roomId>19</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>The Rokeby Venus</title>
                     <artist>Diego Velazquez</artist>
-                    <imageFilename>velazquez_rokeby_venus.jpg</imageFilename>
+                    <imageFilename>N-2057-00-000045-wpu.jpg</imageFilename>
                     <description>Venus reclines on a bed, viewed from behind, c.1647-1651.</description>
-                </painting>
-                <painting>
-                    <title>Philip IV of Spain in Brown and Silver</title>
-                    <artist>Diego Velazquez</artist>
-                    <imageFilename>velazquez_philip_iv.jpg</imageFilename>
-                    <description>A commanding portrait of the Spanish king, c.1631-1632.</description>
                 </painting>
             </paintings>
         </room>
@@ -792,20 +822,15 @@
             <n>Room 21 - Caravaggio</n>
             <x>200</x><y>80</y>
             <connections>
-                <connection><roomId>22</roomId><distance>55</distance></connection>
+                <connection><roomId>20</roomId></connection>
+                <connection><roomId>18</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>The Supper at Emmaus</title>
                     <artist>Caravaggio</artist>
-                    <imageFilename>caravaggio_supper_emmaus.jpg</imageFilename>
+                    <imageFilename>N-0172-00-000098-wpu.jpg</imageFilename>
                     <description>Christ reveals himself to two disciples after his resurrection, 1601.</description>
-                </painting>
-                <painting>
-                    <title>Salome receives the Head of John the Baptist</title>
-                    <artist>Caravaggio</artist>
-                    <imageFilename>caravaggio_salome.jpg</imageFilename>
-                    <description>A dramatic scene rendered with characteristic use of shadow, c.1607-1610.</description>
                 </painting>
             </paintings>
         </room>
@@ -815,13 +840,14 @@
             <n>Room 22 - Poussin</n>
             <x>285</x><y>80</y>
             <connections>
-                <connection><roomId>23</roomId><distance>55</distance></connection>
+                <connection><roomId>23</roomId></connection>
+                <connection><roomId>18</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>The Adoration of the Golden Calf</title>
                     <artist>Nicolas Poussin</artist>
-                    <imageFilename>poussin_golden_calf.jpg</imageFilename>
+                    <imageFilename>N-5597-00-000056-wpu.jpg</imageFilename>
                     <description>The Israelites worship the golden calf while Moses descends from Sinai, c.1633-1634.</description>
                 </painting>
             </paintings>
@@ -832,20 +858,15 @@
             <n>Room 23 - Claude</n>
             <x>285</x><y>110</y>
             <connections>
-                <connection><roomId>24</roomId><distance>55</distance></connection>
+                <connection><roomId>24</roomId></connection>
+                <connection><roomId>22</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>Seaport with the Embarkation of the Queen of Sheba</title>
                     <artist>Claude</artist>
-                    <imageFilename>claude_seaport_sheba.jpg</imageFilename>
+                    <imageFilename>N-0014-00-000066-wpu.jpg</imageFilename>
                     <description>The Queen of Sheba embarks on her journey to King Solomon, 1648.</description>
-                </painting>
-                <painting>
-                    <title>Landscape with the Marriage of Isaac and Rebecca</title>
-                    <artist>Claude</artist>
-                    <imageFilename>claude_isaac_rebecca.jpg</imageFilename>
-                    <description>Celebrating figures dance in an idyllic landscape, 1648.</description>
                 </painting>
             </paintings>
         </room>
@@ -855,13 +876,14 @@
             <n>Room 24 - Rembrandt Late Works</n>
             <x>285</x><y>140</y>
             <connections>
-                <connection><roomId>25</roomId><distance>55</distance></connection>
+                <connection><roomId>25</roomId></connection>
+                <connection><roomId>23</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>Belshazzar's Feast</title>
                     <artist>Rembrandt van Rijn</artist>
-                    <imageFilename>rembrandt_belshazzar.jpg</imageFilename>
+                    <imageFilename>N-6350-00-000039-wpu.jpg</imageFilename>
                     <description>The moment of divine writing on the wall at the Babylonian king's feast, c.1636-1638.</description>
                 </painting>
             </paintings>
@@ -872,9 +894,10 @@
             <n>Room 25 - North Wing Passage East</n>
             <x>325</x><y>140</y>
             <connections>
-                <connection><roomId>26</roomId><distance>55</distance></connection>
+                <connection><roomId>28</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-6602-00-000007-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -883,13 +906,13 @@
             <n>Room 26 - Dutch Portraits</n>
             <x>265</x><y>160</y>
             <connections>
-                <connection><roomId>27</roomId><distance>55</distance></connection>
+                <connection><roomId>27</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>Portrait of Margaretha de Geer</title>
                     <artist>Rembrandt van Rijn</artist>
-                    <imageFilename>rembrandt_margaretha.jpg</imageFilename>
+                    <imageFilename>N-1675-00-000070-wpu.jpg</imageFilename>
                     <description>A late Rembrandt portrait of exceptional honesty and dignity, c.1661.</description>
                 </painting>
             </paintings>
@@ -900,13 +923,14 @@
             <n>Room 27 - Vermeer</n>
             <x>295</x><y>160</y>
             <connections>
-                <connection><roomId>28</roomId><distance>55</distance></connection>
+                <connection><roomId>28</roomId></connection>
+                <connection><roomId>26</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>A Lady seated at a Virginal</title>
                     <artist>Johannes Vermeer</artist>
-                    <imageFilename>vermeer_lady_virginal.jpg</imageFilename>
+                    <imageFilename>N-0839-00-000024-wpu.jpg</imageFilename>
                     <description>A woman plays the virginal in a meticulously rendered Dutch interior, c.1670-1675.</description>
                 </painting>
             </paintings>
@@ -917,9 +941,12 @@
             <n>Room 28 - Still Life and Genre</n>
             <x>325</x><y>160</y>
             <connections>
-                <connection><roomId>29</roomId><distance>55</distance></connection>
+                <connection><roomId>25</roomId></connection>
+                <connection><roomId>27</roomId></connection>
+                <connection><roomId>29</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>90.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -928,9 +955,13 @@
             <n>Room 29 - Annenberg Court</n>
             <x>325</x><y>190</y>
             <connections>
-                <connection><roomId>30</roomId><distance>55</distance></connection>
+                <connection><roomId>30</roomId></connection>
+                <connection><roomId>15</roomId></connection>
+                <connection><roomId>28</roomId></connection>
+                <connection><roomId>14</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-0956-00-000016-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -939,9 +970,12 @@
             <n>Room 30 - 17th Century Paintings</n>
             <x>430</x><y>190</y>
             <connections>
-                <connection><roomId>31</roomId><distance>55</distance></connection>
+                <connection><roomId>31</roomId></connection>
+                <connection><roomId>29</roomId></connection>
+                <connection><roomId>32</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>40ab4d09dfb2c59dfff31ab0d804b87.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -950,9 +984,10 @@
             <n>Room 31 - Julia and Hans Rausing Room</n>
             <x>430</x><y>155</y>
             <connections>
-                <connection><roomId>32</roomId><distance>55</distance></connection>
+                <connection><roomId>30</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-0010-00-000080-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -961,9 +996,12 @@
             <n>Room 32 - North Wing End</n>
             <x>540</x><y>190</y>
             <connections>
-                <connection><roomId>33</roomId><distance>60</distance></connection>
+                <connection><roomId>33</roomId></connection>
+                <connection><roomId>30</roomId></connection>
+                <connection><roomId>37</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-0177-00-000014-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -985,14 +1023,14 @@
             <n>Room 33 - 18th Century</n>
             <x>625</x><y>190</y>
             <connections>
-                <connection><roomId>34</roomId><distance>55</distance></connection>
-                <connection><roomId>37</roomId><distance>60</distance></connection>
+                <connection><roomId>32</roomId></connection>
+                <connection><roomId>34</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>Mr and Mrs Andrews</title>
                     <artist>Thomas Gainsborough</artist>
-                    <imageFilename>gainsborough_mr_mrs_andrews.jpg</imageFilename>
+                    <imageFilename>N-6301-00-000053-wpu.jpg</imageFilename>
                     <description>A newly married couple posed in their Suffolk estate, c.1750.</description>
                 </painting>
             </paintings>
@@ -1003,20 +1041,16 @@
             <n>Room 34 - Blavatnik Family Foundation Room (Turner)</n>
             <x>625</x><y>270</y>
             <connections>
-                <connection><roomId>35</roomId><distance>55</distance></connection>
+                <connection><roomId>35</roomId></connection>
+                <connection><roomId>33</roomId></connection>
+                <connection><roomId>41</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>The Fighting Temeraire</title>
                     <artist>J.M.W. Turner</artist>
-                    <imageFilename>turner_temeraire.jpg</imageFilename>
+                    <imageFilename>N-0524-00-000050-wpu.jpg</imageFilename>
                     <description>A veteran warship towed to be broken up at sunset, 1839.</description>
-                </painting>
-                <painting>
-                    <title>Rain, Steam and Speed</title>
-                    <artist>J.M.W. Turner</artist>
-                    <imageFilename>turner_rain_steam_speed.jpg</imageFilename>
-                    <description>A locomotive charges across the Maidenhead Railway Bridge in a storm, 1844.</description>
                 </painting>
             </paintings>
         </room>
@@ -1026,20 +1060,15 @@
             <n>Room 35 - Constable</n>
             <x>585</x><y>270</y>
             <connections>
-                <connection><roomId>36</roomId><distance>55</distance></connection>
+                <connection><roomId>36</roomId></connection>
+                <connection><roomId>34</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>The Hay Wain</title>
                     <artist>John Constable</artist>
-                    <imageFilename>constable_haywain.jpg</imageFilename>
+                    <imageFilename>N-1207-00-000085-wpu.jpg</imageFilename>
                     <description>A farm cart crosses the River Stour at Flatford in Suffolk, 1821.</description>
-                </painting>
-                <painting>
-                    <title>Weymouth Bay</title>
-                    <artist>John Constable</artist>
-                    <imageFilename>constable_weymouth_bay.jpg</imageFilename>
-                    <description>A stormy sky over the Dorset coastline, c.1816.</description>
                 </painting>
             </paintings>
         </room>
@@ -1053,14 +1082,16 @@
             <n>Room 36 - Claude and Turner</n>
             <x>540</x><y>270</y>
             <connections>
-                <connection><roomId>37</roomId><distance>55</distance></connection>
-                <connection><roomId>38</roomId><distance>55</distance></connection>
+                <connection><roomId>37</roomId></connection>
+                <connection><roomId>38</roomId></connection>
+                <connection><roomId>40</roomId></connection>
+                <connection><roomId>35</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>Dido building Carthage</title>
                     <artist>J.M.W. Turner</artist>
-                    <imageFilename>turner_dido_carthage.jpg</imageFilename>
+                    <imageFilename>N-0498-00-000033-wpu.jpg</imageFilename>
                     <description>Turner's tribute to Claude, showing the legendary queen founding her city, 1815.</description>
                 </painting>
             </paintings>
@@ -1072,19 +1103,15 @@
             <n>Room 37 - Goya</n>
             <x>540</x><y>230</y>
             <connections>
+                <connection><roomId>32</roomId></connection>
+                <connection><roomId>36</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>The Duke of Wellington</title>
                     <artist>Francisco Goya</artist>
-                    <imageFilename>goya_wellington.jpg</imageFilename>
+                    <imageFilename>N-6322-00-000031-wpu.jpg</imageFilename>
                     <description>The first portrait of Wellington after his victory at Salamanca, 1812.</description>
-                </painting>
-                <painting>
-                    <title>Dona Isabel de Porcel</title>
-                    <artist>Francisco Goya</artist>
-                    <imageFilename>goya_isabel_porcel.jpg</imageFilename>
-                    <description>A powerful portrait of an aristocratic Spanish woman, before 1805.</description>
                 </painting>
             </paintings>
         </room>
@@ -1094,10 +1121,11 @@
             <n>Room 38 - French Paintings</n>
             <x>495</x><y>270</y>
             <connections>
-                <connection><roomId>39</roomId><distance>55</distance></connection>
-                <connection><roomId>40</roomId><distance>55</distance></connection>
+                <connection><roomId>39</roomId></connection>
+                <connection><roomId>36</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-1909-00-000087-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -1106,13 +1134,14 @@
             <n>Room 39 - Impressionism</n>
             <x>465</x><y>270</y>
             <connections>
-                <connection><roomId>40</roomId><distance>55</distance></connection>
+                <connection><roomId>38</roomId></connection>
+                <connection><roomId>C</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>Bathers at La Grenouillere</title>
                     <artist>Claude Monet</artist>
-                    <imageFilename>monet_grenouillere.jpg</imageFilename>
+                    <imageFilename>N-6456-00-000031-wpu.jpg</imageFilename>
                     <description>One of Monet's earliest Impressionist paintings, 1869.</description>
                 </painting>
             </paintings>
@@ -1123,37 +1152,31 @@
             <n>Room 40 - Van Gogh and Post-Impressionism</n>
             <x>540</x><y>310</y>
             <connections>
-                <connection><roomId>41</roomId><distance>55</distance></connection>
-                <connection><roomId>44</roomId><distance>65</distance></connection>
+                <connection><roomId>36</roomId></connection>
+                <connection><roomId>44</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>Sunflowers</title>
                     <artist>Vincent van Gogh</artist>
-                    <imageFilename>vangogh_sunflowers.jpg</imageFilename>
+                    <imageFilename>N-3863-00-000095-wpu.jpg</imageFilename>
                     <description>A vase of sunflowers painted in Arles, 1888.</description>
-                </painting>
-                <painting>
-                    <title>Van Gogh's Chair</title>
-                    <artist>Vincent van Gogh</artist>
-                    <imageFilename>vangogh_chair.jpg</imageFilename>
-                    <description>A simple chair in Van Gogh's room in Arles, 1888.</description>
                 </painting>
             </paintings>
         </room>
-
-        <!-- Room 41 (Seurat) is a dead-end east finger off Room 40. -->
         <room>
             <id>41</id>
             <n>Room 41 - Seurat</n>
             <x>635</x><y>345</y>
             <connections>
+                <connection><roomId>34</roomId></connection>
+                <connection><roomId>42</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>Bathers at Asnieres</title>
                     <artist>Georges Seurat</artist>
-                    <imageFilename>seurat_bathers_asnieres.jpg</imageFilename>
+                    <imageFilename>N-6561-00-000011-wpu.jpg</imageFilename>
                     <description>Working-class Parisians bathe in the Seine on a hot afternoon, 1884.</description>
                 </painting>
             </paintings>
@@ -1170,9 +1193,10 @@
             <n>Room 46 - Wohl Gallery Entrance</n>
             <x>465</x><y>375</y>
             <connections>
-                <connection><roomId>45</roomId><distance>55</distance></connection>
+                <connection><roomId>45</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-4240-00-000027-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -1181,9 +1205,11 @@
             <n>Room 45 - Wohl Gallery C</n>
             <x>505</x><y>365</y>
             <connections>
-                <connection><roomId>44</roomId><distance>55</distance></connection>
+                <connection><roomId>44</roomId></connection>
+                <connection><roomId>46</roomId><distance>56</distance></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-6649-00-000017-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -1192,20 +1218,16 @@
             <n>Room 44 - Late Monet (Wohl Gallery)</n>
             <x>545</x><y>365</y>
             <connections>
-                <connection><roomId>43</roomId><distance>55</distance></connection>
+                <connection><roomId>43</roomId></connection>
+                <connection><roomId>45</roomId></connection>
+                <connection><roomId>40</roomId></connection>
             </connections>
             <paintings>
                 <painting>
                     <title>Water-Lilies</title>
                     <artist>Claude Monet</artist>
-                    <imageFilename>monet_water_lilies.jpg</imageFilename>
+                    <imageFilename>1998dedff9fa845269648fe827974ac0.jpg</imageFilename>
                     <description>A vast, immersive view of Monet's lily pond at Giverny, c.1916-1926.</description>
-                </painting>
-                <painting>
-                    <title>Irises</title>
-                    <artist>Claude Monet</artist>
-                    <imageFilename>monet_irises.jpg</imageFilename>
-                    <description>Irises surrounding the banks of the lily pond at Giverny, c.1914-1917.</description>
                 </painting>
             </paintings>
         </room>
@@ -1215,9 +1237,11 @@
             <n>Room 43 - Wohl Gallery B</n>
             <x>580</x><y>365</y>
             <connections>
-                <connection><roomId>42</roomId><distance>55</distance></connection>
+                <connection><roomId>42</roomId></connection>
+                <connection><roomId>44</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-3861-00-000045-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -1227,8 +1251,11 @@
             <n>Room 42 - Wohl Gallery A</n>
             <x>610</x><y>375</y>
             <connections>
+                <connection><roomId>43</roomId></connection>
+                <connection><roomId>41</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-3126-00-000009-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 

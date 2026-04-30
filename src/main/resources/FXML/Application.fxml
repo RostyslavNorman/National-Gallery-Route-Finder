@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
@@ -20,7 +21,7 @@
         <items>
           <AnchorPane prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <VBox fx:id="controlsVBOX" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <VBox fx:id="controlsVBOX" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <HBox alignment="CENTER" spacing="20.0" VBox.vgrow="NEVER">
                            <children>
@@ -28,7 +29,8 @@
                                 <items>
                                   <MenuItem fx:id="DFS" mnemonicParsing="false" onAction="#selectSearch" text="DFS" />
                                   <MenuItem fx:id="BFS" mnemonicParsing="false" onAction="#selectSearch" text="BFS" />
-                                    <MenuItem fx:id="Dikjstra" mnemonicParsing="false" onAction="#selectSearch" text="Dikjstra" />
+                                    <MenuItem fx:id="Dikjstra" mnemonicParsing="false" onAction="#selectSearch" text="Dijkstra Interest" />
+                                    <MenuItem fx:id="Dikjstra1" mnemonicParsing="false" onAction="#selectSearch" text="Dijkstra Shortest" />
                                 </items>
                                  <opaqueInsets>
                                     <Insets />
@@ -43,7 +45,7 @@
                               <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Whitelist" />
-                                    <ListView fx:id="whitelistView" prefHeight="200.0" prefWidth="200.0" />
+                                    <ListView fx:id="whitelistView" disable="true" prefHeight="200.0" prefWidth="200.0" />
                                  </children>
                               </VBox>
                            </children>
@@ -59,9 +61,37 @@
                               <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Blacklist" />
-                                    <ListView fx:id="blacklistView" prefHeight="200.0" prefWidth="200.0" />
+                                    <ListView fx:id="blacklistView" disable="true" prefHeight="200.0" prefWidth="200.0" />
                                  </children>
                               </VBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="scrollPaneAnchor11" layoutX="10.0" layoutY="271.0">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" />
+                           </padding>
+                           <children>
+                              <HBox prefHeight="250.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Preferred Artists" />
+                                          <ListView fx:id="preferredArtistList" disable="true" prefHeight="200.0" prefWidth="150.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="All Artists" />
+                                          <ListView fx:id="allArtistsList" disable="true" prefHeight="200.0" prefWidth="150.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane VBox.vgrow="NEVER">
+                           <children>
+                              <Label fx:id="outputText" text="text" textFill="RED" AnchorPane.leftAnchor="0.0" />
                            </children>
                         </AnchorPane>
                      </children>

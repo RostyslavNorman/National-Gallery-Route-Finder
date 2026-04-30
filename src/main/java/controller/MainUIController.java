@@ -1,5 +1,6 @@
 package controller;
 
+import algorithms.SearchAlgorithms;
 import data.GalleryDataParser;
 import data.MapColours;
 import javafx.beans.binding.Bindings;
@@ -19,19 +20,24 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.*;
 
 import javafx.scene.text.Font;
 import javafx.stage.Popup;
+import model.Artist;
 import model.GalleryGraph;
 import model.GalleryLoader;
 import model.Room;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.*;
 
 public class MainUIController {
     private static final double BASE_IMAGE_WIDTH  = 675;
     private static final double BASE_IMAGE_HEIGHT = 693;
+    private static final int MAXIMUM_DFS_ROUTES = 1000;
     public AnchorPane rootAnchor;
     public MenuButton searchButton;
     public Button generatePathButton;
@@ -40,6 +46,7 @@ public class MainUIController {
     public Pane overlayPane;
     public ImageView imageView;
     public StackPane stackPane;
+    public Label outputText;
 
     private final GalleryLoader galleryLoader = new GalleryLoader();
     private final GalleryGraph graph = galleryLoader.getGraph();
@@ -49,19 +56,30 @@ public class MainUIController {
     private DoubleBinding displayedImageWidth, displayedImageHeight, offsetX, offsetY, markerScale;
     private final ObservableList<Room> whitelist = FXCollections.observableArrayList();
     private final ObservableList<Room> blacklist = FXCollections.observableArrayList();
+    private final ObservableList<Artist> allArtists = FXCollections.observableArrayList();
+    private final ObservableList<Artist> preferredArtists = FXCollections.observableArrayList();
     public ListView<Room> whitelistView = new ListView<>(whitelist);;
     public ListView<Room> blacklistView  = new ListView<>(blacklist);;
+    public ListView<Artist> allArtistsList = new ListView<>(allArtists);
+    public ListView<Artist> preferredArtistList = new ListView<>(preferredArtists);
+    private Polyline pixelPath = new Polyline();
+    private List<List<Room>> DFSPermutations;
 
     public void initialize() {
         setupUserLists();
         setupImageViewer();
         setupMarkers();
         setupMapPixelPrintout();
+        overlayPane.getChildren().addAll(pixelPath);
+        setupPathMarker();
     }
 
     private void setupUserLists(){
         whitelistView.setItems(whitelist);
         blacklistView.setItems(blacklist);
+        allArtists.addAll(parser.getArtists());
+        allArtistsList.setItems(allArtists);
+        preferredArtistList.setItems(preferredArtists);
 
         whitelistView.setCellFactory(lv -> {
             ListCell<Room> cell = new ListCell<>() {
@@ -127,6 +145,40 @@ public class MainUIController {
 
             return cell;
         });
+
+        allArtistsList.setCellFactory(lv -> {
+            ListCell<Artist> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(Artist item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item.getName());
+                }
+            };
+            cell.setOnMouseClicked(e -> {
+                Artist selected = allArtistsList.getSelectionModel().getSelectedItem();
+                if(e.getButton() == MouseButton.PRIMARY && !preferredArtists.contains(selected)) {
+                    preferredArtists.add(selected);
+                }
+            });
+            return cell;
+        });
+
+        preferredArtistList.setCellFactory(lv -> {
+            ListCell<Artist> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(Artist item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item.getName());
+                }
+            };
+            cell.setOnMouseClicked(e -> {
+                Artist selected = preferredArtistList.getSelectionModel().getSelectedItem();
+                if(e.getButton() == MouseButton.PRIMARY) {
+                    preferredArtists.remove(selected);
+                }
+            });
+            return cell;
+        });
     }
 
     private void setupImageViewer(){
@@ -183,7 +235,6 @@ public class MainUIController {
                 displayedImageWidth
         );
 
-
         overlayPane.prefWidthProperty().bind(displayedImageWidth);
         overlayPane.prefHeightProperty().bind(displayedImageHeight);
         overlayPane.translateXProperty().bind(offsetX);
@@ -232,6 +283,14 @@ public class MainUIController {
             createAssociatedPopup(marker);
             overlayPane.getChildren().add(marker);
         }
+    }
+
+    private void setupPathMarker(){
+        pixelPath.setStroke(Color.BLUEVIOLET);
+        pixelPath.setStrokeLineCap(StrokeLineCap.ROUND);
+        pixelPath.setStrokeLineJoin(StrokeLineJoin.ROUND);
+        pixelPath.setMouseTransparent(true);
+        pixelPath.strokeWidthProperty().bind(markerScale.multiply(2));
     }
 
     private StackPane createMarker(String roomId){
@@ -365,36 +424,203 @@ public class MainUIController {
         switch(searchButton.getText()){
             case "DFS" -> DFSSearch();
             case "BFS" -> BFSSearch();
-            case "Dijkstra" -> {}
+            case "Dijkstra Interest" -> DijkstraInterestSearch();
+            case "Dijkstra Shortest" -> DijkstraShortestSearch();
         }
     }
 
     private void DFSSearch(){
-
+    //        GalleryGraph graph,
+    //        String startId,
+    //        String endId,
+    //        List<String> waypoints,
+    //        Set<String> avoidRooms,
+    //        int maxRoutes
+        System.out.println("In DFS");
+        List<String> waypoints = convertWhitelistToString();
+        Set<String> avoid = convertBlacklistToString();
+        List<String> preferredArtists = convertArtistsToString();
+        String startId = waypoints.get(0), endId = waypoints.get(waypoints.size() - 1);
+        List<List<Room>> paths = SearchAlgorithms.findMultipleRoutes(graph, startId, endId, waypoints, avoid, MAXIMUM_DFS_ROUTES);
+        paths.sort(Comparator.comparingInt(List::size));
+        System.out.println("Number of paths: " + paths.size());
+        System.out.println("Shortest pixelPath: " + paths.get(0).size());
+        System.out.println("Longest pixelPath: " + paths.get(paths.size() - 1).size());
+        System.out.println("Shortest route:");
+        outputText.setText("Found " + paths.size() + " different path(s)");
+        DFSPermutations = paths;
+        drawRoomPath(paths.get(0));
     }
 
-    private void DikjstraSearch(){
+    private void DijkstraShortestSearch(){
+//        GalleryGraph graph,
+//        String startId,
+//        String endId,
+//        List<String> waypoints,
+//        Set<String> avoidRooms
+        System.out.println("In Dijkstra Shortest");
+        List<String> waypoints = convertWhitelistToString();
+        Set<String> avoid = convertBlacklistToString();
+        List<String> preferredArtists = convertArtistsToString();
+        String startId = waypoints.get(0), endId = waypoints.get(waypoints.size() - 1);
+        List<Room> path = SearchAlgorithms.findShortestRouteDijkstra(graph, startId, endId, waypoints, avoid);
+        outputText.setText("Path size: " + path.size());
+        drawRoomPath(path);
+    }
 
+    private void DijkstraInterestSearch(){
+//        GalleryGraph graph,
+//        String startId,
+//        String endId,
+//        List<String> waypoints,
+//        Set<String> avoidRooms,
+//        List<Artist> preferredArtists
+        //returns List<Room>
+        System.out.println("In Dijkstra Interest");
+        List<String> waypoints = convertWhitelistToString();
+        Set<String> avoid = convertBlacklistToString();
+        List<String> preferredArtists = convertArtistsToString();
+        String startId = waypoints.get(0), endId = waypoints.get(waypoints.size() - 1);
+        List<Room> path = SearchAlgorithms.findMostInterestingRoute(graph, startId, endId, waypoints, avoid, preferredArtistList.getItems());
+        outputText.setText("Path size: " + path.size());
+        drawRoomPath(path);
     }
 
     private void BFSSearch(){
+//        BufferedImage mapImage,
+//        int[] startPixel,
+//        int[] endPixel
+        BufferedImage image;
+        try {
+            image = ImageIO.read(new File("src/main/resources/Images/Floor2_filled_walls_structural_final.png"));
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return;
+        }
+        int[] startPixel = new int[2], endPixel = new int[2];
+        Room startRoom = whitelist.get(0);
+        Room endRoom = whitelist.get(whitelist.size() - 1);
+        startPixel[0] = startRoom.getX();
+        startPixel[1] = startRoom.getY();
+        endPixel[0] = endRoom.getX();
+        endPixel[1] = endRoom.getY();
+        List<int[]> path = SearchAlgorithms.findPixelRoute(image, startPixel, endPixel);
+        outputText.setText("Path length: " + path.size());
+        drawPixelPath(path);
+    }
 
+
+    private void drawPixelPath(List<int[]> points) {
+        pixelPath.getPoints().clear();
+
+        Runnable updatePixelPath = () -> {
+            pixelPath.getPoints().clear();
+
+            double scaleX = displayedImageWidth.get() /
+                    imageView.getImage().getWidth();
+            double scaleY = displayedImageHeight.get() /
+                    imageView.getImage().getHeight();
+
+            for (int[] p : points) {
+                pixelPath.getPoints().addAll(
+                        p[0] * scaleX,
+                        p[1] * scaleY
+                );
+            }
+        };
+        updatePixelPath.run();
+        displayedImageWidth.addListener((o, oldV, newV) -> updatePixelPath.run());
+        displayedImageHeight.addListener((o, oldV, newV) -> updatePixelPath.run());
+    }
+
+    private void drawRoomPath(List<Room> rooms){
+        pixelPath.getPoints().clear();
+
+        Runnable updatePixelPath = () -> {
+            pixelPath.getPoints().clear();
+
+            double scaleX = displayedImageWidth.get() /
+                    imageView.getImage().getWidth();
+            double scaleY = displayedImageHeight.get() /
+                    imageView.getImage().getHeight();
+
+            for (Room r : rooms) {
+                pixelPath.getPoints().addAll(
+                        r.getX() * scaleX,
+                        r.getY() * scaleY
+                );
+            }
+        };
+        updatePixelPath.run();
+        displayedImageWidth.addListener((o, oldV, newV) -> updatePixelPath.run());
+        displayedImageHeight.addListener((o, oldV, newV) -> updatePixelPath.run());
+    }
+
+    private List<String> convertWhitelistToString(){
+        List<String> whitelist = new ArrayList<>();
+        for(Room r : whitelistView.getItems()){
+            whitelist.add(r.getId());
+        }
+        return whitelist;
+    }
+
+    private Set<String> convertBlacklistToString(){
+        Set<String> blacklist = new HashSet<>();
+        for(Room r : blacklistView.getItems()){
+            blacklist.add(r.getId());
+        }
+        return blacklist;
+    }
+
+    private List<String> convertArtistsToString(){
+        List<String> artists = new ArrayList<>();
+        for(Artist a : preferredArtistList.getItems()){
+            artists.add(a.getName());
+        }
+        return artists;
     }
 
     public void selectSearch(ActionEvent actionEvent) {
+        outputText.setText("");
         MenuItem item = (MenuItem) actionEvent.getSource();
-        if(item.getText().equals("BFS"))
+        imageView.setImage(new Image(
+                Objects.requireNonNull(
+                        getClass().getResource("/Images/Floor2Layout.png")
+                ).toExternalForm()
+        ));
+        if(item.getText().equals("BFS")) {
             imageView.setImage(new Image(
                     Objects.requireNonNull(
                             getClass().getResource("/Images/Floor2_filled_walls_structural_final.png")
                     ).toExternalForm()
             ));
-        else
-            imageView.setImage(new Image(
-                    Objects.requireNonNull(
-                            getClass().getResource("/Images/Floor2Layout.png")
-                    ).toExternalForm()
-            ));
+            blacklistView.setDisable(true);
+            blacklistView.getItems().clear();
+            whitelistView.setDisable(false);
+            preferredArtistList.setDisable(true);
+            preferredArtistList.getItems().clear();
+            allArtistsList.setDisable(true);
+        }
+        else if(item.getText().equals("Dijkstra Shortest")) {
+            blacklistView.setDisable(false);
+            whitelistView.setDisable(false);
+            preferredArtistList.setDisable(true);
+            preferredArtistList.getItems().clear();
+            allArtistsList.setDisable(true);
+        }else if(item.getText().equals("Dijkstra Interest")) {
+            blacklistView.setDisable(false);
+            whitelistView.setDisable(false);
+            preferredArtistList.setDisable(false);
+            preferredArtistList.getItems().clear();
+            allArtistsList.setDisable(false);
+        }else{
+            blacklistView.setDisable(false);
+            whitelistView.setDisable(false);
+            preferredArtistList.setDisable(true);
+            preferredArtistList.getItems().clear();
+            allArtistsList.setDisable(true);
+        }
         searchButton.setText(item.getText());
         checkCanGeneratePath();
     }
