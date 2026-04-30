@@ -585,6 +585,7 @@
                 <connection><roomId>15</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-0277-00-000045-wpu</imageFilename></painting>
             </paintings>
         </room>
 
@@ -597,6 +598,7 @@
                 <connection><roomId>9</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-1077-02-000009-wpu</imageFilename></painting>
             </paintings>
         </room>
 
@@ -611,6 +613,7 @@
                 <connection><roomId>10</roomId><distance>52</distance></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-2475-00-000065-wpu</imageFilename></painting>
             </paintings>
         </room>
 
@@ -622,6 +625,11 @@
                 <connection><roomId>11</roomId></connection>
             </connections>
             <paintings>
+                <painting>
+                    <title>The Triumphs of Caesar: 1, The Trumpeters</title>
+                    <artist>Andrea Mantegna</artist>
+                    <imageFilename>l-1323-00-000002-web-hd.jpg</imageFilename>v
+                </painting>
             </paintings>
         </room>
 
@@ -635,6 +643,7 @@
                 <connection><roomId>11</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-1410-00-000009-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -691,6 +700,7 @@
                 <connection><roomId>15</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-2527-00-000009-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -744,6 +754,9 @@
                 <connection><roomId>19</roomId></connection>
             </connections>
             <paintings>
+                <painting>
+                    <imageFilename>N-3714-00-000029-wpu.jpg</imageFilename>
+                </painting>
             </paintings>
         </room>
 
@@ -764,12 +777,6 @@
                     <imageFilename>rubens_judgement_paris.jpg</imageFilename>
                     <description>Paris awards the golden apple to Venus, c.1632-1635.</description>
                 </painting>
-                <painting>
-                    <title>Samson and Delilah</title>
-                    <artist>Peter Paul Rubens</artist>
-                    <imageFilename>rubens_samson_delilah.jpg</imageFilename>
-                    <description>Delilah holds the shorn hair of the sleeping Samson, c.1609-1610.</description>
-                </painting>
             </paintings>
         </room>
 
@@ -786,7 +793,7 @@
                 <painting>
                     <title>Equestrian Portrait of Charles I</title>
                     <artist>Anthony van Dyck</artist>
-                    <imageFilename>van_dyck_charles_i.jpg</imageFilename>
+                    <imageFilename>N-1172-00-000122-wpu.jpg</imageFilename>
                     <description>A monumental portrait of King Charles I on horseback, c.1637-1638.</description>
                 </painting>
             </paintings>
@@ -804,14 +811,8 @@
                 <painting>
                     <title>The Rokeby Venus</title>
                     <artist>Diego Velazquez</artist>
-                    <imageFilename>velazquez_rokeby_venus.jpg</imageFilename>
+                    <imageFilename>N-2057-00-000045-wpu.jpg</imageFilename>
                     <description>Venus reclines on a bed, viewed from behind, c.1647-1651.</description>
-                </painting>
-                <painting>
-                    <title>Philip IV of Spain in Brown and Silver</title>
-                    <artist>Diego Velazquez</artist>
-                    <imageFilename>velazquez_philip_iv.jpg</imageFilename>
-                    <description>A commanding portrait of the Spanish king, c.1631-1632.</description>
                 </painting>
             </paintings>
         </room>
@@ -828,14 +829,8 @@
                 <painting>
                     <title>The Supper at Emmaus</title>
                     <artist>Caravaggio</artist>
-                    <imageFilename>caravaggio_supper_emmaus.jpg</imageFilename>
+                    <imageFilename>N-0172-00-000098-wpu.jpg</imageFilename>
                     <description>Christ reveals himself to two disciples after his resurrection, 1601.</description>
-                </painting>
-                <painting>
-                    <title>Salome receives the Head of John the Baptist</title>
-                    <artist>Caravaggio</artist>
-                    <imageFilename>caravaggio_salome.jpg</imageFilename>
-                    <description>A dramatic scene rendered with characteristic use of shadow, c.1607-1610.</description>
                 </painting>
             </paintings>
         </room>
@@ -852,7 +847,7 @@
                 <painting>
                     <title>The Adoration of the Golden Calf</title>
                     <artist>Nicolas Poussin</artist>
-                    <imageFilename>poussin_golden_calf.jpg</imageFilename>
+                    <imageFilename>N-5597-00-000056-wpu.jpg</imageFilename>
                     <description>The Israelites worship the golden calf while Moses descends from Sinai, c.1633-1634.</description>
                 </painting>
             </paintings>
@@ -870,14 +865,8 @@
                 <painting>
                     <title>Seaport with the Embarkation of the Queen of Sheba</title>
                     <artist>Claude</artist>
-                    <imageFilename>claude_seaport_sheba.jpg</imageFilename>
+                    <imageFilename>N-0014-00-000066-wpu.jpg</imageFilename>
                     <description>The Queen of Sheba embarks on her journey to King Solomon, 1648.</description>
-                </painting>
-                <painting>
-                    <title>Landscape with the Marriage of Isaac and Rebecca</title>
-                    <artist>Claude</artist>
-                    <imageFilename>claude_isaac_rebecca.jpg</imageFilename>
-                    <description>Celebrating figures dance in an idyllic landscape, 1648.</description>
                 </painting>
             </paintings>
         </room>
@@ -894,7 +883,7 @@
                 <painting>
                     <title>Belshazzar's Feast</title>
                     <artist>Rembrandt van Rijn</artist>
-                    <imageFilename>rembrandt_belshazzar.jpg</imageFilename>
+                    <imageFilename>N-6350-00-000039-wpu.jpg</imageFilename>
                     <description>The moment of divine writing on the wall at the Babylonian king's feast, c.1636-1638.</description>
                 </painting>
             </paintings>
@@ -908,6 +897,7 @@
                 <connection><roomId>28</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-6602-00-000007-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -922,7 +912,7 @@
                 <painting>
                     <title>Portrait of Margaretha de Geer</title>
                     <artist>Rembrandt van Rijn</artist>
-                    <imageFilename>rembrandt_margaretha.jpg</imageFilename>
+                    <imageFilename>N-1675-00-000070-wpu.jpg</imageFilename>
                     <description>A late Rembrandt portrait of exceptional honesty and dignity, c.1661.</description>
                 </painting>
             </paintings>
@@ -940,7 +930,7 @@
                 <painting>
                     <title>A Lady seated at a Virginal</title>
                     <artist>Johannes Vermeer</artist>
-                    <imageFilename>vermeer_lady_virginal.jpg</imageFilename>
+                    <imageFilename>N-0839-00-000024-wpu.jpg</imageFilename>
                     <description>A woman plays the virginal in a meticulously rendered Dutch interior, c.1670-1675.</description>
                 </painting>
             </paintings>
@@ -956,6 +946,7 @@
                 <connection><roomId>29</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>90.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -970,6 +961,7 @@
                 <connection><roomId>14</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-0956-00-000016-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -983,6 +975,7 @@
                 <connection><roomId>32</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>40ab4d09dfb2c59dfff31ab0d804b87.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -994,6 +987,7 @@
                 <connection><roomId>30</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-0010-00-000080-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
