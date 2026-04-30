@@ -75,7 +75,7 @@ public class MainUIController {
         setupUserLists();
         setupImageViewer();
         setupMarkers();
-        setupMapPixelPrintout();
+//        setupMapPixelPrintout();
         overlayPane.getChildren().addAll(pixelPath);
         setupPathMarker();
     }
@@ -292,7 +292,7 @@ public class MainUIController {
     }
 
     private void setupPathMarker(){
-        pixelPath.setStroke(Color.BLUEVIOLET);
+        pixelPath.setStroke(Color.CYAN);
         pixelPath.setStrokeLineCap(StrokeLineCap.ROUND);
         pixelPath.setStrokeLineJoin(StrokeLineJoin.ROUND);
         pixelPath.setMouseTransparent(true);
@@ -450,6 +450,7 @@ public class MainUIController {
         paths.sort(Comparator.comparingInt(List::size));
         if(paths.isEmpty()){
             outputText.setText("No valid paths found!");
+            pixelPath.getPoints().clear();
             viewPaths.setDisable(true);
             return;
         }

@@ -13,7 +13,7 @@ public class RoomInfoController {
     public Label description;
 
     public void setRoom(Room room) {
-        System.out.println("/Images/paintings/" + room.getPaintings().get(0).getImageFilename());
+//        System.out.println("/Images/paintings/" + room.getPaintings().get(0).getImageFilename());
         String imagePath = "";
         roomName.setText(room.getName());
         if(room.getPaintings().isEmpty()) {

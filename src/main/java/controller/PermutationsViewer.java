@@ -58,7 +58,7 @@ public class PermutationsViewer {
     }
 
     private void setupPathMarker() {
-        pixelPath.setStroke(Color.BLUEVIOLET);
+        pixelPath.setStroke(Color.CYAN);
         pixelPath.setStrokeWidth(2);
         pixelPath.setStrokeLineCap(StrokeLineCap.ROUND);
         pixelPath.setStrokeLineJoin(StrokeLineJoin.ROUND);

@@ -33,7 +33,7 @@ import java.util.*;
 public class SearchAlgorithms {
 
     // How much an edge weight is reduced per painting by a preferred artist.
-    private static final double INTEREST_BONUS = 150.0;
+    private static final double INTEREST_BONUS = 250.0;
 
     // Minimum brightness for a pixel to count as walkable in BFS pixel search.
     private static final int WALKABLE_THRESHOLD = 200;
