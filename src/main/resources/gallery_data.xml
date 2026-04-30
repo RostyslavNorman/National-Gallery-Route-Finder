@@ -118,12 +118,6 @@
                     <imageFilename>leonardo_virgin_rocks.jpg</imageFilename>
                     <description>The Virgin, Infant Jesus, Infant John the Baptist and an angel, c.1491-1508.</description>
                 </painting>
-                <painting>
-                    <title>The Burlington House Cartoon</title>
-                    <artist>Leonardo da Vinci</artist>
-                    <imageFilename>leonardo_burlington_cartoon.jpg</imageFilename>
-                    <description>The Virgin and Child with Saint Anne and the Infant Saint John, c.1499-1500.</description>
-                </painting>
             </paintings>
         </room>
 
@@ -178,6 +172,12 @@
                 <connection><roomId>51</roomId></connection>
             </connections>
             <paintings>
+                <painting>
+                    <title>The Burlington House Cartoon</title>
+                    <artist>Da Vinci</artist>
+                    <imageFilename>da_vinci.jpg</imageFilename>
+                    <description>One of the earliest works in the collection, c.1300.</description>
+                </painting>
             </paintings>
         </room>
 
@@ -192,6 +192,9 @@
                 <connection><roomId>63</roomId></connection>
             </connections>
             <paintings>
+                <painting>
+                    <imageFilename>n-0698-00-000145-xl-hd.jpg</imageFilename>
+                </painting>
             </paintings>
         </room>
 
@@ -246,6 +249,9 @@
                 <connection><roomId>59</roomId></connection>
             </connections>
             <paintings>
+                <painting>
+                    <imageFilename>N-0673-00-000020-wpu.jpg</imageFilename>
+                </painting>
             </paintings>
         </room>
 
@@ -297,6 +303,7 @@
                 <connection><roomId>65</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-6553-00-000124-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
         <room>
