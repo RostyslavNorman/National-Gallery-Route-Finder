@@ -89,13 +89,13 @@ public class GalleryDataParser {
             Room room = new Room(id, name, x, y);
             rooms.add(room);
 
-            readPaintings(e.getElementsByTagName("paintings"), room);
+//            readPaintings(e.getElementsByTagName("paintings"), room);
 
             if(connections.containsKey(id))
                 throw new IllegalArgumentException("ID already registered for connections Map!");
             else
                 connections.put(id, new HashMap<>());
-            readConnections(e.getElementsByTagName("connections"), id, room);
+//            readConnections(e.getElementsByTagName("connections"), id, room);
         }
     }
 
@@ -107,54 +107,54 @@ public class GalleryDataParser {
         return id;
     }
 
-    private void readPaintings(NodeList paintingsList, Room room){
-        Element paintingsElement = (Element) paintingsList.item(0);
-        NodeList list = paintingsElement.getElementsByTagName("painting");
-        List<Painting> roomPaintings = new ArrayList<>();
-        String title, artist, imageFileName, description;
-        for(int i = 0; i < list.getLength(); i++){
-            Element e = (Element) list.item(i);
-            //Painting(String title, String artist, String imageFilename, String description)
-            title = e.getElementsByTagName("title").item(0).getTextContent();
-            artist = e.getElementsByTagName("artist").item(0).getTextContent();
-            imageFileName = e.getElementsByTagName("imageFilename").item(0).getTextContent();
-            description = e.getElementsByTagName("description").item(0).getTextContent();
-            Painting painting = new Painting(title, artist, imageFileName, description);
-            roomPaintings.add(painting);
-        }
-        paintings.addAll(roomPaintings);
-        room.setPaintings(roomPaintings);
-        for(Painting painting : paintings)
-            for(Artist artist1 : artists)
-                if(artist1.getName().equalsIgnoreCase(painting.getArtist())) {
-                    artistPaintingsHashMap.get(artist1).add(painting);
-                    break;
-                }
-    }
+//    private void readPaintings(NodeList paintingsList, Room room){
+//        Element paintingsElement = (Element) paintingsList.item(0);
+//        NodeList list = paintingsElement.getElementsByTagName("painting");
+//        List<Painting> roomPaintings = new ArrayList<>();
+//        String title, artist, imageFileName, description;
+//        for(int i = 0; i < list.getLength(); i++){
+//            Element e = (Element) list.item(i);
+//            //Painting(String title, String artist, String imageFilename, String description)
+//            title = e.getElementsByTagName("title").item(0).getTextContent();
+//            artist = e.getElementsByTagName("artist").item(0).getTextContent();
+//            imageFileName = e.getElementsByTagName("imageFilename").item(0).getTextContent();
+//            description = e.getElementsByTagName("description").item(0).getTextContent();
+//            Painting painting = new Painting(title, artist, imageFileName, description);
+//            roomPaintings.add(painting);
+//        }
+//        paintings.addAll(roomPaintings);
+//        room.setPaintings(roomPaintings);
+//        for(Painting painting : paintings)
+//            for(Artist artist1 : artists)
+//                if(artist1.getName().equalsIgnoreCase(painting.getArtist())) {
+//                    artistPaintingsHashMap.get(artist1).add(painting);
+//                    break;
+//                }
+//    }
 
-    private void readConnections(NodeList connectionsList, String key, Room room){
-        Element connectionsElement = (Element) connectionsList.item(0);
-        NodeList list = connectionsElement.getElementsByTagName("connection");
-        String connectionKey;
-        int connectionValue;
-        List<Doorway> doorways = new ArrayList<>();
-        for(int i = 0; i < list.getLength(); i++){
-            Element e = (Element) list.item(i);
-            connectionKey = e.getElementsByTagName("roomId").item(0).getTextContent();
-            connectionValue = Integer.parseInt(e.getElementsByTagName("distance").item(0).getTextContent());
-
-            NodeList throughpoints = e.getElementsByTagName("throughpoint");
-            if(throughpoints.getLength() > 0) {
-                Element tp = (Element) throughpoints.item(0);
-                int x = Integer.parseInt(tp.getElementsByTagName("x").item(0).getTextContent());
-                int y = Integer.parseInt(tp.getElementsByTagName("y").item(0).getTextContent());
-                doorways.add(new Doorway(x, y, connectionKey));
-            }
-
-            connections.get(key).put(connectionKey, connectionValue);
-        }
-        room.setDoorways(doorways);
-    }
+//    private void readConnections(NodeList connectionsList, String key, Room room){
+//        Element connectionsElement = (Element) connectionsList.item(0);
+//        NodeList list = connectionsElement.getElementsByTagName("connection");
+//        String connectionKey;
+//        int connectionValue;
+//        List<Doorway> doorways = new ArrayList<>();
+//        for(int i = 0; i < list.getLength(); i++){
+//            Element e = (Element) list.item(i);
+//            connectionKey = e.getElementsByTagName("roomId").item(0).getTextContent();
+//            connectionValue = Integer.parseInt(e.getElementsByTagName("distance").item(0).getTextContent());
+//
+//            NodeList throughpoints = e.getElementsByTagName("throughpoint");
+//            if(throughpoints.getLength() > 0) {
+//                Element tp = (Element) throughpoints.item(0);
+//                int x = Integer.parseInt(tp.getElementsByTagName("x").item(0).getTextContent());
+//                int y = Integer.parseInt(tp.getElementsByTagName("y").item(0).getTextContent());
+//                doorways.add(new Doorway(x, y, connectionKey));
+//            }
+//
+//            connections.get(key).put(connectionKey, connectionValue);
+//        }
+//        room.setDoorways(doorways);
+//    }
 
     public List<Artist> getArtists(){
         return artists;

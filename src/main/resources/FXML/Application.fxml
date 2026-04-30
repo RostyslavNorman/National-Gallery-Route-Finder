@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="rootAnchor" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainUIController">
+<AnchorPane fx:id="rootAnchor" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21.0.5" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainUIController">
    <children>
       <SplitPane dividerPositions="0.4" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -37,7 +37,7 @@
                                  </opaqueInsets>
                               </MenuButton>
                             <Button fx:id="generatePathButton" disable="true" mnemonicParsing="false" onAction="#generatePath" text="Generate Path" />
-                              <MenuButton disable="true" mnemonicParsing="false" text="View Path" />
+                              <Button fx:id="viewPaths" disable="true" layoutX="123.0" layoutY="10.0" mnemonicParsing="false" onAction="#viewPaths" text="View Paths" />
                            </children>
                         </HBox>
                         <AnchorPane fx:id="scrollPaneAnchor">
@@ -89,9 +89,9 @@
                               </HBox>
                            </children>
                         </AnchorPane>
-                        <AnchorPane VBox.vgrow="NEVER">
+                        <AnchorPane>
                            <children>
-                              <Label fx:id="outputText" text="text" textFill="RED" AnchorPane.leftAnchor="0.0" />
+                              <Label fx:id="outputText" textFill="RED" AnchorPane.leftAnchor="0.0" />
                            </children>
                         </AnchorPane>
                      </children>

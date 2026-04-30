@@ -10,7 +10,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -23,7 +25,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
 import model.Artist;
 import model.GalleryGraph;
 import model.GalleryLoader;
@@ -32,6 +36,7 @@ import model.Room;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class MainUIController {
@@ -52,6 +57,7 @@ public class MainUIController {
     private final GalleryGraph graph = galleryLoader.getGraph();
 
     private final GalleryDataParser parser = new GalleryDataParser();
+    public Button viewPaths;
 
     private DoubleBinding displayedImageWidth, displayedImageHeight, offsetX, offsetY, markerScale;
     private final ObservableList<Room> whitelist = FXCollections.observableArrayList();
@@ -69,7 +75,7 @@ public class MainUIController {
         setupUserLists();
         setupImageViewer();
         setupMarkers();
-        setupMapPixelPrintout();
+//        setupMapPixelPrintout();
         overlayPane.getChildren().addAll(pixelPath);
         setupPathMarker();
     }
@@ -156,7 +162,7 @@ public class MainUIController {
             };
             cell.setOnMouseClicked(e -> {
                 Artist selected = allArtistsList.getSelectionModel().getSelectedItem();
-                if(e.getButton() == MouseButton.PRIMARY && !preferredArtists.contains(selected)) {
+                if(e.getButton() == MouseButton.PRIMARY && !preferredArtists.contains(selected) && !allArtistsList.isDisable()) {
                     preferredArtists.add(selected);
                 }
             });
@@ -286,7 +292,7 @@ public class MainUIController {
     }
 
     private void setupPathMarker(){
-        pixelPath.setStroke(Color.BLUEVIOLET);
+        pixelPath.setStroke(Color.CYAN);
         pixelPath.setStrokeLineCap(StrokeLineCap.ROUND);
         pixelPath.setStrokeLineJoin(StrokeLineJoin.ROUND);
         pixelPath.setMouseTransparent(true);
@@ -368,12 +374,12 @@ public class MainUIController {
         marker.setOnMouseClicked(e -> {
             Room waypoint = (Room) marker.getUserData();
             if (e.getButton() == MouseButton.PRIMARY) {
-                if (!whitelist.contains(waypoint)) {
+                if (!whitelist.contains(waypoint) && !whitelistView.isDisable()) {
                     whitelist.add(waypoint);
                     blacklist.remove(waypoint);
                 }
             } else if (e.getButton() == MouseButton.SECONDARY) {
-                if (!blacklist.contains(waypoint) && !searchButton.getText().equals("BFS")) {
+                if (!blacklist.contains(waypoint) && !searchButton.getText().equals("BFS") && !blacklistView.isDisable()) {
                     blacklist.add(waypoint);
                     whitelist.remove(waypoint);
                 }
@@ -436,17 +442,19 @@ public class MainUIController {
     //        List<String> waypoints,
     //        Set<String> avoidRooms,
     //        int maxRoutes
-        System.out.println("In DFS");
         List<String> waypoints = convertWhitelistToString();
         Set<String> avoid = convertBlacklistToString();
         List<String> preferredArtists = convertArtistsToString();
         String startId = waypoints.get(0), endId = waypoints.get(waypoints.size() - 1);
         List<List<Room>> paths = SearchAlgorithms.findMultipleRoutes(graph, startId, endId, waypoints, avoid, MAXIMUM_DFS_ROUTES);
         paths.sort(Comparator.comparingInt(List::size));
-        System.out.println("Number of paths: " + paths.size());
-        System.out.println("Shortest pixelPath: " + paths.get(0).size());
-        System.out.println("Longest pixelPath: " + paths.get(paths.size() - 1).size());
-        System.out.println("Shortest route:");
+        if(paths.isEmpty()){
+            outputText.setText("No valid paths found!");
+            pixelPath.getPoints().clear();
+            viewPaths.setDisable(true);
+            return;
+        }
+        viewPaths.setDisable(false);
         outputText.setText("Found " + paths.size() + " different path(s)");
         DFSPermutations = paths;
         drawRoomPath(paths.get(0));
@@ -458,7 +466,6 @@ public class MainUIController {
 //        String endId,
 //        List<String> waypoints,
 //        Set<String> avoidRooms
-        System.out.println("In Dijkstra Shortest");
         List<String> waypoints = convertWhitelistToString();
         Set<String> avoid = convertBlacklistToString();
         List<String> preferredArtists = convertArtistsToString();
@@ -476,7 +483,6 @@ public class MainUIController {
 //        Set<String> avoidRooms,
 //        List<Artist> preferredArtists
         //returns List<Room>
-        System.out.println("In Dijkstra Interest");
         List<String> waypoints = convertWhitelistToString();
         Set<String> avoid = convertBlacklistToString();
         List<String> preferredArtists = convertArtistsToString();
@@ -582,6 +588,7 @@ public class MainUIController {
     }
 
     public void selectSearch(ActionEvent actionEvent) {
+        viewPaths.setDisable(true);
         outputText.setText("");
         MenuItem item = (MenuItem) actionEvent.getSource();
         imageView.setImage(new Image(
@@ -623,5 +630,29 @@ public class MainUIController {
         }
         searchButton.setText(item.getText());
         checkCanGeneratePath();
+    }
+
+    public void viewPaths(ActionEvent actionEvent) {
+        if(DFSPermutations == null || DFSPermutations.size() < 2){
+            return;
+        }
+        Parent content;
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/FXML/permutationsViewer.fxml")
+            );
+            content = loader.load();
+            PermutationsViewer controller = loader.getController();
+            controller.setList(DFSPermutations);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        Stage stage = new Stage();
+        stage.setTitle("Route Permutations");
+        stage.setScene(new Scene(content));
+        stage.show();
+
     }
 }
