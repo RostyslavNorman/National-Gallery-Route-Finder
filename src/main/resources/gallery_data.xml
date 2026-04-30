@@ -193,7 +193,7 @@
             </connections>
             <paintings>
                 <painting>
-                    <imageFilename>n-0698-00-000145-xl-hd.jpg</imageFilename>
+                    <imageFilename>idea64_483VSMySxR.png</imageFilename>
                 </painting>
             </paintings>
         </room>
@@ -585,7 +585,7 @@
                 <connection><roomId>15</roomId></connection>
             </connections>
             <paintings>
-                <painting><imageFilename>N-0277-00-000045-wpu</imageFilename></painting>
+                <painting><imageFilename>N-0277-00-000045-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -598,7 +598,7 @@
                 <connection><roomId>9</roomId></connection>
             </connections>
             <paintings>
-                <painting><imageFilename>N-1077-02-000009-wpu</imageFilename></painting>
+                <painting><imageFilename>N-1077-02-000009-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -613,7 +613,7 @@
                 <connection><roomId>10</roomId><distance>52</distance></connection>
             </connections>
             <paintings>
-                <painting><imageFilename>N-2475-00-000065-wpu</imageFilename></painting>
+                <painting><imageFilename>N-2475-00-000065-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -751,7 +751,6 @@
             <x>205</x><y>160</y>
             <connections>
                 <connection><roomId>17</roomId></connection>
-                <connection><roomId>19</roomId></connection>
             </connections>
             <paintings>
                 <painting>
@@ -786,7 +785,6 @@
             <x>195</x><y>140</y>
             <connections>
                 <connection><roomId>20</roomId></connection>
-                <connection><roomId>17a</roomId></connection>
                 <connection><roomId>18</roomId></connection>
             </connections>
             <paintings>
