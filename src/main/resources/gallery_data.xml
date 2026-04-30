@@ -1001,6 +1001,7 @@
                 <connection><roomId>37</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-0177-00-000014-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -1029,7 +1030,7 @@
                 <painting>
                     <title>Mr and Mrs Andrews</title>
                     <artist>Thomas Gainsborough</artist>
-                    <imageFilename>gainsborough_mr_mrs_andrews.jpg</imageFilename>
+                    <imageFilename>N-6301-00-000053-wpu.jpg</imageFilename>
                     <description>A newly married couple posed in their Suffolk estate, c.1750.</description>
                 </painting>
             </paintings>
@@ -1048,14 +1049,8 @@
                 <painting>
                     <title>The Fighting Temeraire</title>
                     <artist>J.M.W. Turner</artist>
-                    <imageFilename>turner_temeraire.jpg</imageFilename>
+                    <imageFilename>N-0524-00-000050-wpu.jpg</imageFilename>
                     <description>A veteran warship towed to be broken up at sunset, 1839.</description>
-                </painting>
-                <painting>
-                    <title>Rain, Steam and Speed</title>
-                    <artist>J.M.W. Turner</artist>
-                    <imageFilename>turner_rain_steam_speed.jpg</imageFilename>
-                    <description>A locomotive charges across the Maidenhead Railway Bridge in a storm, 1844.</description>
                 </painting>
             </paintings>
         </room>
@@ -1072,14 +1067,8 @@
                 <painting>
                     <title>The Hay Wain</title>
                     <artist>John Constable</artist>
-                    <imageFilename>constable_haywain.jpg</imageFilename>
+                    <imageFilename>N-1207-00-000085-wpu.jpg</imageFilename>
                     <description>A farm cart crosses the River Stour at Flatford in Suffolk, 1821.</description>
-                </painting>
-                <painting>
-                    <title>Weymouth Bay</title>
-                    <artist>John Constable</artist>
-                    <imageFilename>constable_weymouth_bay.jpg</imageFilename>
-                    <description>A stormy sky over the Dorset coastline, c.1816.</description>
                 </painting>
             </paintings>
         </room>
@@ -1102,7 +1091,7 @@
                 <painting>
                     <title>Dido building Carthage</title>
                     <artist>J.M.W. Turner</artist>
-                    <imageFilename>turner_dido_carthage.jpg</imageFilename>
+                    <imageFilename>N-0498-00-000033-wpu.jpg</imageFilename>
                     <description>Turner's tribute to Claude, showing the legendary queen founding her city, 1815.</description>
                 </painting>
             </paintings>
@@ -1121,14 +1110,8 @@
                 <painting>
                     <title>The Duke of Wellington</title>
                     <artist>Francisco Goya</artist>
-                    <imageFilename>goya_wellington.jpg</imageFilename>
+                    <imageFilename>N-6322-00-000031-wpu.jpg</imageFilename>
                     <description>The first portrait of Wellington after his victory at Salamanca, 1812.</description>
-                </painting>
-                <painting>
-                    <title>Dona Isabel de Porcel</title>
-                    <artist>Francisco Goya</artist>
-                    <imageFilename>goya_isabel_porcel.jpg</imageFilename>
-                    <description>A powerful portrait of an aristocratic Spanish woman, before 1805.</description>
                 </painting>
             </paintings>
         </room>
@@ -1142,6 +1125,7 @@
                 <connection><roomId>36</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-1909-00-000087-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -1157,7 +1141,7 @@
                 <painting>
                     <title>Bathers at La Grenouillere</title>
                     <artist>Claude Monet</artist>
-                    <imageFilename>monet_grenouillere.jpg</imageFilename>
+                    <imageFilename>N-6456-00-000031-wpu.jpg</imageFilename>
                     <description>One of Monet's earliest Impressionist paintings, 1869.</description>
                 </painting>
             </paintings>
@@ -1175,14 +1159,8 @@
                 <painting>
                     <title>Sunflowers</title>
                     <artist>Vincent van Gogh</artist>
-                    <imageFilename>vangogh_sunflowers.jpg</imageFilename>
+                    <imageFilename>N-3863-00-000095-wpu.jpg</imageFilename>
                     <description>A vase of sunflowers painted in Arles, 1888.</description>
-                </painting>
-                <painting>
-                    <title>Van Gogh's Chair</title>
-                    <artist>Vincent van Gogh</artist>
-                    <imageFilename>vangogh_chair.jpg</imageFilename>
-                    <description>A simple chair in Van Gogh's room in Arles, 1888.</description>
                 </painting>
             </paintings>
         </room>
@@ -1198,7 +1176,7 @@
                 <painting>
                     <title>Bathers at Asnieres</title>
                     <artist>Georges Seurat</artist>
-                    <imageFilename>seurat_bathers_asnieres.jpg</imageFilename>
+                    <imageFilename>N-6561-00-000011-wpu.jpg</imageFilename>
                     <description>Working-class Parisians bathe in the Seine on a hot afternoon, 1884.</description>
                 </painting>
             </paintings>
@@ -1218,6 +1196,7 @@
                 <connection><roomId>45</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-4240-00-000027-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -1230,6 +1209,7 @@
                 <connection><roomId>46</roomId><distance>56</distance></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-6649-00-000017-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -1246,14 +1226,8 @@
                 <painting>
                     <title>Water-Lilies</title>
                     <artist>Claude Monet</artist>
-                    <imageFilename>monet_water_lilies.jpg</imageFilename>
+                    <imageFilename>1998dedff9fa845269648fe827974ac0.jpg</imageFilename>
                     <description>A vast, immersive view of Monet's lily pond at Giverny, c.1916-1926.</description>
-                </painting>
-                <painting>
-                    <title>Irises</title>
-                    <artist>Claude Monet</artist>
-                    <imageFilename>monet_irises.jpg</imageFilename>
-                    <description>Irises surrounding the banks of the lily pond at Giverny, c.1914-1917.</description>
                 </painting>
             </paintings>
         </room>
@@ -1267,6 +1241,7 @@
                 <connection><roomId>44</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-3861-00-000045-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -1280,6 +1255,7 @@
                 <connection><roomId>41</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-3126-00-000009-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
