@@ -315,7 +315,7 @@
                 <connection><roomId>S</roomId></connection>
             </connections>
             <paintings>
-
+            <painting><imageFilename>N-6440-00-000039-wpu.jpg</imageFilename></painting>
             </paintings>
 
         </room>
@@ -329,6 +329,7 @@
                 <connection><roomId>30</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>1920x1080-carousel_02.jpg</imageFilename></painting>
             </paintings>
         </room>
         <room>
@@ -380,6 +381,7 @@
                 <connection><roomId>57</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-1437-00-000009-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -412,6 +414,7 @@
                 <connection><roomId>65</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-0665-00-000155-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -461,6 +464,7 @@
                 <connection><roomId>C</roomId></connection>
             </connections>
             <paintings>
+            <painting><imageFilename>N-1287-00-000050-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -478,12 +482,6 @@
                     <artist>Bronzino</artist>
                     <imageFilename>bronzino_venus_cupid.jpg</imageFilename>
                     <description>A complex moral allegory presented as an erotic image, c.1545.</description>
-                </painting>
-                <painting>
-                    <title>The Entombment of Christ</title>
-                    <artist>Michelangelo</artist>
-                    <imageFilename>michelangelo_entombment.jpg</imageFilename>
-                    <description>One of only three surviving panel paintings by Michelangelo, c.1500-1501.</description>
                 </painting>
             </paintings>
         </room>
@@ -504,12 +502,6 @@
                     <imageFilename>raphael_julius_ii.jpg</imageFilename>
                     <description>A powerful portrait of the aging pope, 1511-1512.</description>
                 </painting>
-                <painting>
-                    <title>Portrait of a Man</title>
-                    <artist>Titian</artist>
-                    <imageFilename>titian_portrait_man.jpg</imageFilename>
-                    <description>One of Titian's earliest portraits, c.1512.</description>
-                </painting>
             </paintings>
         </room>
 
@@ -526,6 +518,7 @@
                 <connection><roomId>11</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-1845-00-000019-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
@@ -539,6 +532,7 @@
                 <connection><roomId>7</roomId></connection>
             </connections>
             <paintings>
+                <painting><imageFilename>N-0029-00-000064-wpu.jpg</imageFilename></painting>
             </paintings>
         </room>
 
