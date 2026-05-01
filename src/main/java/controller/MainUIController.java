@@ -376,6 +376,9 @@ public class MainUIController {
             if (e.getButton() == MouseButton.PRIMARY) {
                 if (!whitelist.contains(waypoint) && !whitelistView.isDisable()) {
                     whitelist.add(waypoint);
+                    if(searchButton.getText().equals("BFS")){
+                        whitelist.retainAll(whitelist.get(0), whitelist.get(whitelist.size() - 1));
+                    }
                     blacklist.remove(waypoint);
                 }
             } else if (e.getButton() == MouseButton.SECONDARY) {
@@ -513,6 +516,7 @@ public class MainUIController {
         endPixel[1] = endRoom.getY();
         List<int[]> path = SearchAlgorithms.findPixelRoute(image, startPixel, endPixel);
         outputText.setText("Path length: " + path.size());
+        viewPaths.setDisable(false);
         drawPixelPath(path);
     }
 
